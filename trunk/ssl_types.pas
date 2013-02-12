@@ -83,12 +83,9 @@ type
   end;
   PSTACK          = ^STACK;
 
-  STACK_OF_IPAddressFamily = record
-    _stack: stack;
-  end;
-  PSTACK_OF_IPAddressFamily = ^STACK_OF_IPAddressFamily;
 
-  PSTACK_OF_ASN1_TYPE = ^PSTACK;
+  PSTACK_OF_IPAddressFamily = PSTACK;
+  PSTACK_OF_ASN1_TYPE = PSTACK; // may be ^
   PSTACK_OF_ASN1_OBJECT = PSTACK;
   PSTACK_OF_GENERAL_NAME = PSTACK;
   PGENERAL_NAMES = PSTACK_OF_GENERAL_NAME;
@@ -101,7 +98,7 @@ type
     dummy : TC_INT;
   end;
 
-  PBN_CTX = Pointer;//^BN_CTX;
+  PBN_CTX = Pointer;
   PPBN_CTX = ^PBN_CTX;
 
   PBN_BLINDING = pointer;
