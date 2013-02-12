@@ -942,12 +942,90 @@ type
 
 {$ENDREGION}
 
-
 {$REGION 'PEM'}
 type
     pem_password_cb = function(buf: PAnsiChar; size: TC_INT; rwflag: TC_INT; userdata: pointer): integer; cdecl;
 
 {$ENDREGION}
+
+{$REGION 'PKCS7'}
+type
+  PPKCS7 = ^PKCS7;
+  PSTACK_OF_PKCS7_SIGNER_INFO = PSTACK;
+  PSTACK_OF_PKCS7_RECIP_INFO = PSTACK;
+
+  PKCS7_SIGNED = record
+    version : PASN1_INTEGER;
+    md_algs : PSTACK_OF_X509_ALGOR;
+    cert : PSTACK_OF_X509;
+    crl : PSTACK_OF_X509_CRL;
+    signer_info : PSTACK_OF_PKCS7_SIGNER_INFO;
+    contents : PPKCS7;
+  end;
+  PPKCS7_SIGNED = ^PKCS7_SIGNED;
+
+  PKCS7_ENC_CONTENT = record
+    content_type : PASN1_OBJECT;
+    algorithm : PX509_ALGOR;
+    enc_data : PASN1_OCTET_STRING;
+    cipher : PEVP_CIPHER;
+  end;
+  PPKCS7_ENC_CONTENT = ^PKCS7_ENC_CONTENT;
+
+  PKCS7_ENVELOPE = record
+    version : PASN1_INTEGER;
+    recipientinfo : PSTACK_OF_PKCS7_RECIP_INFO;
+    enc_data : PPKCS7_ENC_CONTENT;
+  end;
+  PPKCS7_ENVELOPE = ^PKCS7_ENVELOPE;
+
+  PKCS7_SIGN_ENVELOPE = record
+    version : PASN1_INTEGER;
+    md_algs : PSTACK_OF_X509_ALGOR;
+    cert : PSTACK_OF_X509;
+    crl : PSTACK_OF_X509_CRL;
+    signer_info : PSTACK_OF_PKCS7_SIGNER_INFO;
+    enc_data : PPKCS7_ENC_CONTENT;
+    recipientinfo : PSTACK_OF_PKCS7_RECIP_INFO;
+  end;
+  PPKCS7_SIGN_ENVELOPE = ^PKCS7_SIGN_ENVELOPE;
+
+  PKCS7_DIGEST = record
+    version : PASN1_INTEGER;
+    md : PX509_ALGOR;
+    contents : PPKCS7;
+    digest : PASN1_OCTET_STRING;
+  end;
+  PPKCS7_DIGEST = ^PKCS7_DIGEST;
+
+  PKCS7_ENCRYPT = record
+    version : PASN1_INTEGER;
+    enc_data : PPKCS7_ENC_CONTENT;
+  end;
+  PPKCS7_ENCRYPT = ^PKCS7_ENCRYPT;
+
+  PKCS7_union = record
+    case Integer of
+      0 : (ptr : PAnsiChar);
+      1 : (data : PASN1_OCTET_STRING);
+      2 : (sign : PPKCS7_SIGNED);
+      3 : (enveloped : PPKCS7_ENVELOPE);
+      4 : (signed_and_enveloped : PPKCS7_SIGN_ENVELOPE);
+      5 : (digest : PPKCS7_DIGEST);
+      6 : (encrypted : PPKCS7_ENCRYPT);
+  end;
+
+  PKCS7 = record
+    asn1 : PAnsiChar;
+    length : TC_LONG;
+    state : TC_INT;
+    detached : TC_INT;
+    _type : PASN1_OBJECT;
+    d : PKCS7_union;
+  end;
+{$ENDREGION}
+
+
 implementation
 
 end.

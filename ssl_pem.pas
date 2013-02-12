@@ -67,7 +67,7 @@ var
  PEM_write_DHparams: function(var fp: FILE; x: PDH): TC_INT; cdecl = nil;
 {$ENDREGION}
 
-
+{$REGION 'X509'}
  PEM_read_bio_X509: function(bp: PBIO; var x: PX509; cb: pem_password_cb; u: pointer): PX509; cdecl = nil;
  PEM_read_X509: function(var fp: FILE; var x: PX509; cb: pem_password_cb; u: pointer): PX509; cdecl = nil;
  PEM_write_bio_X509: function(bp: PBIO; x: PX509): TC_INT; cdecl = nil;
@@ -93,24 +93,117 @@ var
 
  PEM_write_bio_X509_CRL: function(bp: PBIO; x: PX509_CRL): TC_INT; cdecl = nil;
  PEM_write_X509_CRL: function(var fp: FILE; x: PX509_CRL): TC_INT; cdecl = nil;
+{$ENDREGION}
 
-{
- PKCS7 *PEM_read_bio_PKCS7(BIO *bp, PKCS7 **x, pem_password_cb *cb, void *u);
+{$REGION 'PKCS7}
+ PEM_read_bio_PKCS7: function(bp: PBIO; var x: PPKCS7; cb: pem_password_cb; u: pointer): PPKCS7; cdecl = nil;
+ PEM_read_PKCS7: function(var fp: FILE; var x: PPKCS7; cb: pem_password_cb; u: pointer): PPKCS7; cdecl = nil;
+ PEM_write_bio_PKCS7: function(bp: PBIO; x: PPKCS7): TC_INT; cdecl = nil;
+ PEM_write_PKCS7: function(var fp: FILE; x: PPKCS7): TC_INT; cdecl = nil;
+{$ENDREGION}
 
- PKCS7 *PEM_read_PKCS7(FILE *fp, PKCS7 **x, pem_password_cb *cb, void *u);
-
- int PEM_write_bio_PKCS7(BIO *bp, PKCS7 *x);
-
- int PEM_write_PKCS7(FILE *fp, PKCS7 *x);
-}
+{$REGION 'NETSCAPE'}
  PEM_read_bio_NETSCAPE_CERT_SEQUENCE: function(bp: PBIO; var x: PNETSCAPE_CERT_SEQUENCE; cb: pem_password_cb; u: pointer): PNETSCAPE_CERT_SEQUENCE; cdecl = nil;
- PEM_read_NETSCAPE_CERT_SEQUENCE: function(fp: FILE; var x: PNETSCAPE_CERT_SEQUENCE; cb: pem_password_cb; u: pointer): PNETSCAPE_CERT_SEQUENCE; cdecl = nil;
-
+ PEM_read_NETSCAPE_CERT_SEQUENCE: function(var fp: FILE; var x: PNETSCAPE_CERT_SEQUENCE; cb: pem_password_cb; u: pointer): PNETSCAPE_CERT_SEQUENCE; cdecl = nil;
  PEM_write_bio_NETSCAPE_CERT_SEQUENCE: function(bp: PBIO; x: PNETSCAPE_CERT_SEQUENCE): TC_INT; cdecl = nil;
- PEM_write_NETSCAPE_CERT_SEQUENCE: function(fp: FILE; x: PNETSCAPE_CERT_SEQUENCE): TC_INT; cdecl = nil;
+ PEM_write_NETSCAPE_CERT_SEQUENCE: function(var fp: FILE; x: PNETSCAPE_CERT_SEQUENCE): TC_INT; cdecl = nil;
+{$ENDREGION}
 
-
+procedure SSL_InitPEM;
 
 implementation
+uses ssl_lib;
+
+procedure SSL_InitPEM;
+begin
+ if @PEM_read_bio_PrivateKey = nil then
+  begin
+   @PEM_read_bio_PrivateKey:= LoadFunctionCLib('PEM_read_bio_PrivateKey');
+   @PEM_read_PrivateKey:= LoadFunctionCLib('PEM_read_PrivateKey');
+   @PEM_write_bio_PrivateKey := LoadFunctionCLib('PEM_write_bio_PrivateKey');
+   @PEM_write_PrivateKey:= LoadFunctionCLib('PEM_write_PrivateKey');
+   @PEM_write_bio_PKCS8PrivateKey:= LoadFunctionCLib('PEM_write_bio_PKCS8PrivateKey');
+   @PEM_write_PKCS8PrivateKey:= LoadFunctionCLib('PEM_write_PKCS8PrivateKey');
+   @PEM_write_bio_PKCS8PrivateKey_nid:= LoadFunctionCLib('PEM_write_bio_PKCS8PrivateKey_nid');
+   @PEM_write_PKCS8PrivateKey_nid:= LoadFunctionCLib('PEM_write_PKCS8PrivateKey_nid');
+   @PEM_read_bio_PUBKEY:= LoadFunctionCLib('PEM_read_bio_PUBKEY');
+   @PEM_read_PUBKEY:= LoadFunctionCLib('PEM_read_PUBKEY');
+   @PEM_write_bio_PUBKEY:= LoadFunctionCLib('PEM_write_bio_PUBKEY');
+   @PEM_write_PUBKEY:= LoadFunctionCLib('PEM_write_PUBKEY');
+
+{$REGION 'RSA'}
+   @PEM_read_bio_RSAPrivateKey:= LoadFunctionCLib('PEM_read_bio_RSAPrivateKey');
+   @PEM_read_RSAPrivateKey:= LoadFunctionCLib('PEM_read_RSAPrivateKey');
+   @PEM_write_bio_RSAPrivateKey:= LoadFunctionCLib('PEM_write_bio_RSAPrivateKey');
+   @PEM_write_RSAPrivateKey:= LoadFunctionCLib('PEM_write_RSAPrivateKey');
+   @PEM_read_bio_RSAPublicKey:= LoadFunctionCLib('PEM_read_bio_RSAPublicKey');
+   @PEM_read_RSAPublicKey:=LoadFunctionCLib('PEM_read_RSAPublicKey');
+   @PEM_write_bio_RSAPublicKey:= LoadFunctionCLib('PEM_write_bio_RSAPublicKey');
+   @PEM_write_RSAPublicKey:= LoadFunctionCLib('PEM_write_RSAPublicKey');
+   @PEM_read_bio_RSA_PUBKEY:= LoadFunctionCLib('PEM_read_bio_RSA_PUBKEY');
+   @PEM_read_RSA_PUBKEY:= LoadFunctionCLib('PEM_read_RSA_PUBKEY');
+   @PEM_write_bio_RSA_PUBKEY:= LoadFunctionCLib('PEM_write_bio_RSA_PUBKEY');
+   @PEM_write_RSA_PUBKEY:= LoadFunctionCLib('PEM_write_RSA_PUBKEY');
+{$ENDREGION}
+
+{$REGION 'DSA'}
+   @PEM_read_bio_DSAPrivateKey:= LoadFunctionCLib('PEM_write_RSA_PUBKEY');
+   @PEM_read_DSAPrivateKey:=LoadFunctionCLib('PEM_read_DSAPrivateKey');
+   @PEM_write_bio_DSAPrivateKey:= LoadFunctionCLib('PEM_write_bio_DSAPrivateKey');
+   @PEM_write_DSAPrivateKey:= LoadFunctionCLib('PEM_write_DSAPrivateKey');
+   @PEM_read_bio_DSA_PUBKEY:= LoadFunctionCLib('PEM_read_bio_DSA_PUBKEY');
+   @PEM_read_DSA_PUBKEY:= LoadFunctionCLib('PEM_read_DSA_PUBKEY');
+   @PEM_write_bio_DSA_PUBKEY:= LoadFunctionCLib('PEM_write_bio_DSA_PUBKEY');
+   @PEM_write_DSA_PUBKEY:= LoadFunctionCLib('PEM_write_DSA_PUBKEY');
+   @PEM_read_bio_DSAparams:= LoadFunctionCLib('PEM_read_bio_DSAparams');
+   @PEM_read_DSAparams := LoadFunctionCLib('PEM_read_DSAparams');
+   @PEM_write_bio_DSAparams:= LoadFunctionCLib('PEM_write_bio_DSAparams');
+   @PEM_write_DSAparams:= LoadFunctionCLib('PEM_write_DSAparams');
+{$ENDREGION}
+
+{$REGION 'DH'}
+   @PEM_read_bio_DHparams:= LoadFunctionCLib('PEM_read_bio_DHparams');
+   @PEM_read_DHparams:= LoadFunctionCLib('PEM_read_DHparams');
+   @PEM_write_bio_DHparams:=LoadFunctionCLib('PEM_write_bio_DHparams');
+   @PEM_write_DHparams:= LoadFunctionCLib('PEM_write_DHparams');
+{$ENDREGION}
+
+{$REGION 'X509'}
+   @PEM_read_bio_X509:= LoadFunctionCLib('PEM_read_bio_X509');
+   @PEM_read_X509:= LoadFunctionCLib('PEM_read_X509');
+   @PEM_write_bio_X509:= LoadFunctionCLib('PEM_write_bio_X509');
+   @PEM_write_X509:=LoadFunctionCLib('PEM_write_X509');
+   @PEM_read_bio_X509_AUX:= LoadFunctionCLib('PEM_read_bio_X509_AUX');
+   @PEM_read_X509_AUX:= LoadFunctionCLib('PEM_read_X509_AUX');
+   @PEM_write_bio_X509_AUX:= LoadFunctionCLib('PEM_write_bio_X509_AUX');
+   @PEM_write_X509_AUX:= LoadFunctionCLib('PEM_write_X509_AUX');
+   @PEM_read_bio_X509_REQ:= LoadFunctionCLib('PEM_read_bio_X509_REQ');
+   @PEM_read_X509_REQ:= LoadFunctionCLib('PEM_read_X509_REQ');
+   @PEM_write_bio_X509_REQ:= LoadFunctionCLib('PEM_write_bio_X509_REQ');
+   @PEM_write_X509_REQ:= LoadFunctionCLib('PEM_write_X509_REQ');
+   @PEM_write_bio_X509_REQ_NEW:= LoadFunctionCLib('PEM_write_bio_X509_REQ_NEW');
+   @PEM_write_X509_REQ_NEW:= LoadFunctionCLib('PEM_write_X509_REQ_NEW');
+   @PEM_read_bio_X509_CRL:= LoadFunctionCLib('PEM_read_bio_X509_CRL');
+   @PEM_read_X509_CRL:=  LoadFunctionCLib('PEM_read_X509_CRL');
+   @PEM_write_bio_X509_CRL:= LoadFunctionCLib('PEM_write_bio_X509_CRL');
+   @PEM_write_X509_CRL:= LoadFunctionCLib('PEM_write_X509_CRL');
+{$ENDREGION}
+
+{$REGION 'PKCS7}
+   @PEM_read_bio_PKCS7:= LoadFunctionCLib('PEM_read_bio_PKCS7');
+   @PEM_read_PKCS7:= LoadFunctionCLib('PEM_read_PKCS7');
+   @PEM_write_bio_PKCS7:= LoadFunctionCLib('PEM_write_bio_PKCS7');
+   @PEM_write_PKCS7:= LoadFunctionCLib('PEM_write_PKCS7');
+{$ENDREGION}
+
+{$REGION 'NETSCAPE'}
+   @PEM_read_bio_NETSCAPE_CERT_SEQUENCE:= LoadFunctionCLib('PEM_read_bio_NETSCAPE_CERT_SEQUENCE');
+   @PEM_read_NETSCAPE_CERT_SEQUENCE:= LoadFunctionCLib('PEM_read_NETSCAPE_CERT_SEQUENCE');
+   @PEM_write_bio_NETSCAPE_CERT_SEQUENCE:= LoadFunctionCLib('PEM_write_bio_NETSCAPE_CERT_SEQUENCE');
+   @PEM_write_NETSCAPE_CERT_SEQUENCE:= LoadFunctionCLib('PEM_write_NETSCAPE_CERT_SEQUENCE');
+{$ENDREGION}
+
+  end;
+end;
 
 end.

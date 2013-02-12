@@ -31,7 +31,7 @@ begin
   if ACritical then
   begin
     if Result = nil then begin
-     raise Exception.Create(SysErrorMessage(GetLastError));
+     raise Exception.CreateFmt('Процедура %s не загружена.'#13#10'%s', [FceName, SysErrorMessage(GetLastError)]);
     end;
   end;
 end;

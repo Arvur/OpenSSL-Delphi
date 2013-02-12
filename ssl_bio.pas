@@ -42,11 +42,13 @@ var
   BIO_s_datagram_sctp: function: PBIO_METHOD; cdecl = nil;
 
 
+procedure SSL_InitBIO;
+
 implementation
 
 uses ssl_lib;
 
-procedure SSL_InitEVP;
+procedure SSL_InitBIO;
 begin
   if @BIO_new = nil then
   begin
@@ -77,15 +79,15 @@ begin
     @BIO_s_connect:= LoadFunctionCLib('BIO_s_connect');
     @BIO_s_accept:= LoadFunctionCLib('BIO_s_accept');
     @BIO_s_fd:= LoadFunctionCLib('BIO_s_fd');
-    @BIO_s_log:= LoadFunctionCLib('BIO_s_log');
+    @BIO_s_log:= LoadFunctionCLib('BIO_s_log', false);
     @BIO_s_bio:= LoadFunctionCLib('BIO_s_bio');
     @BIO_s_null:= LoadFunctionCLib('BIO_s_null');
     @BIO_f_null:= LoadFunctionCLib('BIO_f_null');
     @BIO_f_buffer:= LoadFunctionCLib('BIO_f_buffer');
-    @BIO_f_linebuffer:= LoadFunctionCLib('BIO_f_linebuffer');
+    @BIO_f_linebuffer:= LoadFunctionCLib('BIO_f_linebuffer', false);
     @BIO_f_nbio_test:= LoadFunctionCLib('BIO_f_nbio_test');
     @BIO_s_datagram:= LoadFunctionCLib('BIO_s_datagram');
-    @BIO_s_datagram_sctp:= LoadFunctionCLib('BIO_s_datagram_sctp');
+    @BIO_s_datagram_sctp:= LoadFunctionCLib('BIO_s_datagram_sctp', false);
   end;
 end;
 end.

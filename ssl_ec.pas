@@ -21,7 +21,7 @@ var
 
 procedure EVP_PKEY_assign_EC_KEY(key: PEVP_PKEY; eckey: PEC_KEY); inline;
 
-procedure SSL_InitECFunc;
+procedure SSL_InitEC;
 
 implementation
 
@@ -47,7 +47,7 @@ begin
   end;
 end;
 
-procedure SSL_InitECFunc;
+procedure SSL_InitEC;
 begin
  if SSLCryptHandle <> 0 then
    begin
