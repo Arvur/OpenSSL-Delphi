@@ -3,9 +3,7 @@ unit ssl_util;
 interface
 uses ssl_types;
 var
-  {$EXTERNALSYM CRYPTO_malloc}
   CRYPTO_malloc : function(num: TC_INT; const _file: PAnsiChar; line: TC_INT): Pointer cdecl = nil;
-  {$EXTERNALSYM CRYPTO_free}
   CRYPTO_free : procedure(ptr : Pointer) cdecl = nil;
 
 function OpenSSL_malloc(iSize: TC_INT): Pointer;
