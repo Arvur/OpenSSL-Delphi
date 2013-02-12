@@ -7,31 +7,18 @@ type
   TRSACallback = procedure(p1, p2: TC_INT; p3: Pointer); cdecl;
 
 var
-  {$EXTERNALSYM RSA_new}
   RSA_new: function: PRSA; cdecl = nil;
-  {$EXTERNALSYM RSA_new_method}
   RSA_new_method: function(pengine: PENGINE): PRSA; cdecl = nil;
-  {$EXTERNALSYM RSA_size}
   RSA_size: function(pval: Pointer): TC_INT; cdecl = nil;
-  {$EXTERNALSYM RSA_generate_key}
   RSA_generate_key: function(bits: TC_INT; e: TC_ULONG; callback: TRSACallback; cb_arg: Pointer): PRSA; cdecl = nil;
-  {$EXTERNALSYM RSA_generate_key_ex}
   RSA_generate_key_ex: function(rsa: PRSA; bits: TC_INT; e: PBIGNUM; cb: PBN_GENCB): TC_INT; cdecl = nil;
-  {$EXTERNALSYM RSA_check_key}
   RSA_check_key: function(rsa: PRSA): TC_INT; cdecl = nil;
-  {$EXTERNALSYM RSA_public_encrypt}
   RSA_public_encrypt: function(flen: TC_INT; from: PByte; _to: PByte; rsa: PRSA; padding: TC_INT): TC_INT cdecl = nil;
-  {$EXTERNALSYM RSA_private_encrypt}
   RSA_private_encrypt: function(flen: TC_INT; from: PByte; _to: PByte; rsa: PRSA; padding: TC_INT): TC_INT cdecl = nil;
-  {$EXTERNALSYM RSA_public_decrypt}
   RSA_public_decrypt: function(flen: TC_INT; from: PByte; _to: PByte; rsa: PRSA; padding: TC_INT): TC_INT cdecl = nil;
-  {$EXTERNALSYM RSA_private_decrypt}
   RSA_private_decrypt: function(flen: TC_INT; from: PByte; _to: PByte; rsa: PRSA; padding: TC_INT): TC_INT cdecl = nil;
-  {$EXTERNALSYM RSA_free}
   RSA_free : procedure(rsa: PRSA) cdecl = nil;
-  {$EXTERNALSYM RSA_up_ref}
   RSA_up_ref: function(rsa: PRSA): TC_INT; cdecl = nil;
-  {$EXTERNALSYM RSA_flags}
   RSA_flags: function(rsa: PRSA): TC_INT; cdecl = nil;
 
 procedure EVP_PKEY_assign_RSA(key: PEVP_PKEY; rsa: PRSA); inline;
