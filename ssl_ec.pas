@@ -8,25 +8,15 @@ var
   EC_Curves: PEC_builtin_curves = nil;
   EC_NumCurves: Integer = 0;
 
-  {$EXTERNALSYM EC_get_builtin_curves}
   EC_get_builtin_curves: function (r: PEC_builtin_curves; nItems: TC_INT): TC_INT; cdecl = nil;
-  {$EXTERNALSYM EC_GROUP_new_by_curve_name}
   EC_GROUP_new_by_curve_name: function(nid: TC_INT): EC_GROUP; cdecl = nil;
-  {$EXTERNALSYM EC_KEY_new}
   EC_KEY_new: function: PEC_KEY; cdecl = nil;
-  {$EXTERNALSYM EC_GROUP_free}
   EC_GROUP_free: procedure (group: EC_GROUP); cdecl = nil;
-  {$EXTERNALSYM EC_GROUP_set_asn1_flag}
   EC_GROUP_set_asn1_flag: procedure(group: EC_GROUP; flag: TC_INT); cdecl = nil;
-  {$EXTERNALSYM EC_GROUP_get_curve_name}
   EC_GROUP_get_curve_name: function(group: EC_GROUP): TC_INT; cdecl = nil;
-  {$EXTERNALSYM EC_KEY_set_group}
   EC_KEY_set_group: function(key: PEC_KEY; group: EC_GROUP): TC_INT; cdecl = nil;
-  {$EXTERNALSYM EC_KEY_generate_key}
   EC_KEY_generate_key: function(key: PEC_KEY): TC_INT; cdecl = nil;
-  {$EXTERNALSYM EC_KEY_check_key}
   EC_KEY_check_key: function(key: PEC_KEY): TC_INT; cdecl = nil;
-  {$EXTERNALSYM EC_KEY_free}
   EC_KEY_free: procedure(key: PEC_KEY); cdecl = nil;
 
 procedure EVP_PKEY_assign_EC_KEY(key: PEVP_PKEY; eckey: PEC_KEY); inline;
