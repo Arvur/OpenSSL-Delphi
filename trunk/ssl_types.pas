@@ -942,6 +942,12 @@ type
 
 {$ENDREGION}
 
+
+{$REGION 'PEM'}
+type
+    pem_password_cb = function(buf: PAnsiChar; size: TC_INT; rwflag: TC_INT; userdata: pointer): integer; cdecl;
+
+{$ENDREGION}
 implementation
 
 end.
