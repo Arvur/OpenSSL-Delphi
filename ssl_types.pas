@@ -104,6 +104,14 @@ type
   PBN_BLINDING = pointer;
 
 
+  BIT_STRING_BITNAME = record
+    bitnum : TC_INT;
+    lname : PAnsiChar;
+    sname : PAnsiChar;
+  end;
+  PBIT_STRING_BITNAME = ^BIT_STRING_BITNAME;
+
+
 {$REGION 'BIO'}
   PBIO = ^BIO;
   PBIO_METHOD = ^BIO_METHOD;
@@ -264,6 +272,160 @@ type
     rdi : PASIdentifierChoice;
   end;
   PASIdentifiers = ^ASIdentifiers;
+
+  ASN1_CTX = record
+    p : PAnsiChar;   // work char pointer
+    eos : TC_INT;    // end of sequence read for indefinite encoding
+    error : TC_INT;  // error code to use when returning an error
+    inf : TC_INT;    // constructed if 0x20, indefinite is 0x21
+    tag : TC_INT;    // tag from last 'get object'
+    xclass : TC_INT; // class from last 'get object'
+    slen : TC_LONG;  // length of last 'get object'
+    max : PAnsiChar; // largest value of p allowed
+    q : PAnsiChar;   // temporary variable
+    pp : PPAnsiChar; // variable
+    line : TC_INT;   // used in error processing
+  end;
+  PASN1_CTX = ^ASN1_CTX;
+
+  I2D_OF_void = function(_para1 : Pointer; var _para2 : PByte) : TC_INT cdecl;
+  D2I_OF_void = function (_para1 : PPointer;  var _para2 : PByte; _para3 : TC_LONG) : Pointer cdecl;
+
+  ASN1_METHOD = record
+    i2d : i2d_of_void;
+    d2i : i2d_of_void;
+    create : function: Pointer; cdecl;
+    destroy : procedure(ptr: Pointer); cdecl;
+  end;
+  PASN1_METHOD = ^ASN1_METHOD;
+
+  ASN1_HEADER = record
+    header : PASN1_OCTET_STRING;
+    data : Pointer;
+    meth : PASN1_METHOD;
+  end;
+  PASN1_HEADER = ^ASN1_HEADER;
+
+  ASN1_STRING_TABLE = record
+    nid : TC_INT;
+    minsize : TC_LONG;
+    maxsize : TC_LONG;
+    mask : TC_ULONG;
+    flags : TC_ULONG;
+  end;
+  PASN1_STRING_TABLE = ^ASN1_STRING_TABLE;
+  PSTACK_OF_ASN1_STRING_TABLE = PSTACK;
+
+  PASN1_ITEM = ^ASN1_ITEM;
+  PASN1_ITEM_EXP = PASN1_ITEM;
+
+  ASN1_TEMPLATE = record
+    flags : TC_ULONG;         // Various flags
+    tag : TC_LONG;            // tag, not used if no tagging
+    offset : TC_ULONG;        // Offset of this field in structure
+    field_name : PAnsiChar;   // Field name
+    item : PASN1_ITEM_EXP;    // Relevant ASN1_ITEM or ASN1_ADB
+  end;
+
+  PASN1_TEMPLATE = ^ASN1_TEMPLATE;
+  ASN1_ITEM = record
+    itype : Char;               // The item type, primitive, SEQUENCE, CHOICE or extern
+    utype : TC_LONG;            // underlying type
+    templates : PASN1_TEMPLATE; // If SEQUENCE or CHOICE this contains the contents
+    tcount : TC_LONG;           // Number of templates if SEQUENCE or CHOICE
+    funcs : Pointer;            // functions that handle this type
+    size : TC_LONG;             // Structure size (usually)
+    sname : PAnsiChar;		      // Structure name
+  end;
+
+  PSTACK_OF_ASN1_ADB_TABLE = PSTACK;
+  PPSTACK_OF_ASN1_ADB_TABLE = ^PSTACK_OF_ASN1_ADB_TABLE;
+  PASN1_ADB_TABLE = ^ASN1_ADB_TABLE;
+  PASN1_ADB = ^ASN1_ADB;
+
+  ASN1_ADB = record
+    flags : TC_ULONG;                       // Various flags
+    offset : TC_ULONG;                      // Offset of selector field
+    app_items : PPSTACK_OF_ASN1_ADB_TABLE;  // Application defined items
+    tbl : PASN1_ADB_TABLE;                  // Table of possible types
+    tblcount : TC_LONG;                     // Number of entries in tbl
+    default_tt : PASN1_TEMPLATE;            // Type to use if no match
+    null_tt : PASN1_TEMPLATE;               // Type to use if selector is NULL
+  end;
+  ASN1_ADB_TABLE = record
+    flags : TC_LONG;                        // Various flags
+    offset : TC_LONG;	                      // Offset of selector field
+    app_items : PPSTACK_OF_ASN1_ADB_TABLE;  // Application defined items
+    tbl : PASN1_ADB_TABLE;                  // Table of possible types
+    tblcount : TC_LONG;                     // Number of entries in tbl
+    default_tt : PASN1_TEMPLATE;            // Type to use if no match
+    null_tt : PASN1_TEMPLATE;               // Type to use if selector is NULL
+  end;
+
+  PASN1_TLC = ^ASN1_TLC;
+  ASN1_TLC = record
+	  valid : Byte;	    // Values below are valid
+	  ret : TC_INT;	    // return value
+	  plen : TC_LONG;	  // length
+	  ptag : TC_INT;	  // class value
+	  pclass : TC_INT;	// class value
+	  hdrlen : TC_INT;	// header length
+  end;
+  PASN1_VALUE = Pointer;
+
+  ASN1_new_func = function : PASN1_VALUE; cdecl;
+  ASN1_free_func = procedure (a : PASN1_VALUE); cdecl;
+  ASN1_d2i_func = function (a : PASN1_VALUE; var _in : PByte; length : TC_LONG ) : PASN1_VALUE; cdecl;
+  ASN1_i2d_func = function (a : PASN1_VALUE; var _in : PByte)  : TC_INT; cdecl;
+  ASN1_ex_d2i = function(var pval : PASN1_VALUE; var _in : PByte; len : TC_LONG; it : PASN1_ITEM; tag, aclass : TC_INT;
+                   opt : Byte; ctx : PASN1_TLC) : TC_INT; cdecl;
+  ASN1_ex_i2d = function(var pval : PASN1_VALUE; var _out : PByte;  it : PASN1_ITEM; tag, aclass : TC_INT) : TC_INT; cdecl;
+  ASN1_ex_new_func = function(var pval : PASN1_VALUE; it : PASN1_ITEM) : TC_INT; cdecl;
+  ASN1_ex_free_func = procedure(var pval : PASN1_VALUE; it : PASN1_ITEM); cdecl;
+  ASN1_primitive_i2c = function (var pval : PASN1_VALUE; cont : PByte; putype : PC_INT; it : PASN1_ITEM ) : TC_INT; cdecl;
+  ASN1_primitive_c2i = function (var pval : PASN1_VALUE; cont : PByte; len, utype : TC_INT; free_cont : PByte; it: PASN1_ITEM) : TC_INT; cdecl;
+
+  ASN1_COMPAT_FUNCS = record
+	  asn1_new : ASN1_new_func;
+	  asn1_free : ASN1_free_func;
+	  asn1_d2i : ASN1_d2i_func;
+	 asn1_i2d : ASN1_i2d_func;
+  end;
+  PASN1_COMPAT_FUNCS = ^ASN1_COMPAT_FUNCS;
+
+  ASN1_EXTERN_FUNCS = record
+	  app_data : Pointer;
+    asn1_ex_new : ASN1_ex_new_func;   //	ASN1_ex_new_func *asn1_ex_new;
+    asn1_ex_free : ASN1_ex_free_func; //	ASN1_ex_free_func *asn1_ex_free;
+    asn1_ex_clear: ASN1_ex_free_func; //	ASN1_ex_free_func *asn1_ex_clear;
+    asn1_ex_d2i : ASN1_ex_d2i;        //	ASN1_ex_d2i *asn1_ex_d2i;
+    asn1_ex_i2d : ASN1_ex_i2d;        //	ASN1_ex_i2d *asn1_ex_i2d;
+  end;
+  PASN1_EXTERN_FUNCS = ^ASN1_EXTERN_FUNCS;
+
+  ASN1_PRIMITIVE_FUNCS = record
+    app_data : Pointer;
+    flags : TC_ULONG;
+    prim_new : ASN1_ex_new_func;
+    prim_free : ASN1_ex_free_func;
+    prim_clear : ASN1_ex_free_func;
+    prim_c2i : ASN1_primitive_c2i;
+    prim_i2c : ASN1_primitive_i2c;
+  end;
+  PASN1_PRIMITIVE_FUNCS = ^ASN1_PRIMITIVE_FUNCS;
+
+  ASN1_aux_cb = function (operation : TC_INT; var _in : PASN1_VALUE; it : PASN1_ITEM) : TC_INT; cdecl;
+
+  ASN1_AUX = record
+    app_data : Pointer;
+    flags : TC_INT;
+    ref_offset : TC_INT;		// Offset of reference value
+    ref_lock : TC_INT;		  // Lock type to use
+    asn1_cb : ASN1_aux_cb;
+    enc_offset : TC_INT;		// Offset of ASN1_ENCODING structure
+  end;
+  PASN1_AUX = ^ASN1_AUX;
+
 {$ENDREGION}
 
 {$REGION 'LHASH'}
