@@ -6,6 +6,8 @@ var
   ASN1_dup : function (i2d : i2d_of_void; d2i : d2i_of_void; x : PAnsiChar) : Pointer cdecl = nil;
   ASN_ANY_it: function: ASN1_ITEM;
 
+  ASN1_PCTX_new: function: PASN1_PCTX; cdecl = nil;
+
   ASN1_TYPE_get: function(a: PASN1_TYPE): TC_INT; cdecl = nil;
   ASN1_TYPE_set: procedure(a: PASN1_TYPE; _type: TC_INT; value: Pointer); cdecl = nil;
   ASN1_TYPE_set1: function(a: PASN1_TYPE; _type: TC_INT; value: Pointer): TC_INT; cdecl = nil;
@@ -40,6 +42,13 @@ var
   ASN1_STRING_set_by_NID: function(var _out: PASN1_STRING; _in: PAnsiChar; inlen: TC_INT; inform: TC_INT; nid: TC_INT): PASN1_STRING; cdecl = nil;
   ASN1_STRING_to_UTF8: function(var _out: PAnsiChar; _in: PASN1_STRING): TC_INT; cdecl = nil;
 
+  ASN1_OCTET_STRING_NDEF_it: function: ASN1_ITEM; cdecl = nil;
+  ASN1_OCTET_STRING_new: function: PASN1_OCTET_STRING;
+  ASN1_OCTET_STRING_free : procedure(a: PASN1_OCTET_STRING) cdecl = nil;
+  ASN1_OCTET_STRING_cmp: function(a: PASN1_OCTET_STRING; b: PASN1_OCTET_STRING): TC_INT; cdecl = nil;
+  ASN1_OCTET_STRING_dup: function(a: PASN1_OCTET_STRING): PASN1_OCTET_STRING; cdecl = nil;
+  ASN1_OCTET_STRING_set: function(str: PASN1_OCTET_STRING; data: Pointer; len: TC_INT): TC_INT; cdecl = nil;
+  ASN1_OCTET_STRING_it: function: ASN1_ITEM; cdecl = nil;
 
   ASN1_BIT_STRING_new: function: PASN1_BIT_STRING; cdecl = nil;
   ASN1_BIT_STRING_free: procedure(a: PASN1_BIT_STRING); cdecl = nil;
