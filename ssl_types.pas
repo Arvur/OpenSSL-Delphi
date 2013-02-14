@@ -16,7 +16,10 @@ type
   PC_ULONG = ^TC_ULONG;
   TC_ULONGLONG = qword;
   TC_time_t = TC_LONG;
-
+  TC_USHORT = Word;
+  PC_USHORT = ^TC_USHORT;
+  TC_SIZE_T = LongWord;
+  PC_SIZE_T = ^TC_SIZE_T;
   BN_ULONG = TC_ULONGLONG;
   PBN_ULONG = ^BN_ULONG;
 
@@ -93,11 +96,6 @@ type
   PASIdOrRanges = PSTACK_OF_ASIdOrRange;
   PSTACK_OF_CONF_VALUE = PSTACK;
 
-  CRYPTO_EX_DATA = record
-    sk : PSTACK;
-    dummy : TC_INT;
-  end;
-
   PBN_CTX = Pointer;
   PPBN_CTX = ^PBN_CTX;
 
@@ -111,6 +109,26 @@ type
   end;
   PBIT_STRING_BITNAME = ^BIT_STRING_BITNAME;
 
+{$REGION 'CRYPTO'}
+type
+  CRYPTO_EX_DATA = record
+    sk : PSTACK;
+    dummy : TC_INT;
+  end;
+  PCRYPTO_EX_DATA = ^CRYPTO_EX_DATA;
+
+  CRYPTO_EX_new = function(parent: Pointer; ptr: Pointer; ad: PCRYPTO_EX_DATA;
+					idx: TC_INT; argl: TC_LONG; argp: Pointer): TC_INT; cdecl;
+
+  CRYPTO_EX_free = procedure(parent: Pointer; ptr: Pointer; ad: PCRYPTO_EX_DATA;
+					idx: TC_INT; argl: TC_LONG; argp: Pointer); cdecl;
+
+  CRYPTO_EX_dup = function(_to: PCRYPTO_EX_DATA; _from: PCRYPTO_EX_DATA; from_d: Pointer;
+					idx: TC_INT; argl: TC_LONG; argp: Pointer): TC_INT; cdecl;
+
+{$ENDREGION}
+
+
 
 {$REGION 'BIO'}
   PBIO = ^BIO;
@@ -118,6 +136,7 @@ type
 
   Pbio_info_cb = procedure (_para1 : PBIO; _para2 : TC_INT; _para3 : PAnsiChar;
      _para4 : TC_INT; _para5, _para6 : TC_LONG); cdecl;
+  pbio_dump_cb = function(data: Pointer; len: TC_SIZE_T; u: pointer): TC_INT; cdecl;
 
   BIO_METHOD = record
     _type : TC_INT;
@@ -415,6 +434,7 @@ type
   PASN1_PRIMITIVE_FUNCS = ^ASN1_PRIMITIVE_FUNCS;
 
   ASN1_aux_cb = function (operation : TC_INT; var _in : PASN1_VALUE; it : PASN1_ITEM) : TC_INT; cdecl;
+  asn1_ps_func = function(b: PBIO; var pbuf: PAnsiChar; plen: PC_INT; var parg: Pointer): TC_INT; cdecl;
 
   ASN1_AUX = record
     app_data : Pointer;
@@ -1183,7 +1203,6 @@ type
     d : PKCS7_union;
   end;
 {$ENDREGION}
-
 
 implementation
 
