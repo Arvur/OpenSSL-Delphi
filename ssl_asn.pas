@@ -20,6 +20,10 @@ var
   c2i_ASN1_OBJECT: function(var a: PASN1_OBJECT; var pp: PAnsiChar; _length: TC_LONG): PASN1_OBJECT; cdecl = nil;
   d2i_ASN1_OBJECT: function(var a: PASN1_OBJECT; var pp: PAnsiChar; _length: TC_LONG): PASN1_OBJECT; cdecl = nil;
   ASN1_OBJECT_it: function: PASN1_ITEM;
+  i2t_ASN1_OBJECT: function(buf: PAnsiChar;buf_len: TC_INT; a: PASN1_OBJECT): TC_INT; cdecl = nil;
+  a2d_ASN1_OBJECT: function(_out: PAnsiChar; olen: TC_INT; buf: PAnsiChar;num: TC_INT): TC_INT; cdecl = nil;
+  i2a_ASN1_OBJECT: function(bp: PBIO; a: PASN1_OBJECT): TC_INT; cdecl = nil;
+
 
   ASN1_STRING_new: function: PASN1_STRING; cdecl = nil;
   ASN1_STRING_free : procedure(a: PASN1_STRING) cdecl = nil;
@@ -41,6 +45,8 @@ var
   ASN1_STRING_print_ex: function(_out: PBIO; str: PASN1_STRING; flags: TC_ULONG): TC_INT; cdecl = nil;
   ASN1_STRING_set_by_NID: function(var _out: PASN1_STRING; _in: PAnsiChar; inlen: TC_INT; inform: TC_INT; nid: TC_INT): PASN1_STRING; cdecl = nil;
   ASN1_STRING_to_UTF8: function(var _out: PAnsiChar; _in: PASN1_STRING): TC_INT; cdecl = nil;
+  i2a_ASN1_STRING: function(bp: PBIO; a: PASN1_STRING): TC_INT; cdecl = nil;
+  a2i_ASN1_STRING: function(bp: PBIO; bs: PASN1_STRING; buf: PAnsiChar;size: TC_INT): TC_INT;
 
   ASN1_OCTET_STRING_NDEF_it: function: PASN1_ITEM; cdecl = nil;
   ASN1_OCTET_STRING_new: function: PASN1_OCTET_STRING;
@@ -65,6 +71,7 @@ var
   ASN1_BIT_STRING_it: function: PASN1_ITEM; cdecl = nil;
   i2d_ASN1_BIT_STRING: function(a: PASN1_BIT_STRING; var pp: PAnsiChar): TC_INT; cdecl = nil;
   d2i_ASN1_BIT_STRING: function(var a: PASN1_BIT_STRING; var pp: PAnsiChar; _length: TC_LONG): PASN1_BIT_STRING; cdecl = nil;
+  c2i_ASN1_BIT_STRING: function(var a: PASN1_BIT_STRING; var pp: PAnsiChar; _length: TC_LONG): PASN1_BIT_STRING; cdecl = nil;
 
   ASN1_BMPSTRING_new: function: PASN1_BMPSTRING; cdecl = nil;
   ASN1_BMPSTRING_free: procedure(a: PASN1_BMPSTRING); cdecl = nil;
@@ -87,6 +94,8 @@ var
   ASN1_ENUMERATED_to_BN: function(ai: PASN1_ENUMERATED; bn: PBIGNUM): PBIGNUM; cdecl = nil;
   i2d_ASN1_ENUMERATED: function(a: PASN1_ENUMERATED; var pp: PAnsiChar): TC_INT; cdecl = nil;
   d2i_ASN1_ENUMERATED: function(var a: PASN1_ENUMERATED; var pp: PAnsiChar; _length: TC_LONG): PASN1_ENUMERATED; cdecl = nil;
+  i2a_ASN1_ENUMERATED: function(bp: PBIO; a: PASN1_ENUMERATED): TC_INT; cdecl = nil;
+  a2i_ASN1_ENUMERATED: function(bp: PBIO; bs: PASN1_ENUMERATED; buf: PAnsiChar;size: TC_INT): TC_INT;
 
   ASN1_INTEGER_new: function: PASN1_INTEGER; cdecl = nil;
   ASN1_INTEGER_free : procedure(a: PASN1_INTEGER) cdecl = nil;
@@ -100,6 +109,10 @@ var
   i2c_ASN1_INTEGER: function (a: PASN1_INTEGER; var pp: PAnsiChar): TC_INT; cdecl = nil;
   c2i_ASN1_INTEGER: function (var a: PASN1_INTEGER; var pp: PAnsiChar; _length: TC_LONG): PASN1_INTEGER; cdecl = nil;
   d2i_ASN1_UINTEGER: function (var a: PASN1_INTEGER; var pp: PAnsiChar; _length: TC_LONG): PASN1_INTEGER; cdecl = nil;
+  i2a_ASN1_INTEGER: function(bp: PBIO; a: PASN1_INTEGER): TC_INT; cdecl = nil;
+  a2i_ASN1_INTEGER: function(bp: PBIO; bs: PASN1_INTEGER; buf: PAnsiChar;size: TC_INT): TC_INT;
+
+
 
   ASN1_GENERALIZEDTIME_new: function: PASN1_GENERALIZEDTIME; cdecl = nil;
   ASN1_GENERALIZEDTIME_free: procedure(a: PASN1_GENERALIZEDTIME); cdecl = nil;
@@ -149,6 +162,39 @@ var
   i2d_ASN1_T61STRING: function(a: PASN1_T61STRING; var pp: PAnsiChar): TC_INT; cdecl = nil;
   d2i_ASN1_T61STRING: function(var a: PASN1_T61STRING; var pp: PAnsiChar; _length: TC_LONG): PASN1_T61STRING; cdecl = nil;
 
+  ASN1_TIME_adj: function(s: PASN1_TIME; t: TC_time_t): PASN1_TIME;cdecl = nil;
+  ASN1_TIME_set: function(s: PASN1_TIME; t: TC_time_t): PASN1_TIME;cdecl = nil;
+  ASN1_TIME_check: function(t: PASN1_TIME): TC_INT;cdecl = nil;
+  ASN1_TIME_set_string: function(s: PASN1_TIME; str: PAnsiChar): TC_INT; cdecl = nil;
+  ASN1_TIME_new: function: PASN1_TIME; cdecl = nil;
+  ASN1_TIME_free: procedure(a: PASN1_TIME); cdecl = nil;
+  ASN1_TIME_it: function: PASN1_ITEM; cdecl = nil;
+  ASN1_TIME_print: function(fp: PBIO; a: PASN1_TIME): TC_INT; cdecl = nil;
+  ASN1_TIME_to_generalizedtime: function(t: PASN1_TIME; var _out: PASN1_GENERALIZEDTIME): PASN1_GENERALIZEDTIME;
+  i2d_ASN1_TIME: function(a: PASN1_TIME; var pp: PAnsiChar): TC_INT; cdecl = nil;
+  d2i_ASN1_TIME: function(var a: PASN1_TIME; var pp: PAnsiChar; _length: TC_LONG): PASN1_TIME; cdecl = nil;
+
+  ASN1_UTCTIME_check: function(a: PASN1_UTCTIME): TC_INT; cdecl = nil;
+  ASN1_UTCTIME_set: function(s: PASN1_UTCTIME; t : TC_time_t): PASN1_UTCTIME; cdecl = nil;
+  ASN1_UTCTIME_adj: function(s: PASN1_UTCTIME; t : TC_time_t;offset_day: TC_INT; offset_sec: TC_LONG): PASN1_UTCTIME; cdecl = nil;
+  ASN1_UTCTIME_set_string: function(s: PASN1_UTCTIME; var str: PAnsiChar): TC_INT; cdecl = nil;
+  ASN1_UTCTIME_cmp_time_t: function(s: PASN1_UTCTIME; t: TC_time_t): TC_INT; cdecl = nil;
+  ASN1_UTCTIME_new: function: PASN1_UTCTIME; cdecl = nil;
+  ASN1_UTCTIME_free: procedure(a: PASN1_UTCTIME); cdecl = nil;
+  ASN1_UTCTIME_it: function: PASN1_ITEM; cdecl = nil;
+  ASN1_UTCTIME_print: function(fp: PBIO; a: PASN1_UTCTIME): TC_INT; cdecl = nil;
+  i2d_ASN1_UTCTIME: function(a: PASN1_UTCTIME; var pp: PAnsiChar): TC_INT; cdecl = nil;
+  d2i_ASN1_UTCTIME: function(var a: PASN1_UTCTIME; var pp: PAnsiChar; _length: TC_LONG): PASN1_UTCTIME; cdecl = nil;
+
+  ASN1_UNIVERSALSTRING_to_string: function(s: PASN1_UNIVERSALSTRING): TC_INT; cdecl = nil;
+  ASN1_UNIVERSALSTRING_new: function: PASN1_UNIVERSALSTRING; cdecl = nil;
+  ASN1_UNIVERSALSTRING_free: procedure(a: PASN1_UNIVERSALSTRING); cdecl = nil;
+  ASN1_UNIVERSALSTRING_it: function: PASN1_ITEM; cdecl = nil;
+  i2d_ASN1_UNIVERSALSTRING: function(a: PASN1_UNIVERSALSTRING; var pp: PAnsiChar): TC_INT; cdecl = nil;
+  d2i_ASN1_UNIVERSALSTRING: function(var a: PASN1_UNIVERSALSTRING; var pp: PAnsiChar; _length: TC_LONG): PASN1_UNIVERSALSTRING; cdecl = nil;
+
+
+
 function M_ASN1_STRING_length(x : PASN1_STRING): TC_INT;
 procedure M_ASN1_STRING_length_set(x : PASN1_STRING; n : TC_INT);
 function M_ASN1_STRING_type(x : PASN1_STRING) : TC_INT;
@@ -183,6 +229,9 @@ begin
       @c2i_ASN1_OBJECT:= LoadFunctionCLib('c2i_ASN1_OBJECT');
       @d2i_ASN1_OBJECT:= LoadFunctionCLib('d2i_ASN1_OBJECT');
       @ASN1_OBJECT_it:= LoadFunctionCLib('ASN1_OBJECT_it');
+      @i2t_ASN1_OBJECT:= LoadFunctionCLib('i2t_ASN1_OBJECT');
+      @a2d_ASN1_OBJECT:= LoadFunctionCLib('a2d_ASN1_OBJECT');
+      @i2a_ASN1_OBJECT:= LoadFunctionCLib('i2a_ASN1_OBJECT');
 
       @ASN1_STRING_new:= LoadFunctionCLib('ASN1_STRING_new');
       @ASN1_STRING_free:= LoadFunctionCLib('ASN1_STRING_free');
@@ -204,6 +253,8 @@ begin
       @ASN1_STRING_print_ex:= LoadFunctionCLib('ASN1_STRING_print_ex');
       @ASN1_STRING_set_by_NID:= LoadFunctionCLib('ASN1_STRING_set_by_NID');
       @ASN1_STRING_to_UTF8:= LoadFunctionCLib('ASN1_STRING_to_UTF8');
+      @i2a_ASN1_STRING:= LoadFunctionCLib('i2a_ASN1_STRING');
+      @a2i_ASN1_STRING:= LoadFunctionCLib('a2i_ASN1_STRING');
 
       @ASN1_OCTET_STRING_NDEF_it:= LoadFunctionCLib('ASN1_OCTET_STRING_NDEF_it');
       @ASN1_OCTET_STRING_new:= LoadFunctionCLib('ASN1_OCTET_STRING_new');
@@ -228,6 +279,7 @@ begin
       @ASN1_BIT_STRING_it:= LoadFunctionCLib('ASN1_BIT_STRING_it');
       @i2d_ASN1_BIT_STRING:= LoadFunctionCLib('i2d_ASN1_BIT_STRING');
       @d2i_ASN1_BIT_STRING:= LoadFunctionCLib('d2i_ASN1_BIT_STRING');
+      @c2i_ASN1_BIT_STRING:= LoadFunctionCLib('c2i_ASN1_BIT_STRING');
 
       @ASN1_BMPSTRING_new:= LoadFunctionCLib('ASN1_BMPSTRING_new');
       @ASN1_BMPSTRING_free:= LoadFunctionCLib('ASN1_BMPSTRING_free');
@@ -250,6 +302,8 @@ begin
       @ASN1_ENUMERATED_to_BN:= LoadFunctionCLib('ASN1_ENUMERATED_to_BN');
       @i2d_ASN1_ENUMERATED:= LoadFunctionCLib('i2d_ASN1_ENUMERATED');
       @d2i_ASN1_ENUMERATED:= LoadFunctionCLib('d2i_ASN1_ENUMERATED');
+      @i2a_ASN1_ENUMERATED:= LoadFunctionCLib('i2a_ASN1_ENUMERATED');
+      @a2i_ASN1_ENUMERATED:= LoadFunctionCLib('a2i_ASN1_ENUMERATED');
 
       @ASN1_INTEGER_new:= LoadFunctionCLib('ASN1_INTEGER_new');
       @ASN1_INTEGER_free:= LoadFunctionCLib('ASN1_INTEGER_free');
@@ -263,6 +317,8 @@ begin
       @i2c_ASN1_INTEGER:= LoadFunctionCLib('i2c_ASN1_INTEGER');
       @c2i_ASN1_INTEGER:= LoadFunctionCLib('c2i_ASN1_INTEGER');
       @d2i_ASN1_UINTEGER:= LoadFunctionCLib('d2i_ASN1_UINTEGER');
+      @i2a_ASN1_INTEGER:= LoadFunctionCLib('i2a_ASN1_INTEGER');
+      @a2i_ASN1_INTEGER:= LoadFunctionCLib('a2i_ASN1_INTEGER');
 
       @ASN1_GENERALIZEDTIME_new:= LoadFunctionCLib('ASN1_GENERALIZEDTIME_new');
       @ASN1_GENERALIZEDTIME_free:= LoadFunctionCLib('ASN1_GENERALIZEDTIME_free');
@@ -311,6 +367,40 @@ begin
       @ASN1_T61STRING_it:= LoadFunctionCLib('ASN1_T61STRING_it');
       @i2d_ASN1_T61STRING:= LoadFunctionCLib('i2d_ASN1_T61STRING');
       @d2i_ASN1_T61STRING:= LoadFunctionCLib('d2i_ASN1_T61STRING');
+                                  
+      @ASN1_TIME_adj:= LoadFunctionCLib('ASN1_TIME_adj');
+      @ASN1_TIME_set:= LoadFunctionCLib('ASN1_TIME_set');
+      @ASN1_TIME_check:= LoadFunctionCLib('ASN1_TIME_check');
+      @ASN1_TIME_set_string:= LoadFunctionCLib('ASN1_TIME_set_string');
+      @ASN1_TIME_new:= LoadFunctionCLib('ASN1_TIME_new');
+      @ASN1_TIME_free:= LoadFunctionCLib('ASN1_TIME_free');
+      @ASN1_TIME_it:= LoadFunctionCLib('ASN1_TIME_it');
+      @ASN1_TIME_print:= LoadFunctionCLib('ASN1_TIME_print');
+      @ASN1_TIME_to_generalizedtime:= LoadFunctionCLib('ASN1_TIME_to_generalizedtime');
+      @i2d_ASN1_TIME:= LoadFunctionCLib('i2d_ASN1_TIME');
+      @d2i_ASN1_TIME:= LoadFunctionCLib('d2i_ASN1_TIME');
+                                
+      @ASN1_UTCTIME_set:= LoadFunctionCLib('ASN1_UTCTIME_set');
+      @ASN1_UTCTIME_check:= LoadFunctionCLib('ASN1_UTCTIME_check');
+      @ASN1_UTCTIME_adj:= LoadFunctionCLib('ASN1_UTCTIME_adj');
+      @ASN1_UTCTIME_set_string:= LoadFunctionCLib('ASN1_UTCTIME_set_string');
+      @ASN1_UTCTIME_cmp_time_t:= LoadFunctionCLib('ASN1_UTCTIME_cmp_time_t');
+      @ASN1_UTCTIME_new:= LoadFunctionCLib('ASN1_UTCTIME_new');
+      @ASN1_UTCTIME_free:= LoadFunctionCLib('ASN1_UTCTIME_free');
+      @ASN1_UTCTIME_it:= LoadFunctionCLib('ASN1_UTCTIME_it');
+      @ASN1_UTCTIME_print:= LoadFunctionCLib('ASN1_UTCTIME_print');
+      @i2d_ASN1_UTCTIME:= LoadFunctionCLib('i2d_ASN1_UTCTIME');
+      @d2i_ASN1_UTCTIME:= LoadFunctionCLib('d2i_ASN1_UTCTIME');
+
+      @ASN1_UNIVERSALSTRING_to_string:= LoadFunctionCLib('ASN1_UNIVERSALSTRING_to_string');
+      @ASN1_UNIVERSALSTRING_new:= LoadFunctionCLib('ASN1_UNIVERSALSTRING_new');
+      @ASN1_UNIVERSALSTRING_free:= LoadFunctionCLib('ASN1_UNIVERSALSTRING_free');
+      @ASN1_UNIVERSALSTRING_it:= LoadFunctionCLib('ASN1_UNIVERSALSTRING_it');
+      @i2d_ASN1_UNIVERSALSTRING:= LoadFunctionCLib('i2d_ASN1_UNIVERSALSTRING');
+      @d2i_ASN1_UNIVERSALSTRING:= LoadFunctionCLib('d2i_ASN1_UNIVERSALSTRING');
+
+
+
   end;
 end;
 
