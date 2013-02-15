@@ -12,6 +12,7 @@ type
   TC_UINT  = LongWord;
   PC_UINT  = ^TC_UINT;
   TC_LONG  = LongInt;
+  PC_LONG = ^TC_LONG;
   TC_ULONG = LongWord;
   PC_ULONG = ^TC_ULONG;
   TC_ULONGLONG = qword;
@@ -307,6 +308,16 @@ type
   end;
   PASN1_CTX = ^ASN1_CTX;
 
+  ASN1_PCTX = record
+    flags: TC_ULONG;
+    nm_flags: TC_ULONG;
+    cert_flags: TC_ULONG;
+    oid_flags: TC_ULONG;
+    str_flags: TC_ULONG;
+  end;
+
+  PASN1_PCTX = ^ASN1_PCTX;
+
   I2D_OF_void = function(_para1 : Pointer; var _para2 : PByte) : TC_INT cdecl;
   D2I_OF_void = function (_para1 : PPointer;  var _para2 : PByte; _para3 : TC_LONG) : Pointer cdecl;
 
@@ -448,6 +459,7 @@ type
 
 {$ENDREGION}
 
+
 {$REGION 'LHASH'}
 
   PLHASH_NODE = ^LHASH_NODE;
@@ -489,6 +501,38 @@ type
   {$EXTERNALSYM PLHASH}
   PLHASH = ^LHASH;
 {$ENDREGION}
+
+{$REGION 'CONF'}
+  CONF_VALUE = record
+    section : PAnsiChar;
+    name : PAnsiChar;
+    value : PAnsiChar;
+  end;
+  PCONF_VALUE = ^CONF_VALUE;
+
+  PCONF_METHOD = ^CONF_METHOD;
+  PCONF = ^CONF;
+
+  CONF_METHOD = record
+    name: PAnsiChar;
+    create: function(meth: PCONF_METHOD): PCONF; cdecl;
+    init: function(_conf: PCONF): TC_INT; cdecl;
+    destroy: function(_conf: PCONF): TC_INT; cdecl;
+    destroy_data: function(_conf: PCONF): TC_INT; cdecl;
+    load_bio: function(_conf: PCONF; bp: PBIO; eline: PC_LONG): TC_INT; cdecl;
+    dump: function(_conf: PCONF; bp: PBIO): TC_INT; cdecl;
+    is_number: function(_conf: PCONF; c: AnsiChar): TC_INT; cdecl;
+    to_int: function(_conf: PCONF; c: AnsiChar): TC_INT; cdecl;
+    load: function(_conf: PCONF; name: PAnsiChar; eline: PC_LONG): TC_INT; cdecl;
+  end;
+
+  CONF = record
+    method: PCONF_METHOD;
+    meth_data: Pointer;
+    data: PLHASH;
+  end;
+{$ENDREGION}
+
 
 {$REGION 'RSA'}
   PRSA = ^RSA;
@@ -1203,6 +1247,7 @@ type
     d : PKCS7_union;
   end;
 {$ENDREGION}
+
 
 implementation
 
