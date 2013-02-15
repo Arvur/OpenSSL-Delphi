@@ -42,6 +42,26 @@ const
   EVP_MAX_IV_LENGTH = 16;
   EVP_MAX_BLOCK_LENGTH = 32;
 
+{$REGION 'AES'}
+const
+  AES_ENCRYPT    = 1;
+  AES_DECRYPT    = 0;
+
+  AES_MAXNR = 14;
+  AES_BLOCK_SIZE = 16;
+
+{$ENDREGION}
+
+{$REGION 'BlowFish'}
+const
+    BF_ENCRYPT  = 1;
+    BF_DECRYPT  = 0;
+    BF_LONG_LOG2 = 3;
+    BF_ROUNDS    = 16;
+    BF_BLOCK    = 8;
+
+{$ENDREGION}
+
 {$REGION 'ASN'}
 const
  V_ASN1_UNIVERSAL               = $00;
@@ -426,6 +446,7 @@ const
  
 {$ENDREGION}
 
+{$REGION 'BIO'}
 const
   BIO_F_ACPT_STATE            = 100;
   BIO_F_BIO_ACCEPT            = 101;
@@ -633,6 +654,29 @@ const
   BIO_TYPE_LINEBUFFER               = 20 or $0200;
   BIO_TYPE_DGRAM                    = 21 or $0400 or $0100;
   BIO_TYPE_COMP                     = 23 or $0200;
+
+{$ENDREGION}
+
+{$REGION 'BN'}
+
+ BN_BITS        = 128;
+ BN_BYTES       = 8;
+ BN_BITS2       = 64;
+ BN_BITS4       = 32;
+ BN_MASK2       = $ffffffffffffffff;
+ BN_MASK2l      = $ffffffff;
+ BN_MASK2h      = $ffffffff00000000;
+ BN_MASK2h1     = $ffffffff80000000;
+ BN_TBIT        = $8000000000000000;
+ BN_DEC_CONV    = 10000000000000000000;
+ BN_DEC_FMT1    = '%lu';
+ BN_DEC_FMT2    = '%019lu';
+ BN_DEC_NUM     = 19;
+ BN_HEX_FMT1    = '%lX';
+ BN_HEX_FMT2    = '%016lX';
+
+
+{$ENDREGION}
 
 implementation
 

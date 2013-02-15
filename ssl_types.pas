@@ -1,3 +1,5 @@
+{$I ssl.inc}
+
 unit ssl_types;
 
 interface
@@ -23,6 +25,15 @@ type
   PC_SIZE_T = ^TC_SIZE_T;
   BN_ULONG = TC_ULONGLONG;
   PBN_ULONG = ^BN_ULONG;
+
+{$IF DEFINED(WIN32)}
+  BF_LONG = TC_ULONG;
+{$ELSIF (DEFINED(OPENSSL_SYS_CRAY) OR DEFINED(WIN64))}
+  BF_LONG = TC_ULONG;
+{$ELSE}
+  BF_LONG = TC_UINT;
+{$IFEND}
+  PBF_LONG = ^BF_LONG;
 
   BIGNUM = record
     d : PBN_ULONG;
@@ -1248,6 +1259,36 @@ type
   end;
 {$ENDREGION}
 
+
+
+{$REGION 'AES'}
+
+type
+  AES_KEY = record
+{$IFDEF AES_LONG}
+    rd_key: array[0..(4*(AES_MAXNR + 1))-1] of TC_ULONG;
+{$ELSE}
+    rd_key: array[0..(4*(AES_MAXNR + 1))-1] of TC_UINT;
+{$ENDIF}
+   rounds: TC_INT;
+  end;
+  PAES_KEY = ^AES_KEY;
+
+  aes_buf = array[0..AES_BLOCK_SIZE-1] of Char;
+
+{$ENDREGION}
+
+
+{$REGION 'BLOWFISH'}
+
+type
+  BF_KEY = record
+    P: array [0..BF_ROUNDS+1] of BF_LONG;
+    S: array [0..(4*256)-1] of BF_LONG;
+  end;
+  PBF_KEY = ^BF_KEY;
+
+{$ENDREGION}
 
 implementation
 
