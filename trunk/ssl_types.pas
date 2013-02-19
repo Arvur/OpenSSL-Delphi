@@ -27,6 +27,7 @@ type
   PBN_ULONG = ^BN_ULONG;
   TC_UCHAR = AnsiChar;
   DES_LONG= TC_ULONG;
+  point_conversion_form_t = byte;
 
 {$IF DEFINED(WIN32)}
   BF_LONG = TC_ULONG;
@@ -96,6 +97,8 @@ type
     flags : TC_INT;
   end;
   PBIGNUM = ^BIGNUM;
+  BIGNUM_ARR = array[0..1] of BIGNUM;
+  PBIGNUM_ARR = ^BIGNUM_ARR;
 
   PBN_GENCB = ^BN_GENCB;
   BN_cb_1 = procedure (p1, p2 : TC_INT; p3 : Pointer); cdecl;
@@ -198,16 +201,122 @@ type
 
 {$ENDREGION}
 
+{$REGION 'EC'}
   EC_builtin_curve = record
     nid : TC_INT;
     comment : PAnsiChar;
   end;
 
+  PEC_GROUP = Pointer;
+
+  PEC_METHOD = ^EC_METHOD;
+
+  PEC_POINT = ^EC_POINT;
+  EC_POINT = record
+	  meth: PEC_METHOD;
+    X: PBIGNUM;
+    Y: PBIGNUM;
+    Z: PBIGNUM;
+    Z_is_one: TC_INT;
+  end;
+  EC_POINT_ARR = array[0..0] of EC_POINT;
+  PEC_POINT_ARR = ^EC_POINT_ARR;
+
+  EC_METHOD = record
+    flags: TC_INT;
+    field_type: TC_INT;
+    group_init: function: PEC_GROUP; cdecl;
+    group_finsh: procedure(_group: PEC_GROUP); cdecl;
+    group_clear_finish: procedure(_group: PEC_GROUP); cdecl;
+    group_copy: function(_gr1: PEC_GROUP; _gr2: PEC_GROUP): TC_INT; cdecl;
+    group_set_curve: function(_gr: PEC_GROUP; p: PBIGNUM; a: PBIGNUM; b: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+    group_get_curve: function(_gr: PEC_GROUP; p: PBIGNUM; a: PBIGNUM; b: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+    group_get_degree: function: PEC_GROUP; cdecl;
+    group_check_discriminant: function(_gr: PEC_GROUP; ctx: PBN_CTX): TC_INT; cdecl;
+    point_init: function: PEC_POINT;
+    point_finish: procedure(p: PEC_POINT); cdecl;
+    point_finish_clear: procedure(p: PEC_POINT); cdecl;
+    point_copy: function(p1, p2: PEC_POINT): TC_INT; cdecl;
+    point_set_to_infinity: function(g: PEC_GROUP; p: PEC_POINT): TC_INT; cdecl;
+    point_set_Jprojective_coordinates_GFp: function(g: PEC_GROUP; p: PEC_POINT; x,y,z: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+    point_get_Jprojective_coordinates_GFp: function(g: PEC_GROUP; p: PEC_POINT; x,y,z: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+    point_set_affine_coordinates: function(g: PEC_GROUP; p: PEC_POINT; x,y,z: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+    point_get_affine_coordinates: function(g: PEC_GROUP; p: PEC_POINT; x,y,z: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+    point_set_compressed_coordinates: function(g: PEC_GROUP; p: PEC_POINT; x: PBIGNUM; y_bit: TC_INT; ctx: PBN_CTX): TC_INT; cdecl;
+    point2oct: function(g: PEC_GROUP; p: PEC_POINT; _form: point_conversion_form_t; buf: PAnsiChar; len: TC_SIZE_T; ctx: PBN_CTX): TC_SIZE_T; cdecl;
+    oct2point: function(g: PEC_GROUP; p: PEC_POINT; buf: PAnsiChar; len: TC_SIZE_T; ctx: PBN_CTX): TC_INT; cdecl;
+    add: function(g: PEC_GROUP; r,a,b: PEC_POINT; ctx: PBN_CTX): TC_INT; cdecl;
+    dbl: function(g: PEC_GROUP; r,a: PEC_POINT; ctx: PBN_CTX): TC_INT; cdecl;
+    invert: function(g: PEC_GROUP; p: PEC_POINT; ctx: PBN_CTX): TC_INT; cdecl;
+    is_at_infinity: function(g: PEC_GROUP; p: PEC_POINT): TC_INT; cdecl;
+    is_on_curve: function(g: PEC_GROUP; p: PEC_POINT; ctx: PBN_CTX): TC_INT; cdecl;
+    point_cmp: function(g: PEC_GROUP; a,b: PEC_POINT; ctx: PBN_CTX): TC_INT; cdecl;
+    make_affine: function(g: PEC_GROUP; p: PEC_POINT; ctx: PBN_CTX): TC_INT; cdecl;
+    points_make_affine: function(g: PEC_GROUP; num: TC_SIZE_T; p: PEC_POINT_ARR; ctx: PBN_CTX): TC_INT; cdecl;
+    mul: function(g: PEC_GROUP; r: PEC_POINT; scalar: PBIGNUM; num: TC_SIZE_T; points: PEC_POINT_ARR; scalars: PBIGNUM_ARR; ctx: PBN_CTX): TC_INT; cdecl;
+    precompute_mult: function(g: PEC_GROUP; ctx: PBN_CTX): TC_INT; cdecl;
+    have_precompute_mult: function(g: PEC_GROUP): TC_INT; cdecl;
+	  field_mul: function(g: PEC_GROUP; r, a, b: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+	  field_sqr: function(g: PEC_GROUP; r, a: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+	  field_div: function(g: PEC_GROUP; r, a, b: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+	  field_encode: function(g: PEC_GROUP; r, a: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+	  field_decode: function(g: PEC_GROUP; r, a: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+	  field_set_to_one: function(g: PEC_GROUP; r : PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+  end;
+
+  PEC_EXTRA_DATA = ^EC_EXTRA_DATA;
+  EC_EXTRA_DATA = record
+    next: PEC_EXTRA_DATA;
+    data: Pointer;
+	  dup_func: function: pointer; cdecl;
+	  free_func: procedure(_par: Pointer); cdecl;
+	  clear_free_func: procedure(_par: Pointer); cdecl;
+  end;
+
+
+  EC_GROUP = record
+    meth: PEC_METHOD;
+    generator: PEC_POINT;
+    order, cofactor: PBIGNUM;
+    curve_name : TC_INT;
+	  asn1_flag: TC_INT;
+	  asn1_form: point_conversion_form_t;
+	  seed: PAnsiChar;
+    seed_len: TC_SIZE_T;
+
+    extra_data: PEC_EXTRA_DATA;
+
+	  field : BIGNUM;
+	  poly: array[0..5] of TC_INT;
+	  a, b: BIGNUM;
+	  a_is_minus3: TC_INT;
+    field_data1: Pointer;
+	  field_data2: Pointer;
+    field_mod_func: function(a, b, c: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+  end;
+
   EC_builtin_curves = array[0..0] of EC_builtin_curve;
   PEC_builtin_curves = ^EC_builtin_curves;
 
-  EC_GROUP = Pointer;
-  PEC_KEY = Pointer;
+
+  PEC_KEY = ^EC_KEY;
+  EC_KEY = record
+	  version: TC_INT;
+    group: PEC_GROUP;
+
+    pub_key: PEC_POINT;
+    priv_key:PBIGNUM;
+
+	  enc_flag: TC_UINT;
+	  conv_form: point_conversion_form_t;
+
+    references: TC_INT;
+    flags: TC_INT;
+    method_data: PEC_EXTRA_DATA;
+  end;
+
+
+{$ENDREGION}
 
   PENGINE = Pointer;
 
