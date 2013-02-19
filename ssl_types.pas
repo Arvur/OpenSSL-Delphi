@@ -26,6 +26,7 @@ type
   BN_ULONG = TC_ULONGLONG;
   PBN_ULONG = ^BN_ULONG;
   TC_UCHAR = AnsiChar;
+  DES_LONG= TC_ULONG;
 
 {$IF DEFINED(WIN32)}
   BF_LONG = TC_ULONG;
@@ -706,7 +707,6 @@ type
     finish : function (dsa : PDSA) : TC_INT; cdecl;
     flags : TC_INT;
     app_data : PAnsiChar;
-    // If this is non-NULL, it is used to generate DSA parameters
      dsa_paramgen : function (dsa : PDSA; bits : TC_INT; seed : PAnsiChar;
        seed_len : TC_INT; counter_ret : PC_INT; h_ret : PC_ULONG;
        cb : PBN_GENCB ) : TC_INT; cdecl;
@@ -747,35 +747,40 @@ type
       4: (ec : PEC_KEY);  // ECC
   end;
 
-  DH = record
-    // The first parameter is used to pickup errors where
-    // this is passed instead of aEVP_PKEY, it is set to 0
-    pad : TC_INT;
-    version : TC_LONG;
-    meth : PRSA_METHOD;
-    // functional reference if 'meth' is ENGINE-provided
-    engine: PENGINE;
-    n : PBIGNUM;
-    e : PBIGNUM;
-    d : PBIGNUM;
-    p : PBIGNUM;
-    q : PBIGNUM;
-    dmp1 : PBIGNUM;
-    dmq1 : PBIGNUM;
-    iqmp : PBIGNUM;
-    // be careful using this if the RSA structure is shared
-    ex_data : CRYPTO_EX_DATA;
-    references : TC_INT;
-    flags : TC_INT;
-    // Used to cache montgomery values
-    _method_mod_n : BN_MONT_CTX;
-    _method_mod_p : BN_MONT_CTX;
-    _method_mod_q : BN_MONT_CTX;
-    // all BIGNUM values are actually in the following data, if it is not NULL
-    bignum_data : PAnsiChar;
-    blinding : PBN_BLINDING;
-    mt_blinding : PBN_BLINDING;
+  PDH_METHOD = ^DH_METHOD;
+  DH_METHOD = record
+    name: PAnsiChar;
+    generate_key: function(_dh: PDH): TC_INT; cdecl;
+    compute_key: function(key: PAnsiChar; pub_key: PBIGNUM; _dh: PDH): TC_INT; cdecl;
+    bn_mod_exp: function(_dh: PDH; r: PBIGNUM; a: PBIGNUM; p: PBIGNUM; m: PBIGNUM; ctx: PBN_CTX; m_ctx: PBN_MONT_CTX): TC_INT; cdecl;
+    init: function(_dh: PDH): TC_INT; cdecl;
+    finish: function(_dh: PDH): TC_INT; cdecl;
+    flags: TC_INT;
+    app_data: PAnsiChar;
+    generate_params: function(_dh: PDH; prime_len: TC_INT; generator: TC_INT; cb: PBN_GENCB): TC_INT; cdecl;
   end;
+
+  DH = record
+    pad : TC_INT;
+    version : TC_INT;
+    p: PBIGNUM;
+    g: PBIGNUM;
+    _length: TC_LONG;
+    pub_key: PBIGNUM;
+    priv_key: PBIGNUM;
+    flags: TC_INT;
+    method_mont_p: PBN_MONT_CTX;
+    q: PBIGNUM;
+    j: PBIGNUM;
+    seed: PAnsiChar;
+    seedlen: TC_INT;
+    counter: PBIGNUM;
+    references: TC_INT;
+    ex_data: CRYPTO_EX_DATA;
+    meth : PDH_METHOD;
+    engine: PENGINE;
+  end;
+
 {$ENDREGION}
 
 {$REGION 'EVP'}
@@ -1521,7 +1526,6 @@ type
    PCMS_RecipientIdentifier = ^CMS_RecipientIdentifier;
    CMS_RecipientIdentifier = CMS_SignerIdentifier;
 
-
    CMS_SignerInfo = record
      version: TC_LONG;
      sid: PCMS_SignerIdentifier;
@@ -1595,7 +1599,6 @@ type
      d: CMS_OriginatorIdentifierOrKey_union;
   end;
 
-
   PCMS_KeyAgreeRecipientInfo = ^CMS_KeyAgreeRecipientInfo;
   CMS_KeyAgreeRecipientInfo = record
     version: TC_LONG;
@@ -1646,7 +1649,6 @@ type
     ori: PCMS_OtherRecipientInfo;
   end;
 
-
   PCMS_RecipientInfo = ^CMS_RecipientInfo;
   CMS_RecipientInfo = record
  	  _type: TC_INT;
@@ -1690,8 +1692,23 @@ type
     d:CMS_CertificateChoices_union;
   end;
 
+{$ENDREGION}
 
+{$REGION 'DES'}
 
+type
+  DES_cblock = array[0..7] of TC_UCHAR;
+  const_DES_cblock = array[0..7] of TC_UCHAR;
+
+  DES_key_schedule_union = record
+	 cblock: DES_cblock;
+	 deslong: array[0..1] of DES_LONG;
+  end;
+
+  PDES_key_schedule = ^DES_key_schedule;
+  DES_key_schedule = record
+    ks: array[0..15] of DES_key_schedule_union;
+  end;
 
 {$ENDREGION}
 
