@@ -1,3 +1,4 @@
+{}
 unit ssl_buffer;
 
 interface
