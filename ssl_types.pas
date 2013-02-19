@@ -43,14 +43,20 @@ type
   end;
   PBUF_MEM = ^BUF_MEM;
 
-  PSTACK          = ^STACK;
+
   STACK = record
     num : TC_INT;
-    data : PAnsiChar;
+    data : PPAnsiChar;
     sorted : TC_INT;
     num_alloc : TC_INT;
     comp : function (_para1: PPAnsiChar; _para2: PPAnsiChar):  TC_INT; cdecl;
   end;
+
+  STACK_OF = record
+    _stack: STACK;
+  end;
+  PSTACK_OF = ^STACK_OF;
+  PSTACK    = PSTACK_OF;
 
 {$REGION 'CRYPTO'}
 type
@@ -1379,6 +1385,313 @@ type
     nlast_block: TC_INT;
   end;
   PCMAC_CTX = ^CMAC_CTX;
+
+{$ENDREGION}
+
+{$REGION 'CMS'}
+
+type
+  STACK_OF_CMS_SignerInfo = STACK_OF;
+  PSTACK_OF_CMS_SignerInfo = ^STACK_OF_CMS_SignerInfo;
+
+  STACK_OF_CMS_CertificateChoices = STACK_OF;
+  PSTACK_OF_CMS_CertificateChoices = ^STACK_OF_CMS_CertificateChoices;
+
+  STACK_OF_CMS_RevocationInfoChoice = STACK_OF;
+  PSTACK_OF_CMS_RevocationInfoChoice = ^STACK_OF_CMS_RevocationInfoChoice;
+
+  STACK_OF_CMS_RecipientInfo = STACK_OF;
+  PSTACK_OF_CMS_RecipientInfo = ^STACK_OF_CMS_RecipientInfo;
+
+  STACK_OF_CMS_RecipientEncryptedKey = STACK_OF;
+  PSTACK_OF_CMS_RecipientEncryptedKey = ^STACK_OF_CMS_RecipientEncryptedKey;
+
+  PCMS_EncapsulatedContentInfo = ^CMS_EncapsulatedContentInfo;
+  CMS_EncapsulatedContentInfo = record
+    eContentType: PASN1_OBJECT;
+    eContent : PASN1_OCTET_STRING;
+    partial: TC_INT;
+  end;
+
+  CMS_SignedData = record
+   version: TC_LONG;
+   digestAlgoritm: PSTACK_OF;
+   encapContentInfo: PCMS_EncapsulatedContentInfo;
+   certificates: PSTACK_OF_CMS_CertificateChoices;
+   signerInfos: PSTACK_OF_CMS_SignerInfo;
+  end;
+  PCMS_SignedData = ^CMS_SignedData;
+
+  PCMS_OriginatorInfo = ^CMS_OriginatorInfo;
+  CMS_OriginatorInfo = record
+     certificates: PSTACK_OF_CMS_CertificateChoices;
+     crls: PSTACK_OF_CMS_RevocationInfoChoice
+  end;
+
+  PCMS_EncryptedContentInfo = ^CMS_EncryptedContentInfo;
+  CMS_EncryptedContentInfo = record
+	  contentType: PASN1_OBJECT;
+	  contentEncryptionAlgorithm: PX509_ALGOR;
+	  encryptedContent: PASN1_OCTET_STRING;
+	  cipher: PEVP_CIPHER;
+    key: PAnsiChar;
+	  keylen: TC_SIZE_T;
+	  debug: TC_INT;
+	end;
+
+  PCMS_EnvelopedData = ^CMS_EnvelopedData;
+  CMS_EnvelopedData = record
+	  version: TC_LONG;
+    originatorInfo: PCMS_OriginatorInfo;
+    recipientInfos: PSTACK_OF_CMS_RecipientInfo;
+	  encryptedContentInfo: PCMS_EncryptedContentInfo;
+    unprotectedAttrs: PSTACK_OF_X509_ATTRIBUTE
+  end;
+
+  PCMS_DigestedData = ^CMS_DigestedData;
+  CMS_DigestedData = record
+	  version: TC_LONG;
+	  digestAlgorithm: PX509_ALGOR;
+	  encapContentInfo: PCMS_EncapsulatedContentInfo;
+	  digest: PASN1_OCTET_STRING;
+  end;
+
+  PCMS_EncryptedData = ^CMS_EncryptedData;
+  CMS_EncryptedData = record
+    version: TC_LONG;
+    encryptedContentInfo: PCMS_EncryptedContentInfo;
+    unprotectedAttrs: PSTACK_OF_X509_ATTRIBUTE
+  end;
+
+  PCMS_AuthenticatedData = ^CMS_AuthenticatedData;
+  CMS_AuthenticatedData = record
+    version: TC_LONG;
+	  originatorInfo: PCMS_OriginatorInfo;
+    recipientInfos: PSTACK_OF_CMS_RecipientInfo;
+    macAlgorithm: PX509_ALGOR;
+	  digestAlgorithm: PX509_ALGOR;
+	  encapContentInfo: PCMS_EncapsulatedContentInfo;
+	  authAttrs: PSTACK_OF_X509_ATTRIBUTE;
+	  mac: PASN1_OCTET_STRING;
+	  unauthAttrs: PSTACK_OF_X509_ATTRIBUTE;
+  end;
+
+  PCMS_CompressedData = ^CMS_CompressedData;
+  CMS_CompressedData = record
+    version: TC_LONG;
+    compressionAlgorithm: PX509_ALGOR;
+    recipientInfos: PSTACK_OF_CMS_RecipientInfo;
+    encapContentInfo: PCMS_EncapsulatedContentInfo;
+  end;
+
+  CMS_ContentInfo_union = record
+    data: PASN1_OCTET_STRING;
+    signedData: PCMS_SignedData;
+		envelopedData: PCMS_EnvelopedData;
+		digestedData: PCMS_DigestedData;
+		encryptedData: PCMS_EncryptedData;
+		authenticatedData: PCMS_AuthenticatedData;
+		compressedData: PCMS_CompressedData;
+		other: PASN1_TYPE;
+		otherData: Pointer;
+  end;
+
+  PCMS_ContentInfo = ^CMS_ContentInfo;
+  CMS_ContentInfo = record
+     contentType: PASN1_OBJECT;
+     d: CMS_ContentInfo_union;
+  end;
+
+  PCMS_IssuerAndSerialNumber = ^CMS_IssuerAndSerialNumber;
+  CMS_IssuerAndSerialNumber = record
+	  issuer: PX509_NAME;
+    serialNumber: PASN1_INTEGER;
+  end;
+
+   CMS_SignerIdentifier_union = record
+		issuerAndSerialNumber: PCMS_IssuerAndSerialNumber;
+		subjectKeyIdentifier: PASN1_OCTET_STRING;
+   end;
+
+   PCMS_SignerIdentifier = ^CMS_SignerIdentifier;
+   CMS_SignerIdentifier = record
+	   _type: TC_INT;
+     d: CMS_SignerIdentifier_union;
+   end;
+   PCMS_RecipientIdentifier = ^CMS_RecipientIdentifier;
+   CMS_RecipientIdentifier = CMS_SignerIdentifier;
+
+
+   CMS_SignerInfo = record
+     version: TC_LONG;
+     sid: PCMS_SignerIdentifier;
+     digestAlgorithm: PX509_ALGOR;
+     signedAttrs: PSTACK_OF_X509_ATTRIBUTE;
+     signatureAlgorithm: PX509_ALGOR;
+     signature: PASN1_OCTET_STRING;
+     unsignedAttrs: PSTACK_OF_X509_ATTRIBUTE;
+     signer: PX509;
+     pkey: PEVP_PKEY;
+   end;
+
+  PCMS_KeyTransRecipientInfo = ^CMS_KeyTransRecipientInfo;
+  CMS_KeyTransRecipientInfo = record
+    version: TC_LONG;
+    rid: PCMS_RecipientIdentifier;
+    keyEncryptionAlgorithm: PX509_ALGOR;
+    encryptedKey: PASN1_OCTET_STRING;
+    recip: PX509;
+    pkey: EVP_PKEY;
+  end;
+
+  PCMS_OriginatorPublicKey = ^CMS_OriginatorPublicKey;
+  CMS_OriginatorPublicKey = record
+    algorithm: PX509_ALGOR;
+    publicKey: PASN1_BIT_STRING;
+  end;
+
+  PCMS_OtherKeyAttribute= ^CMS_OtherKeyAttribute;
+  CMS_OtherKeyAttribute = record
+    keyAttrId: ASN1_OBJECT;
+    keyAttr: ASN1_TYPE;
+  end;
+
+
+  PCMS_RecipientKeyIdentifier = ^CMS_RecipientKeyIdentifier;
+  CMS_RecipientKeyIdentifier = record
+    subjectKeyIdentifier: PASN1_OCTET_STRING;
+    date: PASN1_GENERALIZEDTIME;
+    other: PCMS_OtherKeyAttribute;
+  end;
+
+  CMS_KeyAgreeRecipientIdentifier_union = record
+    issuerAndSerialNumber: PCMS_IssuerAndSerialNumber;
+    rKeyId: PCMS_RecipientKeyIdentifier;
+  end;
+
+  PCMS_KeyAgreeRecipientIdentifier = ^CMS_KeyAgreeRecipientIdentifier;
+  CMS_KeyAgreeRecipientIdentifier = record
+ 	   _type: TC_INT;
+     d: CMS_KeyAgreeRecipientIdentifier_union;
+  end;
+
+
+  PCMS_RecipientEncryptedKey = ^CMS_RecipientEncryptedKey;
+  CMS_RecipientEncryptedKey = record
+    rid: PCMS_KeyAgreeRecipientIdentifier;
+    encryptedKey: PASN1_OCTET_STRING;
+  end;
+
+
+  CMS_OriginatorIdentifierOrKey_union = record
+    issuerAndSerialNumber: PCMS_IssuerAndSerialNumber;
+    subjectKeyIdentifier: PASN1_OCTET_STRING;
+    originatorKey: PCMS_OriginatorPublicKey;
+  end;
+
+  PCMS_OriginatorIdentifierOrKey = ^CMS_OriginatorIdentifierOrKey;
+  CMS_OriginatorIdentifierOrKey = record
+ 	   _type: TC_INT;
+     d: CMS_OriginatorIdentifierOrKey_union;
+  end;
+
+
+  PCMS_KeyAgreeRecipientInfo = ^CMS_KeyAgreeRecipientInfo;
+  CMS_KeyAgreeRecipientInfo = record
+    version: TC_LONG;
+    originator: PCMS_OriginatorIdentifierOrKey;
+    ukm: PASN1_OCTET_STRING;
+    keyEncryptionAlgorithm: PX509_ALGOR;
+    recipientEncryptedKeys: PSTACK_OF_CMS_RecipientEncryptedKey;
+  end;
+
+  PCMS_KEKIdentifier = ^CMS_KEKIdentifier;
+  CMS_KEKIdentifier = record
+    keyIdentifier: PASN1_OCTET_STRING;
+    date: PASN1_GENERALIZEDTIME;
+    other: PCMS_OtherKeyAttribute;
+  end;
+
+  PCMS_KEKRecipientInfo = ^CMS_KEKRecipientInfo;
+  CMS_KEKRecipientInfo = record
+    version: TC_LONG;
+    kekid: CMS_KEKIdentifier;
+    keyEncryptionAlgorithm: PX509_ALGOR;
+    encryptedKey: PASN1_OCTET_STRING;
+    key: PAnsiChar;
+    keylen: TC_SIZE_T;
+  end;
+
+  PCMS_PasswordRecipientInfo = ^CMS_PasswordRecipientInfo;
+  CMS_PasswordRecipientInfo = record
+    version: TC_LONG;
+    keyDerivationAlgorithm: PX509_ALGOR;
+    keyEncryptionAlgorithm: PX509_ALGOR;
+    encryptedKey: PASN1_OCTET_STRING;
+    pass: PAnsiChar;
+    passlen: TC_SIZE_T;
+  end;
+
+  PCMS_OtherRecipientInfo = ^CMS_OtherRecipientInfo;
+  CMS_OtherRecipientInfo = record
+    oriType: ASN1_OBJECT;
+    oriValue: ASN1_TYPE;
+  end;
+
+ 	CMS_RecipientInfo_union = record
+    ktri: PCMS_KeyTransRecipientInfo;
+    kari: PCMS_KeyAgreeRecipientInfo;
+    kekri: PCMS_KEKRecipientInfo;
+    pwri: PCMS_PasswordRecipientInfo;
+    ori: PCMS_OtherRecipientInfo;
+  end;
+
+
+  PCMS_RecipientInfo = ^CMS_RecipientInfo;
+  CMS_RecipientInfo = record
+ 	  _type: TC_INT;
+    d: CMS_RecipientInfo_union;
+  end;
+
+  PCMS_OtherRevocationInfoFormat = ^CMS_OtherRevocationInfoFormat;
+  CMS_OtherRevocationInfoFormat = record
+    otherRevInfoFormat: PASN1_OBJECT;
+    otherRevInfo: PASN1_TYPE;
+  end;
+
+  CMS_RevocationInfoChoice_union = record
+    crl: PX509_CRL;
+    other: PCMS_OtherRevocationInfoFormat;
+  end;
+
+  PCMS_RevocationInfoChoice = ^CMS_RevocationInfoChoice;
+  CMS_RevocationInfoChoice = record
+	  _type: TC_INT;
+	  d:CMS_RevocationInfoChoice_union;
+  end;
+
+  PCMS_OtherCertificateFormat = ^CMS_OtherCertificateFormat;
+  CMS_OtherCertificateFormat = record
+    otherCertFormat: PASN1_OBJECT;
+    otherCert: PASN1_TYPE;
+  end;
+
+  CMS_CertificateChoices_union = record
+    certificate: PX509;
+    extendedCertificate: PASN1_STRING;
+    v1AttrCert: PASN1_STRING;
+    v2AttrCert: PASN1_STRING;
+    other: PCMS_OtherCertificateFormat;
+  end;
+
+  PCMS_CertificateChoices = ^CMS_CertificateChoices;
+  CMS_CertificateChoices = record
+    _type: TC_INT;
+    d:CMS_CertificateChoices_union;
+  end;
+
+
+
 
 {$ENDREGION}
 
