@@ -25,6 +25,7 @@ type
   PC_SIZE_T = ^TC_SIZE_T;
   BN_ULONG = TC_ULONGLONG;
   PBN_ULONG = ^BN_ULONG;
+  TC_UCHAR = AnsiChar;
 
 {$IF DEFINED(WIN32)}
   BF_LONG = TC_ULONG;
@@ -176,6 +177,19 @@ type
   BN_mod_exp_cb = function(r: PBIGNUM; a: PBIGNUM; p: PBIGNUM; m: PBIGNUM; ctx: PBN_CTX; m_ctx: PBN_MONT_CTX): TC_INT; cdecl;
 {$ENDREGION}
 
+{$REGION 'CAST'}
+
+type
+  CAST_LONG = TC_UINT;
+  PCAST_LONG = ^CAST_LONG;
+
+  CAST_KEY = record
+    data: array[0..31] of CAST_LONG;
+    short_key: TC_INT;
+  end;
+  PCAST_KEY = ^CAST_KEY;
+
+{$ENDREGION}
 
   EC_builtin_curve = record
     nid : TC_INT;
@@ -538,7 +552,6 @@ type
 
 {$ENDREGION}
 
-
 {$REGION 'LHASH'}
 
   PLHASH_NODE = ^LHASH_NODE;
@@ -611,7 +624,6 @@ type
     data: PLHASH;
   end;
 {$ENDREGION}
-
 
 {$REGION 'RSA'}
   PRSA = ^RSA;
@@ -1327,8 +1339,6 @@ type
   end;
 {$ENDREGION}
 
-
-
 {$REGION 'AES'}
 
 type
@@ -1346,7 +1356,6 @@ type
 
 {$ENDREGION}
 
-
 {$REGION 'BLOWFISH'}
 
 type
@@ -1355,6 +1364,21 @@ type
     S: array [0..(4*256)-1] of BF_LONG;
   end;
   PBF_KEY = ^BF_KEY;
+
+{$ENDREGION}
+
+{$REGION 'CMAX'}
+
+type
+  CMAC_CTX = record
+    cctx: EVP_CIPHER_CTX;
+    k1: array[0..EVP_MAX_BLOCK_LENGTH - 1] of TC_UCHAR;
+    k2: array[0..EVP_MAX_BLOCK_LENGTH - 1] of TC_UCHAR;
+    tbl: array[0..EVP_MAX_BLOCK_LENGTH - 1] of TC_UCHAR;
+    last_block: array[0..EVP_MAX_BLOCK_LENGTH - 1] of TC_UCHAR;
+    nlast_block: TC_INT;
+  end;
+  PCMAC_CTX = ^CMAC_CTX;
 
 {$ENDREGION}
 
