@@ -35,6 +35,29 @@ type
 {$IFEND}
   PBF_LONG = ^BF_LONG;
 
+  BUF_MEM = record
+    length : TC_SIZE_T;
+    data : PAnsiChar;
+    max: TC_SIZE_T;
+  end;
+  PBUF_MEM = ^BUF_MEM;
+
+  PSTACK          = ^STACK;
+  STACK = record
+    num : TC_INT;
+    data : PAnsiChar;
+    sorted : TC_INT;
+    num_alloc : TC_INT;
+    comp : function (_para1: PPAnsiChar; _para2: PPAnsiChar):  TC_INT; cdecl;
+  end;
+
+{$REGION 'CRYPTO'}
+type
+  CRYPTO_EX_DATA = record
+    sk : PSTACK;
+    dummy : TC_INT;
+  end;
+
   PCRYPTO_THREADID = ^CRYPTO_THREADID;
 
   CRYPTO_THREADID = record
@@ -42,6 +65,21 @@ type
     val: TC_ULONG;
   end;
 
+  PCRYPTO_EX_DATA = ^CRYPTO_EX_DATA;
+
+  CRYPTO_EX_new = function(parent: Pointer; ptr: Pointer; ad: PCRYPTO_EX_DATA;
+					idx: TC_INT; argl: TC_LONG; argp: Pointer): TC_INT; cdecl;
+
+  CRYPTO_EX_free = procedure(parent: Pointer; ptr: Pointer; ad: PCRYPTO_EX_DATA;
+					idx: TC_INT; argl: TC_LONG; argp: Pointer); cdecl;
+
+  CRYPTO_EX_dup = function(_to: PCRYPTO_EX_DATA; _from: PCRYPTO_EX_DATA; from_d: Pointer;
+					idx: TC_INT; argl: TC_LONG; argp: Pointer): TC_INT; cdecl;
+
+{$ENDREGION}
+
+
+{$REGION 'BN'}
   BIGNUM = record
     d : PBN_ULONG;
     top : TC_INT;
@@ -50,14 +88,6 @@ type
     flags : TC_INT;
   end;
   PBIGNUM = ^BIGNUM;
-
-  BUF_MEM = record
-    length : TC_INT;
-    data : PAnsiChar;
-    max: TC_INT;
-  end;
-  PBUF_MEM = ^BUF_MEM;
-
 
   PBN_GENCB = ^BN_GENCB;
   BN_cb_1 = procedure (p1, p2 : TC_INT; p3 : Pointer); cdecl;
@@ -144,6 +174,8 @@ type
   end;
 
   BN_mod_exp_cb = function(r: PBIGNUM; a: PBIGNUM; p: PBIGNUM; m: PBIGNUM; ctx: PBN_CTX; m_ctx: PBN_MONT_CTX): TC_INT; cdecl;
+{$ENDREGION}
+
 
   EC_builtin_curve = record
     nid : TC_INT;
@@ -157,16 +189,6 @@ type
   PEC_KEY = Pointer;
 
   PENGINE = Pointer;
-
-  STACK = record
-    num : TC_INT;
-    data : PAnsiChar;
-    sorted : TC_INT;
-    num_alloc : TC_INT;
-    comp : function (_para1: PPAnsiChar; _para2: PPAnsiChar):  TC_INT; cdecl;
-  end;
-  PSTACK          = ^STACK;
-
 
   PSTACK_OF_IPAddressFamily = PSTACK;
   PSTACK_OF_ASN1_TYPE = PSTACK; // may be ^
@@ -186,26 +208,6 @@ type
     sname : PAnsiChar;
   end;
   PBIT_STRING_BITNAME = ^BIT_STRING_BITNAME;
-
-{$REGION 'CRYPTO'}
-type
-  CRYPTO_EX_DATA = record
-    sk : PSTACK;
-    dummy : TC_INT;
-  end;
-  PCRYPTO_EX_DATA = ^CRYPTO_EX_DATA;
-
-  CRYPTO_EX_new = function(parent: Pointer; ptr: Pointer; ad: PCRYPTO_EX_DATA;
-					idx: TC_INT; argl: TC_LONG; argp: Pointer): TC_INT; cdecl;
-
-  CRYPTO_EX_free = procedure(parent: Pointer; ptr: Pointer; ad: PCRYPTO_EX_DATA;
-					idx: TC_INT; argl: TC_LONG; argp: Pointer); cdecl;
-
-  CRYPTO_EX_dup = function(_to: PCRYPTO_EX_DATA; _from: PCRYPTO_EX_DATA; from_d: Pointer;
-					idx: TC_INT; argl: TC_LONG; argp: Pointer): TC_INT; cdecl;
-
-{$ENDREGION}
-
 
 
 {$REGION 'BIO'}
