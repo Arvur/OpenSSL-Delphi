@@ -939,6 +939,51 @@ const
 
 {$ENDREGION}
 
+{$REGION 'DSA'}
+
+const
+ DSA_F_D2I_DSA_SIG                       = 110;
+ DSA_F_DO_DSA_PRINT                      = 104;
+ DSA_F_DSAPARAMS_PRINT                   = 100;
+ DSA_F_DSAPARAMS_PRINT_FP                = 101;
+ DSA_F_DSA_DO_SIGN                       = 112;
+ DSA_F_DSA_DO_VERIFY                     = 113;
+ DSA_F_DSA_GENERATE_KEY                  = 124;
+ DSA_F_DSA_GENERATE_PARAMETERS_EX        = 123;
+ DSA_F_DSA_NEW_METHOD                    = 103;
+ DSA_F_DSA_PARAM_DECODE                  = 119;
+ DSA_F_DSA_PRINT_FP                      = 105;
+ DSA_F_DSA_PRIV_DECODE                   = 115;
+ DSA_F_DSA_PRIV_ENCODE                   = 116;
+ DSA_F_DSA_PUB_DECODE                    = 117;
+ DSA_F_DSA_PUB_ENCODE                    = 118;
+ DSA_F_DSA_SIGN                          = 106;
+ DSA_F_DSA_SIGN_SETUP                    = 107;
+ DSA_F_DSA_SIG_NEW                       = 109;
+ DSA_F_DSA_SIG_PRINT                     = 125;
+ DSA_F_DSA_VERIFY                        = 108;
+ DSA_F_I2D_DSA_SIG                       = 111;
+ DSA_F_OLD_DSA_PRIV_DECODE               = 122;
+ DSA_F_PKEY_DSA_CTRL                     = 120;
+ DSA_F_PKEY_DSA_KEYGEN                   = 121;
+ DSA_F_SIG_CB                            = 114;
+ 
+ DSA_R_BAD_Q_VALUE                       = 102;
+ DSA_R_BN_DECODE_ERROR                   = 108;
+ DSA_R_BN_ERROR                          = 109;
+ DSA_R_DATA_TOO_LARGE_FOR_KEY_SIZE       = 100;
+ DSA_R_DECODE_ERROR                      = 104;
+ DSA_R_INVALID_DIGEST_TYPE               = 106;
+ DSA_R_MISSING_PARAMETERS                = 101;
+ DSA_R_MODULUS_TOO_LARGE                 = 103;
+ DSA_R_NEED_NEW_SETUP_VALUES             = 110;
+ DSA_R_NON_FIPS_DSA_METHOD               = 111;
+ DSA_R_NO_PARAMETERS_SET                 = 107;
+ DSA_R_PARAMETER_ENCODING_ERROR          = 105;
+
+
+{$ENDREGION}
+
 implementation
 
 end.
