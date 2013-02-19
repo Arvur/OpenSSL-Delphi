@@ -9,15 +9,24 @@ var
   EC_NumCurves: Integer = 0;
 
   EC_get_builtin_curves: function (r: PEC_builtin_curves; nItems: TC_INT): TC_INT; cdecl = nil;
-  EC_GROUP_new_by_curve_name: function(nid: TC_INT): EC_GROUP; cdecl = nil;
+  EC_GROUP_new_by_curve_name: function(nid: TC_INT): PEC_GROUP; cdecl = nil;
+  EC_GROUP_free: procedure (group: PEC_GROUP); cdecl = nil;
+  EC_GROUP_set_asn1_flag: procedure(group: PEC_GROUP; flag: TC_INT); cdecl = nil;
+  EC_GROUP_get_curve_name: function(group: PEC_GROUP): TC_INT; cdecl = nil;
+
   EC_KEY_new: function: PEC_KEY; cdecl = nil;
-  EC_GROUP_free: procedure (group: EC_GROUP); cdecl = nil;
-  EC_GROUP_set_asn1_flag: procedure(group: EC_GROUP; flag: TC_INT); cdecl = nil;
-  EC_GROUP_get_curve_name: function(group: EC_GROUP): TC_INT; cdecl = nil;
-  EC_KEY_set_group: function(key: PEC_KEY; group: EC_GROUP): TC_INT; cdecl = nil;
+  EC_KEY_set_group: function(key: PEC_KEY; group: PEC_GROUP): TC_INT; cdecl = nil;
   EC_KEY_generate_key: function(key: PEC_KEY): TC_INT; cdecl = nil;
   EC_KEY_check_key: function(key: PEC_KEY): TC_INT; cdecl = nil;
   EC_KEY_free: procedure(key: PEC_KEY); cdecl = nil;
+
+  EC_GFp_simple_method: function: PEC_METHOD; cdecl = nil;
+  EC_GFp_mont_method: function: PEC_METHOD; cdecl = nil;
+  EC_GFp_nist_method: function: PEC_METHOD; cdecl = nil;
+  EC_GFp_nistp224_method: function: PEC_METHOD; cdecl = nil;
+  EC_GFp_nistp256_method: function: PEC_METHOD; cdecl = nil;
+  EC_GFp_nistp521_method: function: PEC_METHOD; cdecl = nil;
+  EC_GF2m_simple_method: function: PEC_METHOD; cdecl = nil;
 
 procedure EVP_PKEY_assign_EC_KEY(key: PEVP_PKEY; eckey: PEC_KEY); inline;
 
@@ -62,6 +71,14 @@ begin
     @EC_KEY_generate_key := LoadFunctionCLib('EC_KEY_generate_key');
     @EC_KEY_check_key := LoadFunctionCLib('EC_KEY_check_key');
     @EC_KEY_free := LoadFunctionCLib('EC_KEY_free');
+    @EC_GFp_simple_method:= LoadFunctionCLib('EC_GFp_simple_method');
+    @EC_GFp_mont_method:= LoadFunctionCLib('EC_GFp_mont_method');
+    @EC_GFp_nist_method:= LoadFunctionCLib('EC_GFp_nist_method');
+    @EC_GFp_nistp224_method:= LoadFunctionCLib('EC_GFp_nistp224_method', false);
+    @EC_GFp_nistp256_method:= LoadFunctionCLib('EC_GFp_nistp256_method', false);
+    @EC_GFp_nistp521_method:= LoadFunctionCLib('EC_GFp_nistp521_method', false);
+    @EC_GF2m_simple_method:= LoadFunctionCLib('EC_GF2m_simple_method');
+
     if @EC_get_builtin_curves <> nil then
       LoadCurves;
   end;
