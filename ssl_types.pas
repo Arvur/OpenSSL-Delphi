@@ -35,6 +35,13 @@ type
 {$IFEND}
   PBF_LONG = ^BF_LONG;
 
+  PCRYPTO_THREADID = ^CRYPTO_THREADID;
+
+  CRYPTO_THREADID = record
+    ptr: Pointer;
+    val: TC_ULONG;
+  end;
+
   BIGNUM = record
     d : PBN_ULONG;
     top : TC_INT;
@@ -44,12 +51,11 @@ type
   end;
   PBIGNUM = ^BIGNUM;
 
-  buf_mem_st = record
+  BUF_MEM = record
     length : TC_INT;
     data : PAnsiChar;
     max: TC_INT;
   end;
-  BUF_MEM = buf_mem_st;
   PBUF_MEM = ^BUF_MEM;
 
 
@@ -69,6 +75,76 @@ type
     cb : BN_GENCB_union;
   end;
 
+  BN_MONT_CTX = record
+    ri : TC_INT;
+    RR: BIGNUM;
+    N: BIGNUM;
+    Ni: BIGNUM;
+    n0 : array[0..1] of  BN_ULONG;
+    flags : TC_INT;
+  end;
+  PBN_MONT_CTX = ^BN_MONT_CTX;
+
+  PBN_CTX_STACK = ^BN_CTX_STACK;
+  BN_CTX_STACK = record
+    indexes: PC_UINT;
+    depth: TC_UINT;
+    size: TC_UINT;
+  end;
+  BN_STACK = BN_CTX_STACK;
+  PBN_STACK = ^BN_STACK;
+
+  PBN_POOL_ITEM = ^BN_POOL_ITEM;
+  BN_POOL_ITEM = record
+    vals: array[0..BN_CTX_POOL_SIZE-1] of BIGNUM;
+    prev: PBN_POOL_ITEM;
+    next: PBN_POOL_ITEM;
+  end;
+
+  BN_POOL = record
+    head: PBN_POOL_ITEM;
+    current: PBN_POOL_ITEM;
+    tail: PBN_POOL_ITEM;
+    used: TC_UINT;
+    size: TC_UINT;
+  end;
+
+  PBN_CTX = ^BN_CTX;
+  BN_CTX = record
+   pool: BN_POOL;
+   stack: BN_STACK;
+   used: TC_UINT;
+   err_stack: TC_INT;
+   too_many: TC_INT;
+  end;
+
+  PPBN_CTX = ^PBN_CTX;
+  PBN_BLINDING = ^BN_BLINDING;
+
+  BN_BLINDING = record
+   A: PBIGNUM;
+   Ai: PBIGNUM;
+   e: PBIGNUM;
+   _mod: PBIGNUM;
+   thread_id: TC_ULONG;
+   tid: CRYPTO_THREADID;
+   counter: TC_INT;
+   flags: TC_ULONG;
+   m_ctx: PBN_MONT_CTX;
+   bn_mod_exp: function(r: PBIGNUM; a: PBIGNUM; p: PBIGNUM; m: PBIGNUM; ctx: PBN_CTX; m_ctx: PBN_MONT_CTX): TC_INT;
+  end;
+
+  PBN_RECP_CTX = ^BN_RECP_CTX;
+  BN_RECP_CTX = record
+   N: BIGNUM;
+   Nr: BIGNUM;
+   num_bits: TC_INT;
+   shift: TC_INT;
+   flags: TC_INT;
+  end;
+
+  BN_mod_exp_cb = function(r: PBIGNUM; a: PBIGNUM; p: PBIGNUM; m: PBIGNUM; ctx: PBN_CTX; m_ctx: PBN_MONT_CTX): TC_INT; cdecl;
+
   EC_builtin_curve = record
     nid : TC_INT;
     comment : PAnsiChar;
@@ -81,13 +157,6 @@ type
   PEC_KEY = Pointer;
 
   PENGINE = Pointer;
-
-  BN_MONT_CTX = record
-    ri : TC_INT;
-    n0 : BN_ULONG;
-    flags : TC_INT;
-  end;
-  PBN_MONT_CTX = ^BN_MONT_CTX;
 
   STACK = record
     num : TC_INT;
@@ -108,10 +177,7 @@ type
   PASIdOrRanges = PSTACK_OF_ASIdOrRange;
   PSTACK_OF_CONF_VALUE = PSTACK;
 
-  PBN_CTX = Pointer;
-  PPBN_CTX = ^PBN_CTX;
 
-  PBN_BLINDING = pointer;
 
 
   BIT_STRING_BITNAME = record

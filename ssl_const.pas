@@ -675,6 +675,9 @@ const
  BN_HEX_FMT1    = '%lX';
  BN_HEX_FMT2    = '%016lX';
 
+ BN_CTX_POOL_SIZE	= 16;
+ BN_CTX_START_FRAMES	= 32;
+
 
 {$ENDREGION}
 

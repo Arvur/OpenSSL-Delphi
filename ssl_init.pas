@@ -8,7 +8,7 @@ implementation
 
 uses
   ssl_ec, ssl_util, ssl_types, ssl_lib, ssl_evp, ssl_const, ssl_rsa, ssl_dsa, ssl_x509, ssl_bio, ssl_pem, ssl_asn,
-  ssl_aes, ssl_bf;
+  ssl_aes, ssl_bf, ssl_bn;
 
 
 procedure SSL_InitLib;
@@ -22,7 +22,8 @@ begin
   ssl_pem.SSL_InitPEM;
   ssl_asn.SSL_InitASN1;
   ssl_aes.SSL_InitAES;
-  ssl_bf.SSL_InitBF
+  ssl_bf.SSL_InitBF;
+  ssl_bn.SSL_InitBN;
 end;
 
 end.
