@@ -8,7 +8,7 @@ implementation
 
 uses
   ssl_ec, ssl_util, ssl_types, ssl_lib, ssl_evp, ssl_const, ssl_rsa, ssl_dsa, ssl_x509, ssl_bio, ssl_pem, ssl_asn,
-  ssl_aes, ssl_bf, ssl_bn, ssl_buffer, ssl_cast, ssl_cmac, ssl_engine, ssl_rand, ssl_camellia;
+  ssl_aes, ssl_bf, ssl_bn, ssl_buffer, ssl_cast, ssl_cmac, ssl_engine, ssl_rand, ssl_camellia, ssl_comp;
 
 
 procedure SSL_InitLib;
@@ -30,6 +30,7 @@ begin
   ssl_engine.SSL_InitENGINE;
   ssl_rand.SSL_InitRAND;
   ssl_camellia.SSL_InitCAMELLIA;
+  ssl_comp.SSL_InitCOMP;
 end;
 
 end.

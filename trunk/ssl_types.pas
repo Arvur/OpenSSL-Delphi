@@ -1912,8 +1912,34 @@ type
         u: CAMELLIA_KEY_union;
         grand_rounds: TC_INT;
     end;    
-    
-    
+      
+{$ENDREGION}  
+  
+{$REGION 'COMP'}
+type
+	PCOMP_CTX = ^COMP_CTX;
+	PCOMP_METHOD = ^COMP_METHOD;
+	COMP_METHOD = record
+		_type: TC_INT;
+		name: PAnsiChar;
+		init: function(ctx: PCOMP_CTX): TC_INT; cdecl;
+		finish: prcoedure(ctx: PCOMP_CTX); cdecl;
+		compress: function(ctx: PCOMP_CTX; _out: PAnsiChar; olen: TC_UINT; _in: PAnsiChar; ilen: TC_UINT): TC_INT; cdecl;
+		expand: fucntion(ctx: PCOMP_CTX; _out: PAnsiChar; olen: TC_UINT; _in: PAnsiChar; ilen: TC_UINT): TC_INT; cdecl;
+		ctrl: function: TC_LONG; cdecl;
+		callback_ctrl: function: TC_LONG; cdecl;
+	end;
+	
+	COMP_CTX = record
+		meth: PCOMP_METHOD;
+		compress_in: TC_ULONG;
+		compress_out: TC_ULONG;
+		expand_in: TC_ULONG;
+		expand_out: TC_ULONG;
+		ex_data: CRYPTO_EX_DATA;
+	end;
+
+
 {$ENDREGION}  
   
 implementation
