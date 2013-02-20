@@ -30,7 +30,65 @@ type
   point_conversion_form_t = byte;
 
 type
-  PENGINE = Pointer;
+
+  STACK = record
+    num : TC_INT;
+    data : PPAnsiChar;
+    sorted : TC_INT;
+    num_alloc : TC_INT;
+    comp : function (_para1: PPAnsiChar; _para2: PPAnsiChar):  TC_INT; cdecl;
+  end;
+
+  STACK_OF = record
+    _stack: STACK;
+  end;
+  PSTACK_OF = ^STACK_OF;
+  PSTACK    = PSTACK_OF;
+
+  CRYPTO_EX_DATA = record
+    sk : PSTACK;
+    dummy : TC_INT;
+  end;
+
+  PENGINE_CMD_DEFN = ^ENGINE_CMD_DEFN;
+  ENGINE_CMD_DEFN = record
+    cmd_num: TC_UINT;
+    cmd_name: PAnsiChar;
+    cmd_desc: PAnsiChar;
+    cmd_flags: TC_UINT;
+  end;
+
+  PENGINE = ^ENGINE;
+  ENGINE = record
+	  id: PAnsiChar;
+	  name: PAnsiChar;
+	  rsa_meth: Pointer;
+	  dsa_meth: Pointer;
+	  dh_meth: Pointer;
+    ecdh_meth: Pointer;
+    ecdsa_meth: Pointer;
+	  rand_meth: Pointer;
+	  store_meth: Pointer;
+    ciphers: Pointer;
+	  digests: Pointer;
+	  pkey_meths: Pointer;
+	  pkey_asn1_meths: Pointer;
+	  _destroy: Pointer;
+    init: Pointer;
+    finish: Pointer;
+    ctrl: Pointer;
+    load_privkey: Pointer;
+    load_pubkey: Pointer;
+    load_ssl_client_cert: Pointer;
+    cmd_defns: PENGINE_CMD_DEFN;
+    flags: TC_INT;
+	  struct_ref: TC_INT;
+    funct_ref: TC_INT;
+	  ex_data: CRYPTO_EX_DATA;
+    prev: PENGINE;
+	  next: PENGINE;
+  end;
+
   PUI_METHOD = Pointer;
   PSSL = Pointer;
 
@@ -51,27 +109,8 @@ type
   PBUF_MEM = ^BUF_MEM;
 
 
-  STACK = record
-    num : TC_INT;
-    data : PPAnsiChar;
-    sorted : TC_INT;
-    num_alloc : TC_INT;
-    comp : function (_para1: PPAnsiChar; _para2: PPAnsiChar):  TC_INT; cdecl;
-  end;
-
-  STACK_OF = record
-    _stack: STACK;
-  end;
-  PSTACK_OF = ^STACK_OF;
-  PSTACK    = PSTACK_OF;
-
 {$REGION 'CRYPTO'}
 type
-  CRYPTO_EX_DATA = record
-    sk : PSTACK;
-    dummy : TC_INT;
-  end;
-
   PCRYPTO_THREADID = ^CRYPTO_THREADID;
 
   CRYPTO_THREADID = record
@@ -1827,14 +1866,6 @@ type
 
 {$REGION 'ENGINE'}
 type
-  PENGINE_CMD_DEFN = ^ENGINE_CMD_DEFN;
-  ENGINE_CMD_DEFN = record
-    cmd_num: TC_UINT;
-    cmd_name: PAnsiChar;
-    cmd_desc: PAnsiChar;
-    cmd_flags: TC_UINT;
-  end;
-
   ENGINE_CB_FUNC = procedure;
   ENGINE_GEN_FUNC_PTR = function: TC_INT; cdecl;
   ENGINE_GEN_INT_FUNC_PTR = function(engine: PENGINE): TC_INT; cdecl;
@@ -1846,6 +1877,12 @@ type
   ENGINE_PKEY_METHS_PTR = function(engine: PENGINE; var meth: PEVP_PKEY_METHOD; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
   ENGINE_PKEY_ASN1_METHS_PTR = function(engine: PENGINE; var meth: PEVP_PKEY_ASN1_METHOD; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
 {$ENDREGION}
+
+type
+  PECDH_METHOD = Pointer;
+  PECDSA_METHOD = Pointer;
+  PRAND_METHOD = Pointer;
+  PSTORE_METHOD = Pointer;
 
 implementation
 
