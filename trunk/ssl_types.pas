@@ -60,20 +60,20 @@ type
 
   PENGINE = ^ENGINE;
   ENGINE = record
-	  id: PAnsiChar;
-	  name: PAnsiChar;
-	  rsa_meth: Pointer;
-	  dsa_meth: Pointer;
-	  dh_meth: Pointer;
+      id: PAnsiChar;
+      name: PAnsiChar;
+      rsa_meth: Pointer;
+      dsa_meth: Pointer;
+      dh_meth: Pointer;
     ecdh_meth: Pointer;
     ecdsa_meth: Pointer;
-	  rand_meth: Pointer;
-	  store_meth: Pointer;
+      rand_meth: Pointer;
+      store_meth: Pointer;
     ciphers: Pointer;
-	  digests: Pointer;
-	  pkey_meths: Pointer;
-	  pkey_asn1_meths: Pointer;
-	  _destroy: Pointer;
+      digests: Pointer;
+      pkey_meths: Pointer;
+      pkey_asn1_meths: Pointer;
+      _destroy: Pointer;
     init: Pointer;
     finish: Pointer;
     ctrl: Pointer;
@@ -82,11 +82,11 @@ type
     load_ssl_client_cert: Pointer;
     cmd_defns: PENGINE_CMD_DEFN;
     flags: TC_INT;
-	  struct_ref: TC_INT;
+      struct_ref: TC_INT;
     funct_ref: TC_INT;
-	  ex_data: CRYPTO_EX_DATA;
+      ex_data: CRYPTO_EX_DATA;
     prev: PENGINE;
-	  next: PENGINE;
+      next: PENGINE;
   end;
 
   PUI_METHOD = Pointer;
@@ -121,13 +121,13 @@ type
   PCRYPTO_EX_DATA = ^CRYPTO_EX_DATA;
 
   CRYPTO_EX_new = function(parent: Pointer; ptr: Pointer; ad: PCRYPTO_EX_DATA;
-					idx: TC_INT; argl: TC_LONG; argp: Pointer): TC_INT; cdecl;
+                    idx: TC_INT; argl: TC_LONG; argp: Pointer): TC_INT; cdecl;
 
   CRYPTO_EX_free = procedure(parent: Pointer; ptr: Pointer; ad: PCRYPTO_EX_DATA;
-					idx: TC_INT; argl: TC_LONG; argp: Pointer); cdecl;
+                    idx: TC_INT; argl: TC_LONG; argp: Pointer); cdecl;
 
   CRYPTO_EX_dup = function(_to: PCRYPTO_EX_DATA; _from: PCRYPTO_EX_DATA; from_d: Pointer;
-					idx: TC_INT; argl: TC_LONG; argp: Pointer): TC_INT; cdecl;
+                    idx: TC_INT; argl: TC_LONG; argp: Pointer): TC_INT; cdecl;
 
 {$ENDREGION}
 
@@ -257,7 +257,7 @@ type
 
   PEC_POINT = ^EC_POINT;
   EC_POINT = record
-	  meth: PEC_METHOD;
+      meth: PEC_METHOD;
     X: PBIGNUM;
     Y: PBIGNUM;
     Z: PBIGNUM;
@@ -300,21 +300,21 @@ type
     mul: function(g: PEC_GROUP; r: PEC_POINT; scalar: PBIGNUM; num: TC_SIZE_T; points: PEC_POINT_ARR; scalars: PBIGNUM_ARR; ctx: PBN_CTX): TC_INT; cdecl;
     precompute_mult: function(g: PEC_GROUP; ctx: PBN_CTX): TC_INT; cdecl;
     have_precompute_mult: function(g: PEC_GROUP): TC_INT; cdecl;
-	  field_mul: function(g: PEC_GROUP; r, a, b: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
-	  field_sqr: function(g: PEC_GROUP; r, a: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
-	  field_div: function(g: PEC_GROUP; r, a, b: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
-	  field_encode: function(g: PEC_GROUP; r, a: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
-	  field_decode: function(g: PEC_GROUP; r, a: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
-	  field_set_to_one: function(g: PEC_GROUP; r : PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+      field_mul: function(g: PEC_GROUP; r, a, b: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+      field_sqr: function(g: PEC_GROUP; r, a: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+      field_div: function(g: PEC_GROUP; r, a, b: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+      field_encode: function(g: PEC_GROUP; r, a: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+      field_decode: function(g: PEC_GROUP; r, a: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
+      field_set_to_one: function(g: PEC_GROUP; r : PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
   end;
 
   PEC_EXTRA_DATA = ^EC_EXTRA_DATA;
   EC_EXTRA_DATA = record
     next: PEC_EXTRA_DATA;
     data: Pointer;
-	  dup_func: function: pointer; cdecl;
-	  free_func: procedure(_par: Pointer); cdecl;
-	  clear_free_func: procedure(_par: Pointer); cdecl;
+      dup_func: function: pointer; cdecl;
+      free_func: procedure(_par: Pointer); cdecl;
+      clear_free_func: procedure(_par: Pointer); cdecl;
   end;
 
 
@@ -323,19 +323,19 @@ type
     generator: PEC_POINT;
     order, cofactor: PBIGNUM;
     curve_name : TC_INT;
-	  asn1_flag: TC_INT;
-	  asn1_form: point_conversion_form_t;
-	  seed: PAnsiChar;
+      asn1_flag: TC_INT;
+      asn1_form: point_conversion_form_t;
+      seed: PAnsiChar;
     seed_len: TC_SIZE_T;
 
     extra_data: PEC_EXTRA_DATA;
 
-	  field : BIGNUM;
-	  poly: array[0..5] of TC_INT;
-	  a, b: BIGNUM;
-	  a_is_minus3: TC_INT;
+      field : BIGNUM;
+      poly: array[0..5] of TC_INT;
+      a, b: BIGNUM;
+      a_is_minus3: TC_INT;
     field_data1: Pointer;
-	  field_data2: Pointer;
+      field_data2: Pointer;
     field_mod_func: function(a, b, c: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
   end;
 
@@ -345,14 +345,14 @@ type
 
   PEC_KEY = ^EC_KEY;
   EC_KEY = record
-	  version: TC_INT;
+      version: TC_INT;
     group: PEC_GROUP;
 
     pub_key: PEC_POINT;
     priv_key:PBIGNUM;
 
-	  enc_flag: TC_UINT;
-	  conv_form: point_conversion_form_t;
+      enc_flag: TC_UINT;
+      conv_form: point_conversion_form_t;
 
     references: TC_INT;
     flags: TC_INT;
@@ -621,7 +621,7 @@ type
     tcount : TC_LONG;           // Number of templates if SEQUENCE or CHOICE
     funcs : Pointer;            // functions that handle this type
     size : TC_LONG;             // Structure size (usually)
-    sname : PAnsiChar;		      // Structure name
+    sname : PAnsiChar;            // Structure name
   end;
 
   PSTACK_OF_ASN1_ADB_TABLE = PSTACK;
@@ -640,7 +640,7 @@ type
   end;
   ASN1_ADB_TABLE = record
     flags : TC_LONG;                        // Various flags
-    offset : TC_LONG;	                      // Offset of selector field
+    offset : TC_LONG;                         // Offset of selector field
     app_items : PPSTACK_OF_ASN1_ADB_TABLE;  // Application defined items
     tbl : PASN1_ADB_TABLE;                  // Table of possible types
     tblcount : TC_LONG;                     // Number of entries in tbl
@@ -650,12 +650,12 @@ type
 
   PASN1_TLC = ^ASN1_TLC;
   ASN1_TLC = record
-	  valid : Byte;	    // Values below are valid
-	  ret : TC_INT;	    // return value
-	  plen : TC_LONG;	  // length
-	  ptag : TC_INT;	  // class value
-	  pclass : TC_INT;	// class value
-	  hdrlen : TC_INT;	// header length
+      valid : Byte;     // Values below are valid
+      ret : TC_INT;     // return value
+      plen : TC_LONG;     // length
+      ptag : TC_INT;      // class value
+      pclass : TC_INT;  // class value
+      hdrlen : TC_INT;  // header length
   end;
   PASN1_VALUE = Pointer;
 
@@ -672,20 +672,20 @@ type
   ASN1_primitive_c2i = function (var pval : PASN1_VALUE; cont : PByte; len, utype : TC_INT; free_cont : PByte; it: PASN1_ITEM) : TC_INT; cdecl;
 
   ASN1_COMPAT_FUNCS = record
-	  asn1_new : ASN1_new_func;
-	  asn1_free : ASN1_free_func;
-	  asn1_d2i : ASN1_d2i_func;
-	 asn1_i2d : ASN1_i2d_func;
+      asn1_new : ASN1_new_func;
+      asn1_free : ASN1_free_func;
+      asn1_d2i : ASN1_d2i_func;
+     asn1_i2d : ASN1_i2d_func;
   end;
   PASN1_COMPAT_FUNCS = ^ASN1_COMPAT_FUNCS;
 
   ASN1_EXTERN_FUNCS = record
-	  app_data : Pointer;
-    asn1_ex_new : ASN1_ex_new_func;   //	ASN1_ex_new_func *asn1_ex_new;
-    asn1_ex_free : ASN1_ex_free_func; //	ASN1_ex_free_func *asn1_ex_free;
-    asn1_ex_clear: ASN1_ex_free_func; //	ASN1_ex_free_func *asn1_ex_clear;
-    asn1_ex_d2i : ASN1_ex_d2i;        //	ASN1_ex_d2i *asn1_ex_d2i;
-    asn1_ex_i2d : ASN1_ex_i2d;        //	ASN1_ex_i2d *asn1_ex_i2d;
+      app_data : Pointer;
+    asn1_ex_new : ASN1_ex_new_func;   //    ASN1_ex_new_func *asn1_ex_new;
+    asn1_ex_free : ASN1_ex_free_func; //    ASN1_ex_free_func *asn1_ex_free;
+    asn1_ex_clear: ASN1_ex_free_func; //    ASN1_ex_free_func *asn1_ex_clear;
+    asn1_ex_d2i : ASN1_ex_d2i;        //    ASN1_ex_d2i *asn1_ex_d2i;
+    asn1_ex_i2d : ASN1_ex_i2d;        //    ASN1_ex_i2d *asn1_ex_i2d;
   end;
   PASN1_EXTERN_FUNCS = ^ASN1_EXTERN_FUNCS;
 
@@ -706,10 +706,10 @@ type
   ASN1_AUX = record
     app_data : Pointer;
     flags : TC_INT;
-    ref_offset : TC_INT;		// Offset of reference value
-    ref_lock : TC_INT;		  // Lock type to use
+    ref_offset : TC_INT;        // Offset of reference value
+    ref_lock : TC_INT;        // Lock type to use
     asn1_cb : ASN1_aux_cb;
-    enc_offset : TC_INT;		// Offset of ASN1_ENCODING structure
+    enc_offset : TC_INT;        // Offset of ASN1_ENCODING structure
   end;
   PASN1_AUX = ^ASN1_AUX;
 
@@ -1018,7 +1018,7 @@ type
     engine : PENGINE; // functional reference if 'digest' is ENGINE-provided
     flags : TC_ULONG;
     md_data : Pointer;
-	  pctx : PEVP_PKEY_CTX;
+      pctx : PEVP_PKEY_CTX;
      update : function (ctx : PEVP_MD_CTX; const data : Pointer; count : size_t) : TC_INT cdecl;
   end;
 
@@ -1586,30 +1586,30 @@ type
 
   PCMS_EncryptedContentInfo = ^CMS_EncryptedContentInfo;
   CMS_EncryptedContentInfo = record
-	  contentType: PASN1_OBJECT;
-	  contentEncryptionAlgorithm: PX509_ALGOR;
-	  encryptedContent: PASN1_OCTET_STRING;
-	  cipher: PEVP_CIPHER;
+      contentType: PASN1_OBJECT;
+      contentEncryptionAlgorithm: PX509_ALGOR;
+      encryptedContent: PASN1_OCTET_STRING;
+      cipher: PEVP_CIPHER;
     key: PAnsiChar;
-	  keylen: TC_SIZE_T;
-	  debug: TC_INT;
-	end;
+      keylen: TC_SIZE_T;
+      debug: TC_INT;
+    end;
 
   PCMS_EnvelopedData = ^CMS_EnvelopedData;
   CMS_EnvelopedData = record
-	  version: TC_LONG;
+      version: TC_LONG;
     originatorInfo: PCMS_OriginatorInfo;
     recipientInfos: PSTACK_OF_CMS_RecipientInfo;
-	  encryptedContentInfo: PCMS_EncryptedContentInfo;
+      encryptedContentInfo: PCMS_EncryptedContentInfo;
     unprotectedAttrs: PSTACK_OF_X509_ATTRIBUTE
   end;
 
   PCMS_DigestedData = ^CMS_DigestedData;
   CMS_DigestedData = record
-	  version: TC_LONG;
-	  digestAlgorithm: PX509_ALGOR;
-	  encapContentInfo: PCMS_EncapsulatedContentInfo;
-	  digest: PASN1_OCTET_STRING;
+      version: TC_LONG;
+      digestAlgorithm: PX509_ALGOR;
+      encapContentInfo: PCMS_EncapsulatedContentInfo;
+      digest: PASN1_OCTET_STRING;
   end;
 
   PCMS_EncryptedData = ^CMS_EncryptedData;
@@ -1622,14 +1622,14 @@ type
   PCMS_AuthenticatedData = ^CMS_AuthenticatedData;
   CMS_AuthenticatedData = record
     version: TC_LONG;
-	  originatorInfo: PCMS_OriginatorInfo;
+      originatorInfo: PCMS_OriginatorInfo;
     recipientInfos: PSTACK_OF_CMS_RecipientInfo;
     macAlgorithm: PX509_ALGOR;
-	  digestAlgorithm: PX509_ALGOR;
-	  encapContentInfo: PCMS_EncapsulatedContentInfo;
-	  authAttrs: PSTACK_OF_X509_ATTRIBUTE;
-	  mac: PASN1_OCTET_STRING;
-	  unauthAttrs: PSTACK_OF_X509_ATTRIBUTE;
+      digestAlgorithm: PX509_ALGOR;
+      encapContentInfo: PCMS_EncapsulatedContentInfo;
+      authAttrs: PSTACK_OF_X509_ATTRIBUTE;
+      mac: PASN1_OCTET_STRING;
+      unauthAttrs: PSTACK_OF_X509_ATTRIBUTE;
   end;
 
   PCMS_CompressedData = ^CMS_CompressedData;
@@ -1643,13 +1643,13 @@ type
   CMS_ContentInfo_union = record
     data: PASN1_OCTET_STRING;
     signedData: PCMS_SignedData;
-		envelopedData: PCMS_EnvelopedData;
-		digestedData: PCMS_DigestedData;
-		encryptedData: PCMS_EncryptedData;
-		authenticatedData: PCMS_AuthenticatedData;
-		compressedData: PCMS_CompressedData;
-		other: PASN1_TYPE;
-		otherData: Pointer;
+        envelopedData: PCMS_EnvelopedData;
+        digestedData: PCMS_DigestedData;
+        encryptedData: PCMS_EncryptedData;
+        authenticatedData: PCMS_AuthenticatedData;
+        compressedData: PCMS_CompressedData;
+        other: PASN1_TYPE;
+        otherData: Pointer;
   end;
 
   PCMS_ContentInfo = ^CMS_ContentInfo;
@@ -1660,18 +1660,18 @@ type
 
   PCMS_IssuerAndSerialNumber = ^CMS_IssuerAndSerialNumber;
   CMS_IssuerAndSerialNumber = record
-	  issuer: PX509_NAME;
+      issuer: PX509_NAME;
     serialNumber: PASN1_INTEGER;
   end;
 
    CMS_SignerIdentifier_union = record
-		issuerAndSerialNumber: PCMS_IssuerAndSerialNumber;
-		subjectKeyIdentifier: PASN1_OCTET_STRING;
+        issuerAndSerialNumber: PCMS_IssuerAndSerialNumber;
+        subjectKeyIdentifier: PASN1_OCTET_STRING;
    end;
 
    PCMS_SignerIdentifier = ^CMS_SignerIdentifier;
    CMS_SignerIdentifier = record
-	   _type: TC_INT;
+       _type: TC_INT;
      d: CMS_SignerIdentifier_union;
    end;
    PCMS_RecipientIdentifier = ^CMS_RecipientIdentifier;
@@ -1726,7 +1726,7 @@ type
 
   PCMS_KeyAgreeRecipientIdentifier = ^CMS_KeyAgreeRecipientIdentifier;
   CMS_KeyAgreeRecipientIdentifier = record
- 	   _type: TC_INT;
+       _type: TC_INT;
      d: CMS_KeyAgreeRecipientIdentifier_union;
   end;
 
@@ -1746,7 +1746,7 @@ type
 
   PCMS_OriginatorIdentifierOrKey = ^CMS_OriginatorIdentifierOrKey;
   CMS_OriginatorIdentifierOrKey = record
- 	   _type: TC_INT;
+       _type: TC_INT;
      d: CMS_OriginatorIdentifierOrKey_union;
   end;
 
@@ -1792,7 +1792,7 @@ type
     oriValue: ASN1_TYPE;
   end;
 
- 	CMS_RecipientInfo_union = record
+    CMS_RecipientInfo_union = record
     ktri: PCMS_KeyTransRecipientInfo;
     kari: PCMS_KeyAgreeRecipientInfo;
     kekri: PCMS_KEKRecipientInfo;
@@ -1802,7 +1802,7 @@ type
 
   PCMS_RecipientInfo = ^CMS_RecipientInfo;
   CMS_RecipientInfo = record
- 	  _type: TC_INT;
+      _type: TC_INT;
     d: CMS_RecipientInfo_union;
   end;
 
@@ -1819,8 +1819,8 @@ type
 
   PCMS_RevocationInfoChoice = ^CMS_RevocationInfoChoice;
   CMS_RevocationInfoChoice = record
-	  _type: TC_INT;
-	  d:CMS_RevocationInfoChoice_union;
+      _type: TC_INT;
+      d:CMS_RevocationInfoChoice_union;
   end;
 
   PCMS_OtherCertificateFormat = ^CMS_OtherCertificateFormat;
@@ -1852,8 +1852,8 @@ type
   const_DES_cblock = array[0..7] of TC_UCHAR;
 
   DES_key_schedule_union = record
-	 cblock: DES_cblock;
-	 deslong: array[0..1] of DES_LONG;
+     cblock: DES_cblock;
+     deslong: array[0..1] of DES_LONG;
   end;
 
   PDES_key_schedule = ^DES_key_schedule;
@@ -1878,10 +1878,24 @@ type
   ENGINE_PKEY_ASN1_METHS_PTR = function(engine: PENGINE; var meth: PEVP_PKEY_ASN1_METHOD; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
 {$ENDREGION}
 
+{$REGION 'RAND'}
+
+    PRAND_METHOD = ^RAND_METHOD;
+    RAND_METHOD = record
+        seed: procedure(buf: Pointer; num: TC_INT); cdecl;
+        bytes: function(buf: PAnsiChar; num: TC_INT): TC_INT; cdecl;
+        cleanup: procedure; cdecl;
+        add: procedure(buf: Pointer;num: TC_INT;entropy: Double); cdecl;
+        pseudorand: function(buf: PAnsiChar; num: TC_INT): TC_INT; cdecl;
+        status: function: TC_INT; cdecl;
+    end;
+
+
+{$ENDREGION}
+
 type
   PECDH_METHOD = Pointer;
   PECDSA_METHOD = Pointer;
-  PRAND_METHOD = Pointer;
   PSTORE_METHOD = Pointer;
 
 implementation
