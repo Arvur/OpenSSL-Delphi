@@ -1923,9 +1923,9 @@ type
 		_type: TC_INT;
 		name: PAnsiChar;
 		init: function(ctx: PCOMP_CTX): TC_INT; cdecl;
-		finish: prcoedure(ctx: PCOMP_CTX); cdecl;
+		finish: procedure(ctx: PCOMP_CTX); cdecl;
 		compress: function(ctx: PCOMP_CTX; _out: PAnsiChar; olen: TC_UINT; _in: PAnsiChar; ilen: TC_UINT): TC_INT; cdecl;
-		expand: fucntion(ctx: PCOMP_CTX; _out: PAnsiChar; olen: TC_UINT; _in: PAnsiChar; ilen: TC_UINT): TC_INT; cdecl;
+		expand: function(ctx: PCOMP_CTX; _out: PAnsiChar; olen: TC_UINT; _in: PAnsiChar; ilen: TC_UINT): TC_INT; cdecl;
 		ctrl: function: TC_LONG; cdecl;
 		callback_ctrl: function: TC_LONG; cdecl;
 	end;
