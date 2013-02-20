@@ -1900,7 +1900,7 @@ type
 
 {$REGION 'CAMELLIA'}
 type
-    KEY_TABLE_TYPE: array [0..CAMELLIA_TABLE_WORD_LEN-1] of TC_UINT;
+    KEY_TABLE_TYPE = array [0..CAMELLIA_TABLE_WORD_LEN-1] of TC_UINT;
     CAMELLIA_BUF = array[0..CAMELLIA_BLOCK_SIZE-1] of AnsiChar;
     CAMELLIA_KEY_union = record
         d: double;
