@@ -1898,6 +1898,24 @@ type
   PECDSA_METHOD = Pointer;
   PSTORE_METHOD = Pointer;
 
+{$REGION 'CAMELLIA'}
+type
+    KEY_TABLE_TYPE: array [0..CAMELLIA_TABLE_WORD_LEN-1] of TC_UINT;
+    CAMELLIA_BUF = array[0..CAMELLIA_BLOCK_SIZE-1] of AnsiChar;
+    CAMELLIA_KEY_union = record
+        d: double;
+        rd_key: KEY_TABLE_TYPE;
+    end;
+    
+    PCAMELLIA_KEY = ^CAMELLIA_KEY;
+    CAMELLIA_KEY = record
+        u: CAMELLIA_KEY_union;
+        grand_rounds: TC_INT;
+    end;    
+    
+    
+{$ENDREGION}  
+  
 implementation
 
 end.
