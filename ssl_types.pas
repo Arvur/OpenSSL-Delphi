@@ -29,6 +29,11 @@ type
   DES_LONG= TC_ULONG;
   point_conversion_form_t = byte;
 
+type
+  PENGINE = Pointer;
+  PUI_METHOD = Pointer;
+  PSSL = Pointer;
+
 {$IF DEFINED(WIN32)}
   BF_LONG = TC_ULONG;
 {$ELSIF (DEFINED(OPENSSL_SYS_CRAY) OR DEFINED(WIN64))}
@@ -228,10 +233,10 @@ type
     group_init: function: PEC_GROUP; cdecl;
     group_finsh: procedure(_group: PEC_GROUP); cdecl;
     group_clear_finish: procedure(_group: PEC_GROUP); cdecl;
-    group_copy: function(_gr1: PEC_GROUP; _gr2: PEC_GROUP): TC_INT; cdecl;
+    group_copy: function(dst: PEC_GROUP; src: PEC_GROUP): TC_INT; cdecl;
     group_set_curve: function(_gr: PEC_GROUP; p: PBIGNUM; a: PBIGNUM; b: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
     group_get_curve: function(_gr: PEC_GROUP; p: PBIGNUM; a: PBIGNUM; b: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
-    group_get_degree: function: PEC_GROUP; cdecl;
+    group_get_degree: function(g: PEC_GROUP): TC_INT; cdecl;
     group_check_discriminant: function(_gr: PEC_GROUP; ctx: PBN_CTX): TC_INT; cdecl;
     point_init: function: PEC_POINT;
     point_finish: procedure(p: PEC_POINT); cdecl;
@@ -315,10 +320,13 @@ type
     method_data: PEC_EXTRA_DATA;
   end;
 
+  EC_dup_func = function(par: Pointer): Pointer; cdecl;
+  EC_free_func = procedure(par: Pointer); cdecl;
+  EC_clear_free_func = procedure(par: Pointer); cdecl;
+
 
 {$ENDREGION}
 
-  PENGINE = Pointer;
 
   PSTACK_OF_IPAddressFamily = PSTACK;
   PSTACK_OF_ASN1_TYPE = PSTACK; // may be ^
@@ -741,7 +749,49 @@ type
   end;
 {$ENDREGION}
 
+{$REGION 'DH'}
+
+  PDH = ^DH;
+
+  PDH_METHOD = ^DH_METHOD;
+  DH_METHOD = record
+    name: PAnsiChar;
+    generate_key: function(_dh: PDH): TC_INT; cdecl;
+    compute_key: function(key: PAnsiChar; pub_key: PBIGNUM; _dh: PDH): TC_INT; cdecl;
+    bn_mod_exp: function(_dh: PDH; r: PBIGNUM; a: PBIGNUM; p: PBIGNUM; m: PBIGNUM; ctx: PBN_CTX; m_ctx: PBN_MONT_CTX): TC_INT; cdecl;
+    init: function(_dh: PDH): TC_INT; cdecl;
+    finish: function(_dh: PDH): TC_INT; cdecl;
+    flags: TC_INT;
+    app_data: PAnsiChar;
+    generate_params: function(_dh: PDH; prime_len: TC_INT; generator: TC_INT; cb: PBN_GENCB): TC_INT; cdecl;
+  end;
+
+  DH = record
+    pad : TC_INT;
+    version : TC_INT;
+    p: PBIGNUM;
+    g: PBIGNUM;
+    _length: TC_LONG;
+    pub_key: PBIGNUM;
+    priv_key: PBIGNUM;
+    flags: TC_INT;
+    method_mont_p: PBN_MONT_CTX;
+    q: PBIGNUM;
+    j: PBIGNUM;
+    seed: PAnsiChar;
+    seedlen: TC_INT;
+    counter: PBIGNUM;
+    references: TC_INT;
+    ex_data: CRYPTO_EX_DATA;
+    meth : PDH_METHOD;
+    engine: PENGINE;
+  end;
+
+{$ENDREGION}
+
+
 {$REGION 'RSA'}
+type
   PRSA = ^RSA;
   RSA_METHOD = record
     name : PAnsiChar;
@@ -791,6 +841,7 @@ type
     mt_blinding : PBN_BLINDING;
   end;
 {$ENDREGION}
+
 
 {$REGION 'DSA'}
   PDSA = ^DSA;
@@ -843,9 +894,10 @@ type
   end;
 {$ENDREGION}
 
-{$REGION 'DH'}
+{$REGION 'EVP'}
 
-  PDH = ^DH;
+  PEVP_MD = ^EVP_MD;
+  PEVP_PKEY_CTX = pointer;
 
   EVP_PKEY_union = record
     case byte of
@@ -856,48 +908,6 @@ type
       4: (ec : PEC_KEY);  // ECC
   end;
 
-  PDH_METHOD = ^DH_METHOD;
-  DH_METHOD = record
-    name: PAnsiChar;
-    generate_key: function(_dh: PDH): TC_INT; cdecl;
-    compute_key: function(key: PAnsiChar; pub_key: PBIGNUM; _dh: PDH): TC_INT; cdecl;
-    bn_mod_exp: function(_dh: PDH; r: PBIGNUM; a: PBIGNUM; p: PBIGNUM; m: PBIGNUM; ctx: PBN_CTX; m_ctx: PBN_MONT_CTX): TC_INT; cdecl;
-    init: function(_dh: PDH): TC_INT; cdecl;
-    finish: function(_dh: PDH): TC_INT; cdecl;
-    flags: TC_INT;
-    app_data: PAnsiChar;
-    generate_params: function(_dh: PDH; prime_len: TC_INT; generator: TC_INT; cb: PBN_GENCB): TC_INT; cdecl;
-  end;
-
-  DH = record
-    pad : TC_INT;
-    version : TC_INT;
-    p: PBIGNUM;
-    g: PBIGNUM;
-    _length: TC_LONG;
-    pub_key: PBIGNUM;
-    priv_key: PBIGNUM;
-    flags: TC_INT;
-    method_mont_p: PBN_MONT_CTX;
-    q: PBIGNUM;
-    j: PBIGNUM;
-    seed: PAnsiChar;
-    seedlen: TC_INT;
-    counter: PBIGNUM;
-    references: TC_INT;
-    ex_data: CRYPTO_EX_DATA;
-    meth : PDH_METHOD;
-    engine: PENGINE;
-  end;
-
-{$ENDREGION}
-
-{$REGION 'EVP'}
-
-  PEVP_MD = ^EVP_MD;
-  PEVP_PKEY_CTX = pointer;
-
-
   STACK_OF_X509_ATTRIBUTE = record
     _stack: STACK;
   end;
@@ -905,8 +915,9 @@ type
 
 
   PEVP_PKEY_ASN1_METHOD = pointer;
+  PEVP_PKEY_METHOD = Pointer;
 
-  {$EXTERNALSYM EVP_PKEY}
+  PEVP_PKEY = ^EVP_PKEY;
   EVP_PKEY = record
     _type : TC_INT;
     save_type : TC_INT;
@@ -915,7 +926,7 @@ type
     pkey : EVP_PKEY_union;
     attributes : PSTACK_OF_X509_ATTRIBUTE;
   end;
-  PEVP_PKEY = ^EVP_PKEY;
+
 
   PEVP_CIPHER_CTX = ^EVP_CIPHER_CTX;
   PEVP_CIPHER = ^EVP_CIPHER;
@@ -994,6 +1005,8 @@ type
 
 {$ENDREGION}
 
+
+
 {$REGION 'X509'}
   PX509 = ^X509;
   PPX509 = ^PX509;
@@ -1003,20 +1016,10 @@ type
   PX509_REQ_INFO = ^X509_REQ_INFO;
   PX509_POLICY_CACHE = Pointer;
 
-  STACK_OF_X509_REVOKED = record
-    _stack: stack;
-  end;
-  PSTACK_OF_X509_REVOKED = ^STACK_OF_X509_REVOKED;
-
-  STACK_OF_X509_NAME_ENTRY = record
-    _stack: stack;
-  end;
-  PSTACK_OF_X509_NAME_ENTRY = ^STACK_OF_X509_NAME_ENTRY;
-
-  STACK_OF_X509 = record
-    _stack: STACK;
-  end;
-  PSTACK_OF_X509 = ^STACK_OF_X509;
+  PSTACK_OF_X509_REVOKED = PSTACK_OF;
+  PSTACK_OF_X509_NAME_ENTRY = PSTACK_OF;
+  PSTACK_OF_X509 = PSTACK_OF;
+  PSTACK_OF_X509_NAME = PSTACK_OF;
 
   X509_HASH_DIR_CTX = record
     num_dirs : TC_INT;
@@ -1819,6 +1822,29 @@ type
     ks: array[0..15] of DES_key_schedule_union;
   end;
 
+{$ENDREGION}
+
+
+{$REGION 'ENGINE'}
+type
+  PENGINE_CMD_DEFN = ^ENGINE_CMD_DEFN;
+  ENGINE_CMD_DEFN = record
+    cmd_num: TC_UINT;
+    cmd_name: PAnsiChar;
+    cmd_desc: PAnsiChar;
+    cmd_flags: TC_UINT;
+  end;
+
+  ENGINE_CB_FUNC = procedure;
+  ENGINE_GEN_FUNC_PTR = function: TC_INT; cdecl;
+  ENGINE_GEN_INT_FUNC_PTR = function(engine: PENGINE): TC_INT; cdecl;
+  ENGINE_CTRL_FUNC_PTR = function(engine: PENGINE; _par1: TC_INT; _par2: TC_LONG; _par3: Pointer; f: ENGINE_CB_FUNC): TC_INT; cdecl;
+  ENGINE_LOAD_KEY_PTR = function(engine: PENGINE; buf: PAnsiChar; ui_method: PUI_METHOD; callback_data: Pointer): PEVP_PKEY; cdecl;
+  ENGINE_SSL_CLIENT_CERT_PTR = function(engine: PENGINE; ssl: PSSL; ca_dn: PSTACK_OF_X509_NAME; var cert: PX509; var key: PEVP_PKEY; var pother: PSTACK_OF_X509; ui_method: PUI_METHOD; callback_data: Pointer): TC_INT; cdecl;
+  ENGINE_CIPHERS_PTR =  function(engine: PENGINE; var cipher: PEVP_CIPHER; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
+  ENGINE_DIGESTS_PTR = function(engine: PENGINE; var md: PEVP_MD; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
+  ENGINE_PKEY_METHS_PTR = function(engine: PENGINE; var meth: PEVP_PKEY_METHOD; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
+  ENGINE_PKEY_ASN1_METHS_PTR = function(engine: PENGINE; var meth: PEVP_PKEY_ASN1_METHOD; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
 {$ENDREGION}
 
 implementation
