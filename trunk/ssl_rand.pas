@@ -13,7 +13,7 @@ var
 	RAND_add: procedure(buf: Pointer; num: TC_INT; entropy: double); cdecl = nil;
 	RAND_load_file: function(_file: PAnsiChar; max_bytes: TC_LONG): TC_INT; cdecl = nil;
 	RAND_write_file: function(_file: PAnsiChar): TC_INT; cdecl = nil;
-	RAND_file_name(_file: PAnsiChar; num: TC_size_t ): PAnsiChar; cdecl = nil;
+	RAND_file_name: function(_file: PAnsiChar; num: TC_size_t ): PAnsiChar; cdecl = nil;
 	RAND_status: function: TC_INT; cdecl = nil;
 	RAND_query_egd_bytes: function(path: PAnsiChar; buf: PAnsiChar; bytes: TC_INT): TC_INT; cdecl = nil;
 	RAND_egd: function(path: PAnsiChar): TC_INT; cdecl = nil;
@@ -47,15 +47,15 @@ begin
 	@RAND_add:= LoadFunctionCLib('RAND_add');
 	@RAND_load_file:= LoadFunctionCLib('RAND_load_file');
 	@RAND_write_file:= LoadFunctionCLib('RAND_write_file');
-	@RAND_file_name(= LoadFunctionCLib('RAND_file_name');
+	@RAND_file_name:= LoadFunctionCLib('RAND_file_name');
 	@RAND_status:= LoadFunctionCLib('RAND_status');
 	@RAND_query_egd_bytes:= LoadFunctionCLib('RAND_query_egd_bytes');
 	@RAND_egd:= LoadFunctionCLib('RAND_egd');
 	@RAND_egd_bytes:= LoadFunctionCLib('RAND_egd_bytes');
 	@RAND_poll:= LoadFunctionCLib('RAND_poll');
 	@RAND_screen:= LoadFunctionCLib('RAND_screen');
-	@RAND_set_fips_drbg_type:= LoadFunctionCLib('RAND_set_fips_drbg_type');
-	@RAND_init_fips:= LoadFunctionCLib('RAND_init_fips');
+	@RAND_set_fips_drbg_type:= LoadFunctionCLib('RAND_set_fips_drbg_type', false);
+	@RAND_init_fips:= LoadFunctionCLib('RAND_init_fips', false);
 	@ERR_load_RAND_strings:= LoadFunctionCLib('ERR_load_RAND_strings');
    end;   
 end;
