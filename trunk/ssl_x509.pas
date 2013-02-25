@@ -47,8 +47,12 @@ X509_CRL_METHOD *X509_CRL_METHOD_new: function(
     int (*crl_lookup)(X509_CRL *crl, X509_REVOKED **ret,
                 ASN1_INTEGER *ser, X509_NAME *issuer),
     int (*crl_verify)(X509_CRL *crl, EVP_PKEY *pk));
-	
-int (*X509_TRUST_set_default(int (*trust)(int , X509 *, int)))(int, X509 *, int);	
+
+int (*X509_TRUST_set_default(int (*trust)(int , X509 *, int)))(int, X509 *, int);
+
+int X509_TRUST_add(int id, int flags, int (*ck)(X509_TRUST *, X509 *, int),
+					char *name, int arg1, void *arg2);
+
 *)
 
   X509_CRL_set_default_method: procedure(meth: PX509_CRL_METHOD); cdecl = nil;
@@ -208,7 +212,7 @@ int (*X509_TRUST_set_default(int (*trust)(int , X509 *, int)))(int, X509 *, int)
 	X509_get_pubkey: function(x: PX509): PEVP_PKEY; cdecl = nil;
 	X509_get0_pubkey_bitstr: function(const x: PX509): PASN1_BIT_STRING; cdecl = nil;
 	X509_certificate_type: function(x: PX509; pubkey: PEVP_PKEY): TC_INT; cdecl = nil;
-	
+
 	X509_REQ_set_version: function(x: PX509_REQ; version: TC_LONG): TC_INT; cdecl = nil;
 	X509_REQ_set_subject_name: function(req: PX509_REQ; name: PX509_NAME): TC_INT; cdecl = nil;
 	X509_REQ_set_pubkey: function(x: PX509_REQ; pkey: PEVP_PKEY): TC_INT; cdecl = nil;
@@ -249,11 +253,162 @@ int (*X509_TRUST_set_default(int (*trust)(int , X509 *, int)))(int, X509 *, int)
 	X509_issuer_name_hash: function(X509 *a): TC_ULONG; cdecl = nil;
 	X509_subject_name_cmp: function(const a: PX509; const b: PX509): TC_INT; cdecl = nil;
 	X509_subject_name_hash: function(x: PX509): TC_ULONG; cdecl = nil;
-	
+
 	X509_issuer_name_hash_old: function(a: PX509): TC_ULONG; cdecl = nil;
 	X509_subject_name_hash_old: function(x: PX509): TC_ULONG; cdecl = nil;
+
+	X509_cmp: function(const a: PX509; const b: PX509): TC_INT; cdecl = nil;
+	X509_NAME_cmp: function(const a: PX509_NAME; const b: PX509_NAME): TC_INT; cdecl = nil;
+	X509_NAME_hash: function(x: PX509_NAME): TC_ULONG; cdecl = nil;
+	X509_NAME_hash_old: function(x: PX509_NAME): TC_ULONG; cdecl = nil;
+
+	X509_CRL_cmp: function(const a: PX509_CRL; const b: PX509_CRL): TC_INT; cdecl = nil;
+	X509_CRL_match: function(const a: PX509_CRL; const b: PX509_CRL): TC_INT; cdecl = nil;
+
+	X509_NAME_print: function(bp: PBIO; name: PX509_NAME; obase: TC_INT): TC_INT; cdecl = nil;
+	X509_NAME_print_ex: function(_out: PBIO; nm: PX509_NAME; _indent: TC_INT; flags: TC_ULONG): TC_INT; cdecl = nil;
+	X509_print_ex: function(bp: PBIO; x: PX509; nmflag: TC_ULONG; cflag: TC_ULONG): TC_INT; cdecl = nil;
+	X509_print: function(bp: PBIO; x: PX509): TC_INT; cdecl = nil;
+	X509_ocspid_print: function(bp: PBIO; x: PX509): TC_INT; cdecl = nil;
+	X509_CERT_AUX_print: function(bp: PBIO; x: PX509_CERT_AUX; _indent: TC_INT): TC_INT; cdecl = nil;
+	X509_CRL_print: function(bp: PBIO; x: PX509_CRL): TC_INT; cdecl = nil;
+	X509_REQ_print_ex: function(bp: PBIO; x: PX509_REQ; nmflag: TC_ULONG; cflag: TC_ULONG): TC_INT; cdecl = nil;
+	X509_REQ_print: function(bp: PBIO; req: PX509_REQ): TC_INT; cdecl = nil;
+	X509_NAME_entry_count: function(name: PX509_NAME): TC_INT; cdecl = nil;
+	X509_NAME_get_text_by_NID: function(name: PX509_NAME; _nid: TC_INT;	buf: PAnsiChar; _len: TC_INT): TC_INT; cdecl = nil;
+	X509_NAME_get_text_by_OBJ: function(name: PX509_NAME; obj: PASN1_OBJECT; buf: PAnsiChar; _len: TC_INT): TC_INT; cdecl = nil;
+
+	X509_NAME_get_index_by_NID: function(name: PX509_NAME; _nid: TC_INT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509_NAME_get_index_by_OBJ: function(name: PX509_NAME; obj: PASN1_OBJECT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509_NAME_get_entry: function(name: PX509_NAME; _loc: TC_INT): PX509_NAME_ENTRY; cdecl = nil;
+	X509_NAME_delete_entry: function(name: PX509_NAME; _loc: TC_INT): PX509_NAME_ENTRY; cdecl = nil;
+	X509_NAME_add_entry: function(name: PX509_NAME; ne: PX509_NAME_ENTRY; _loc: TC_INT; _set: TC_INT): TC_INT; cdecl = nil;
+	X509_NAME_add_entry_by_OBJ: function(name: PX509_NAME; obj: PASN1_OBJECT; _type: TC_INT; bytes: PAnsiChar; _len: TC_INT; _loc: TC_INT; _set: TC_INT): TC_INT; cdecl = nil;
+	X509_NAME_add_entry_by_NID: function(name: PX509_NAME; _nid: TC_INT; _type: TC_INT; bytes: PAnsiChar; _len: TC_INT; _loc: TC_INT; _set: TC_INT): TC_INT; cdecl = nil;
+	X509_NAME_ENTRY_create_by_txt: function(var ne: PX509_NAME_ENTRY; field: PAnsiChar; _type: TC_INT; bytes: PAnsiChar; _len: TC_INT): PX509_NAME_ENTRY; cdecl = nil;
+	X509_NAME_ENTRY_create_by_NID: function(var n: PX509_NAME_ENTRY; _nid: TC_INT; _type: TC_INT; bytes: PAnsiChar; _len: TC_INT): PX509_NAME_ENTRY; cdecl = nil;
+	X509_NAME_add_entry_by_txt: function(name: PX509_NAME; field: PAnsiChar; _type: TC_INT; bytes: PAnsiChar; _len: TC_INT; _loc: TC_INT; _set: TC_INT): TC_INT; cdecl = nil;
+	X509_NAME_ENTRY_create_by_OBJ: function(var n: PX509_NAME_ENTRY; obj: PASN1_OBJECT; _type: TC_INT; bytes: PAnsiChar; _len: TC_INT): PX509_NAME_ENTRY; cdecl = nil;
+	X509_NAME_ENTRY_set_object: function(ne: PX509_NAME_ENTRY; obj: PASN1_OBJECT): TC_INT; cdecl = nil;
+	X509_NAME_ENTRY_set_data: function(ne: PX509_NAME_ENTRY; _type: TC_INT; const bytes: PAnsiChar; _len: TC_INT): TC_INT; cdecl = nil;
+	X509_NAME_ENTRY_get_object: function(ne: PX509_NAME_ENTRY): PASN1_OBJECT; cdecl = nil;
+	X509_NAME_ENTRY_get_data: function(ne: PX509_NAME_ENTRY): PASN1_STRING; cdecl = nil;
+
+	X509v3_get_ext_count: function(const x: PSTACK_OF_X509_EXTENSION): TC_INT; cdecl = nil;
+	X509v3_get_ext_by_NID: function(const x: PSTACK_OF_X509_EXTENSION; _nid: TC_INT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509v3_get_ext_by_OBJ: function(const x: PSTACK_OF_X509_EXTENSION; obj: PASN1_OBJECT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509v3_get_ext_by_critical: function(const x: PSTACK_OF_X509_EXTENSION; _crit: TC_INT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+
+	X509v3_get_ext: function(const x: PSTACK_OF_X509_EXTENSION; _loc: TC_INT): PX509_EXTENSION; cdecl = nil;
+	X509v3_delete_ext: function(x: PSTACK_OF_X509_EXTENSION; _loc: TC_INT): PX509_EXTENSION; cdecl = nil;
+	X509v3_add_ext: function(var x: PSTACK_OF_X509_EXTENSION; ex: PX509_EXTENSION; _loc: TC_INT): PSTACK_OF_X509_EXTENSION
+
+	X509_get_ext_count: function(x: PX509): TC_INT; cdecl = nil;
+	X509_get_ext_by_NID: function(x: PX509; _nid: TC_INT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509_get_ext_by_OBJ: function(x: PX509; obj: PASN1_OBJECT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509_get_ext_by_critical: function(x: PX509;  _crit: TC_INT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509_get_ext: function(x: PX509;  _loc: TC_INT): PX509_EXTENSION; cdecl = nil;
+	X509_delete_ext: function(x: PX509;  _loc: TC_INT): PX509_EXTENSION; cdecl = nil;
+	X509_add_ext: function(x: PX509;  ex: PX509_EXTENSION; _loc: TC_INT): TC_INT; cdecl = nil;
+	X509_get_ext_d2i: function(x: PX509; _nid: TC_INT; var _crit: TC_INT; var _idx: TC_INT): Pointer; cdecl = nil;
+	X509_add1_ext_i2d: function(x: PX509; _nid: TC_INT; value: Pointer; _crit: TC_INT; flags: TC_ULONG): TC_INT; cdecl = nil;
+
+	X509_CRL_get_ext_count: function(x: PX509_CRL): TC_INT; cdecl = nil;
+	X509_CRL_get_ext_by_NID: function(x: PX509_CRL; _nid: TC_INT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509_CRL_get_ext_by_OBJ: function(x: PX509_CRL; obj: PASN1_OBJECT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509_CRL_get_ext_by_critical: function(x: PX509_CRL; _crit: TC_INT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509_CRL_get_ext: function(x: PX509_CRL; _loc: TC_INT): PX509_EXTENSION; cdecl = nil;
+	X509_CRL_delete_ext: function(x: PX509_CRL; _loc: TC_INT): PX509_EXTENSION; cdecl = nil;
+	X509_CRL_add_ext: function(x: PX509_CRL; ex: PX509_EXTENSION; _loc: TC_INT): TC_INT; cdecl = nil;
+	X509_CRL_get_ext_d2i: function(x: PX509_CRL; _nid: TC_INT; var _crit: TC_INT; var _idx: TC_INT): Pointer; cdecl = nil;
+	X509_CRL_add1_ext_i2d: function(x: PX509_CRL; _nid: TC_INT; value: Pointer; _crit: TC_INT; _flags: TC_ULONG): TC_INT; cdecl = nil;
+
+	X509_REVOKED_get_ext_count: function(x: PX509_REVOKED): TC_INT; cdecl = nil;
+	X509_REVOKED_get_ext_by_NID: function(x: PX509_REVOKED; _nid: TC_INT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509_REVOKED_get_ext_by_OBJ: function(x: PX509_REVOKED; obj: PASN1_OBJECT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509_REVOKED_get_ext_by_critical: function(x: PX509_REVOKED; _crit: TC_INT;_lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509_REVOKED_get_ext: function(x: PX509_REVOKED; _loc: TC_INT): PX509_EXTENSION; cdecl = nil;
+	X509_REVOKED_delete_ext: function(x: PX509_REVOKED; _loc: TC_INT): PX509_EXTENSION; cdecl = nil;
+	X509_REVOKED_add_ext: function(x: PX509_REVOKED; ex: PX509_EXTENSION; _loc: TC_INT): TC_INT; cdecl = nil;
+	X509_REVOKED_get_ext_d2i: function(x: PX509_REVOKED; _nid: TC_INT; var _crit: TC_INT; var _idx: TC_INT): Pointer; cdecl = nil;
+	X509_REVOKED_add1_ext_i2d: function(x: PX509_REVOKED; _nid: TC_INT; value: Pointer; _crit: TC_INT;	_flags: TC_ULONG): TC_INT; cdecl = nil;
+
+	X509_EXTENSION_create_by_NID: function(var e: PX509_EXTENSION; _nid: TC_INT; _crit: TC_INT; data: PASN1_OCTET_STRING): PX509_EXTENSION; cdecl = nil;
+	X509_EXTENSION_create_by_OBJ: function(var e: PX509_EXTENSION; obj: PASN1_OBJECT; _crit: TC_INT; data: PASN1_OCTET_STRING): PX509_EXTENSION; cdecl = nil;
+	X509_EXTENSION_set_object: function(ex: PX509_EXTENSION; obj: PASN1_OBJECT): TC_INT; cdecl = nil;
+	X509_EXTENSION_set_critical: function(ex: PX509_EXTENSION; _crit: TC_INT): TC_INT; cdecl = nil;
+	X509_EXTENSION_set_data: function(ex: PX509_EXTENSION; data: PASN1_OCTET_STRING): TC_INT; cdecl = nil;
+	X509_EXTENSION_get_object: function(ex: PX509_EXTENSION): PASN1_OBJECT; cdecl = nil;
+	X509_EXTENSION_get_data: function(ne: PX509_EXTENSION): PASN1_OCTET_STRING; cdecl = nil;
+	X509_EXTENSION_get_critical: function(ex: PX509_EXTENSION): TC_INT; cdecl = nil;
+
+	X509at_get_attr_count: function(const x: PSTACK_OF_X509_ATTRIBUTE): TC_INT; cdecl = nil;
+	X509at_get_attr_by_NID: function(const x: PSTACK_OF_X509_ATTRIBUTE; _nid: TC_INT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509at_get_attr_by_OBJ: function(const sk: PSTACK_OF_X509_ATTRIBUTE; obj: PASN1_OBJECT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	X509at_get_attr: function(const x: PSTACK_OF+X509_ATTRIBUTE; _loc: TC_INT): PX509_ATTRIBUTE; cdecl = nil;
+	X509at_delete_attr: function(x: PSTACK_OF_X509_ATTRIBUTE; _loc: TC_INT): PX509_ATTRIBUTE; cdecl = nil;
+	X509at_add1_attr: function(var x: PSTACK_OF_X509_ATTRIBUTE; attr: PX509_ATTRIBUTE): PSTACK_OF_X509_ATTRIBUTE; cdecl = nil;
+	X509at_add1_attr_by_OBJ: function(var x: PSTACK_OF_X509_ATTRIBUTE; const obj: PASN1_OBJECT; _type: TC_INT; bytes: PAnsiChar;_len: TC_INT): PSTACK_OF_X509_ATTRIBUTE; cdecl = nil;
+	X509at_add1_attr_by_NID: function(x: PSTACK_OF_X509_ATTRIBUTE; _nid: TC_INT;_type: TC_INT;	bytes: PAnsiChar; _len: TC_INT): PSTACK_OF_X509_ATTRIBUTE; cdecl = nil;
+	X509at_add1_attr_by_txt(var x: PSTACK_OF(X509_ATTRIBUTE; const attrname: PAnsiChar; _type: TC_INT;	const bytes: PAnsiChar; _len: TC_INT): PSTACK_OF_X509_ATTRIBUTE; cdecl = nil;
+	X509at_get0_data_by_OBJ: function(x: PSTACK_OF_X509_ATTRIBUTE; obj: PASN1_OBJECT; _lastpos: TC_INT; _type: TC_INT): pointer; cdecl = nil;
+	X509_ATTRIBUTE_create_by_NID: function(var a: PX509_ATTRIBUTE; _nid: TC_INT;_atrtype: TC_INT; const data: Pointer; _len: TC_INT): PX509_ATTRIBUTE; cdecl = nil;
+	X509_ATTRIBUTE_create_by_OBJ: function(var a: PX509_ATTRIBUTE; const obj: PASN1_OBJECT; _atrtype: TC_INT; const data: Pointer; _len: TC_INT): PX509_ATTRIBUTE; cdecl = nil;
+	X509_ATTRIBUTE_create_by_txt: function(var a: PX509_ATTRIBUTE; const atrname: PAnsiChar; _type: TC_INT; const bytes: PAnsiChar; _len: TC_INT): PX509_ATTRIBUTE; cdecl = nil;
+	X509_ATTRIBUTE_set1_object: function(attr: PX509_ATTRIBUTE; const obj: PASN1_OBJECT): TC_INT; cdecl = nil;
+	X509_ATTRIBUTE_set1_data: function(attr: PX509_ATTRIBUTE; _attrtype: TC_INT; const data: Pointer; _len: TC_INT): TC_INT; cdecl = nil;
+	X509_ATTRIBUTE_get0_data: function(attr: PX509_ATTRIBUTE; _idx: TC_INT; _atrtype: TC_INT; data: Pointer): Pointer; cdecl = nil;
+	X509_ATTRIBUTE_count: function(attr: PX509_ATTRIBUTE): TC_INT; cdecl = nil;
+	X509_ATTRIBUTE_get0_object: function(attr: PX509_ATTRIBUTE): PASN1_OBJECT; cdecl = nil;
+	X509_ATTRIBUTE_get0_type: function(attr: PX509_ATTRIBUTE; _idx: TC_INT): PASN1_TYPE; cdecl = nil;
+
+	EVP_PKEY_get_attr_count: function(const key: PEVP_PKEY): TC_INT; cdecl = nil;
+	EVP_PKEY_get_attr_by_NID: function(const key: PEVP_PKEY; _nid: TC_INT;_lastpos: TC_INT): TC_INT; cdecl = nil;
+	EVP_PKEY_get_attr_by_OBJ: function(const key: PEVP_PKEY; obj: PASN1_OBJECT; _lastpos: TC_INT): TC_INT; cdecl = nil;
+	EVP_PKEY_get_attr: function(const key: PEVP_PKEY; _loc: TC_INT): PX509_ATTRIBUTE; cdecl = nil;
+	EVP_PKEY_delete_attr: function(key: PEVP_PKEY; _loc: TC_INT): PX509_ATTRIBUTE; cdecl = nil;
+	EVP_PKEY_add1_attr: function(key: PEVP_PKEY;  attr: PX509_ATTRIBUTE): TC_INT; cdecl = nil;
+	EVP_PKEY_add1_attr_by_OBJ: function(key: PEVP_PKEY; const obj: PASN1_OBJECT; _type: TC_INT; const bytes: PAnsiChar; _len: TC_INT): TC_INT; cdecl = nil;
+	EVP_PKEY_add1_attr_by_NID: function(key: PEVP_PKEY; _nid: TC_INT; _type: TC_INT; const bytes: PAnsiChar; _len: TC_INT): TC_INT; cdecl = nil;
+	EVP_PKEY_add1_attr_by_txt: function(key: PEVP_PKEY; const attrname: PAnsiChar; _type: TC_INT; const bytes: PAnsiChar; _len: TC_INT): TC_INT; cdecl = nil;
+
+	X509_verify_cert: function(ctx: PX509_STORE_CTX): TC_INT; cdecl = nil;
+
+	X509_find_by_issuer_and_serial: function(sk: PSTACK_OF_X509; name: PX509_NAME; serial: PASN1_INTEGER): PX509; cdecl = nil;
+	X509_find_by_subject: function(sk: PSTACK_OF_X509; name: PX509_NAME): PX509; cdecl = nil;
+
+	PKCS5_pbe_set0_algor: function(algor: PX509_ALGOR; _alg: TC_INT;_iter: TC_INT; const salt: PAnsiChar; _saltlen: TC_INT): TC_INT; cdecl = nil;
+
+	PKCS5_pbe_set: function(_alg: TC_INT; _iter: TC_INT; const salt: PAnsiChar; _saltlen: TC_INT): PX509_ALGOR; cdecl = nil;
+	PKCS5_pbe2_set: function(const cipher: PEVP_CIPHER; _iter: TC_INT; salt: PAnsiChar; _saltlen: TC_INT): PX509_ALGOR; cdecl = nil;
+	PKCS5_pbe2_set_iv: function(const cipher: PEVP_CIPHER; _iter: TC_INT; salt: PAnsiChar; _saltlen: TC_INT; aiv: PAnsiChar; _prf_nid: TC_INT): PX509_ALGOR; cdecl = nil;
+
+	PKCS5_pbkdf2_set: function(_iter: TC_INT; salt: PAnsiChar; _saltlen: TC_INT; _prf_nid: TC_INT;_keylen: TC_INT): PX509_ALGOR; cdecl = nil;
+
+	EVP_PKCS82PKEY: function(p8: PPKCS8_PRIV_KEY_INFO): PEVP_PKEY; cdecl = nil;
+	EVP_PKEY2PKCS8: function(pkey: PEVP_PKEY): PPKCS8_PRIV_KEY_INFO; cdecl = nil;
+	EVP_PKEY2PKCS8_broken: function(pkey: PEVP_PKEY; _broken: TC_INT): PPKCS8_PRIV_KEY_INFO; cdecl = nil;
+	PKCS8_set_broken: function(p8: PPKCS8_PRIV_KEY_INFO; _broken: TC_INT): PPKCS8_PRIV_KEY_INFO; cdecl = nil;
+
+	PKCS8_pkey_set0: function(priv: PPKCS8_PRIV_KEY_INFO; aobj: PASN1_OBJECT; _version: TC_INT; _ptype: TC_INT; pval: Pointer; penc: PAnsiChar;_penclen: TC_INT): TC_INT; cdecl = nil;
+	PKCS8_pkey_get0: function(var p: PASN1_OBJECT; var pk: PAnsiChar; var _ppklen: TC_INT; var p: PX509_ALGOR; p8: PPKCS8_PRIV_KEY_INFO): TC_INT; cdecl = nil;
+
+	X509_PUBKEY_set0_param: function(pub: PX509_PUBKEY; aobj: PASN1_OBJECT; _ptype: TC_INT; pval: Pointer; penc: PAnsiChar; _penclen: TC_INT): TC_INT; cdecl = nil;
+	X509_PUBKEY_get0_param: function(var p: PASN1_OBJECT; var pk: PAnsiChar; var _ppklen: TC_INT; var p: PX509_ALGOR; pub: PX509_PUBKEY): TC_INT; cdecl = nil;
+
+	X509_check_trust: function(x: PX509;  _id: TC_INT;_flags: TC_INT): TC_INT; cdecl = nil;
+	X509_TRUST_get_count: function: TC_INT; cdecl = nil;
+	X509_TRUST_get0: function(_idx: TC_INT): PX509_TRUST; cdecl = nil;
+	X509_TRUST_get_by_id: function(_id: TC_INT): TC_INT; cdecl = nil;
 	
-	
+	X509_TRUST_cleanup: procedure; cdecl= nil;
+	X509_TRUST_get_flags: function(xp: PX509_TRUST): TC_INT; cdecl = nil;
+	X509_TRUST_get0_name: function(xp: PX509_TRUST): PAnsiChar; cdecl = nil;
+	X509_TRUST_get_trust: function(xp: PX509_TRUST): TC_INT; cdecl = nil;
+
+	ERR_load_X509_strings: procedure; cdecl = nil;
+
+
 procedure SSL_InitX509;
 
 implementation
@@ -347,7 +502,250 @@ begin
     @d2i_PKCS8_PRIV_KEY_INFO_bio:= LoadFunctionCLib('d2i_PKCS8_PRIV_KEY_INFO_bio');
     @i2d_PKCS8_PRIV_KEY_INFO_bio:= LoadFunctionCLib('i2d_PKCS8_PRIV_KEY_INFO_bio');
     @i2d_PKCS8PrivateKeyInfo_bio:= LoadFunctionCLib('i2d_PKCS8PrivateKeyInfo_bio');
-
+		
+	@X509_dup:= LoadFunctionCLib('X509_dup');
+	@X509_ATTRIBUTE_dup:= LoadFunctionCLib('X509_ATTRIBUTE_dup');
+	@X509_EXTENSION_dup:= LoadFunctionCLib('X509_EXTENSION_dup');
+	@X509_CRL_dup:= LoadFunctionCLib('X509_CRL_dup');
+	@X509_REQ_dup:= LoadFunctionCLib('X509_REQ_dup');
+	@X509_ALGOR_dup:= LoadFunctionCLib('X509_ALGOR_dup');
+	@X509_ALGOR_set0:= LoadFunctionCLib('X509_ALGOR_set0');
+	@X509_ALGOR_get0:= LoadFunctionCLib('X509_ALGOR_get0');
+	@X509_ALGOR_set_md:= LoadFunctionCLib('X509_ALGOR_set_md');
+	@X509_NAME_dup:= LoadFunctionCLib('X509_NAME_dup');
+	@X509_NAME_ENTRY_dup:= LoadFunctionCLib('X509_NAME_ENTRY_dup');
+	@X509_cmp_time(= LoadFunctionCLib('X509_cmp_time');
+	@X509_cmp_current_time(= LoadFunctionCLib('X509_cmp_current_time');
+	@X509_time_adj:= LoadFunctionCLib('X509_time_adj');
+	@X509_time_adj_ex:= LoadFunctionCLib('X509_time_adj_ex');
+	@X509_gmtime_adj:= LoadFunctionCLib('X509_gmtime_adj');
+	@X509_get_default_cert_area:= LoadFunctionCLib('X509_get_default_cert_area');
+	@X509_get_default_cert_dir:= LoadFunctionCLib('X509_get_default_cert_dir');
+	@X509_get_default_cert_file:= LoadFunctionCLib('X509_get_default_cert_file');
+	@X509_get_default_cert_dir_env:= LoadFunctionCLib('X509_get_default_cert_dir_env');
+	@X509_get_default_cert_file_env:= LoadFunctionCLib('X509_get_default_cert_file_env');
+	@X509_get_default_private_dir:= LoadFunctionCLib('X509_get_default_private_dir');
+	@X509_to_X509_REQ:= LoadFunctionCLib('X509_to_X509_REQ');
+	@X509_REQ_to_X509:= LoadFunctionCLib('X509_REQ_to_X509');
+	@X509_PUBKEY_set:= LoadFunctionCLib('X509_PUBKEY_set');
+	@X509_PUBKEY_get:= LoadFunctionCLib('X509_PUBKEY_get');
+	@X509_get_pubkey_parameters:= LoadFunctionCLib('X509_get_pubkey_parameters');
+	@i2d_PUBKEY:= LoadFunctionCLib('i2d_PUBKEY');
+	@d2i_PUBKEY:= LoadFunctionCLib('d2i_PUBKEY');
+	@i2d_RSA_PUBKEY:= LoadFunctionCLib('i2d_RSA_PUBKEY');
+	@d2i_RSA_PUBKEY:= LoadFunctionCLib('d2i_RSA_PUBKEY');
+	@i2d_DSA_PUBKEY:= LoadFunctionCLib('i2d_DSA_PUBKEY');
+	@d2i_DSA_PUBKEY:= LoadFunctionCLib('d2i_DSA_PUBKEY');
+	@i2d_EC_PUBKEY:= LoadFunctionCLib('i2d_EC_PUBKEY');
+	@d2i_EC_PUBKEY:= LoadFunctionCLib('d2i_EC_PUBKEY');
+	@X509_NAME_set:= LoadFunctionCLib('X509_NAME_set');
+	@X509_get_ex_new_index:= LoadFunctionCLib('X509_get_ex_new_index');
+	@X509_set_ex_data:= LoadFunctionCLib('X509_set_ex_data');
+	@X509_get_ex_data:= LoadFunctionCLib('X509_get_ex_data');
+	@i2d_X509_AUX:= LoadFunctionCLib('i2d_X509_AUX');
+	@d2i_X509_AUX:= LoadFunctionCLib('d2i_X509_AUX');
+	@X509_alias_set1:= LoadFunctionCLib('X509_alias_set1');
+	@X509_keyid_set1:= LoadFunctionCLib('X509_keyid_set1');
+	@X509_alias_get0:= LoadFunctionCLib('X509_alias_get0');
+	@X509_keyid_get0:= LoadFunctionCLib('X509_keyid_get0');
+	@X509_TRUST_set:= LoadFunctionCLib('X509_TRUST_set');
+	@X509_add1_trust_object:= LoadFunctionCLib('X509_add1_trust_object');
+	@X509_add1_reject_object:= LoadFunctionCLib('X509_add1_reject_object');
+	@X509_trust_clear:= LoadFunctionCLib('X509_trust_clear');
+	@X509_reject_clear:= LoadFunctionCLib('X509_reject_clear');
+	@X509_CRL_add0_revoked:= LoadFunctionCLib('X509_CRL_add0_revoked');
+	@X509_CRL_get0_by_serial:= LoadFunctionCLib('X509_CRL_get0_by_serial');
+	@X509_CRL_get0_by_cert:= LoadFunctionCLib('X509_CRL_get0_by_cert');
+	@X509_PKEY_new:= LoadFunctionCLib('X509_PKEY_new');
+	@X509_PKEY_free:= LoadFunctionCLib('X509_PKEY_free');
+	@i2d_X509_PKEY:= LoadFunctionCLib('i2d_X509_PKEY');
+	@d2i_X509_PKEY:= LoadFunctionCLib('d2i_X509_PKEY');
+	@X509_INFO_new:= LoadFunctionCLib('X509_INFO_new');
+	@X509_INFO_free:= LoadFunctionCLib('X509_INFO_free');
+	@X509_NAME_oneline:= LoadFunctionCLib('X509_NAME_oneline');
+	@ASN1_verify:= LoadFunctionCLib('ASN1_verify');
+	@ASN1_digest:= LoadFunctionCLib('ASN1_digest');
+	@ASN1_sign:= LoadFunctionCLib('ASN1_sign');
+	@ASN1_item_digest:= LoadFunctionCLib('ASN1_item_digest');
+	@ASN1_item_verify:= LoadFunctionCLib('ASN1_item_verify');
+	@ASN1_item_sign:= LoadFunctionCLib('ASN1_item_sign');
+	@ASN1_item_sign_ctx:= LoadFunctionCLib('ASN1_item_sign_ctx');
+	@X509_set_version:= LoadFunctionCLib('X509_set_version');
+	@X509_set_serialNumber:= LoadFunctionCLib('X509_set_serialNumber');
+	@X509_get_serialNumber:= LoadFunctionCLib('X509_get_serialNumber');
+	@X509_set_issuer_name:= LoadFunctionCLib('X509_set_issuer_name');
+	@X509_get_issuer_name:= LoadFunctionCLib('X509_get_issuer_name');
+	@X509_set_subject_name:= LoadFunctionCLib('X509_set_subject_name');
+	@X509_get_subject_name:= LoadFunctionCLib('X509_get_subject_name');
+	@X509_set_notBefore:= LoadFunctionCLib('X509_set_notBefore');
+	@X509_set_notAfter:= LoadFunctionCLib('X509_set_notAfter');
+	@X509_set_pubkey:= LoadFunctionCLib('X509_set_pubkey');
+	@X509_get_pubkey:= LoadFunctionCLib('X509_get_pubkey');
+	@X509_get0_pubkey_bitstr:= LoadFunctionCLib('X509_get0_pubkey_bitstr');
+	@X509_certificate_type:= LoadFunctionCLib('X509_certificate_type');
+	@X509_REQ_set_version:= LoadFunctionCLib('X509_REQ_set_version');
+	@X509_REQ_set_subject_name:= LoadFunctionCLib('X509_REQ_set_subject_name');
+	@X509_REQ_set_pubkey:= LoadFunctionCLib('X509_REQ_set_pubkey');
+	@X509_REQ_get_pubkey:= LoadFunctionCLib('X509_REQ_get_pubkey');
+	@X509_REQ_extension_nid:= LoadFunctionCLib('X509_REQ_extension_nid');
+	@X509_REQ_get_extension_nids:= LoadFunctionCLib('X509_REQ_get_extension_nids');
+	@X509_REQ_set_extension_nids:= LoadFunctionCLib('X509_REQ_set_extension_nids');
+	@X509_REQ_get_extensions:= LoadFunctionCLib('X509_REQ_get_extensions');
+	@X509_REQ_add_extensions_nid:= LoadFunctionCLib('X509_REQ_add_extensions_nid');
+	@X509_REQ_add_extensions:= LoadFunctionCLib('X509_REQ_add_extensions');
+	@X509_REQ_get_attr_count:= LoadFunctionCLib('X509_REQ_get_attr_count');
+	@X509_REQ_get_attr_by_NID:= LoadFunctionCLib('X509_REQ_get_attr_by_NID');
+	@X509_REQ_get_attr_by_OBJ:= LoadFunctionCLib('X509_REQ_get_attr_by_OBJ');
+	@X509_REQ_get_attr:= LoadFunctionCLib('X509_REQ_get_attr');
+	@X509_REQ_delete_attr:= LoadFunctionCLib('X509_REQ_delete_attr');
+	@X509_REQ_add1_attr:= LoadFunctionCLib('X509_REQ_add1_attr');
+	@X509_REQ_add1_attr_by_OBJ:= LoadFunctionCLib('X509_REQ_add1_attr_by_OBJ');
+	@X509_REQ_add1_attr_by_NID:= LoadFunctionCLib('X509_REQ_add1_attr_by_NID');
+	@X509_REQ_add1_attr_by_txt:= LoadFunctionCLib('X509_REQ_add1_attr_by_txt');
+	@X509_CRL_set_version:= LoadFunctionCLib('X509_CRL_set_version');
+	@X509_CRL_set_issuer_name:= LoadFunctionCLib('X509_CRL_set_issuer_name');
+	@X509_CRL_set_lastUpdate:= LoadFunctionCLib('X509_CRL_set_lastUpdate');
+	@X509_CRL_set_nextUpdate:= LoadFunctionCLib('X509_CRL_set_nextUpdate');
+	@X509_CRL_sort:= LoadFunctionCLib('X509_CRL_sort');
+	@X509_REVOKED_set_serialNumber:= LoadFunctionCLib('X509_REVOKED_set_serialNumber');
+	@X509_REVOKED_set_revocationDate:= LoadFunctionCLib('X509_REVOKED_set_revocationDate');
+	@X509_REQ_check_private_key:= LoadFunctionCLib('X509_REQ_check_private_key');
+	@X509_check_private_key:= LoadFunctionCLib('X509_check_private_key');
+	@X509_issuer_and_serial_cmp:= LoadFunctionCLib('X509_issuer_and_serial_cmp');
+	@X509_issuer_and_serial_hash:= LoadFunctionCLib('X509_issuer_and_serial_hash');
+	@X509_issuer_name_cmp:= LoadFunctionCLib('X509_issuer_name_cmp');
+	@X509_issuer_name_hash:= LoadFunctionCLib('X509_issuer_name_hash');
+	@X509_subject_name_cmp:= LoadFunctionCLib('X509_subject_name_cmp');
+	@X509_subject_name_hash:= LoadFunctionCLib('X509_subject_name_hash');
+	@X509_issuer_name_hash_old:= LoadFunctionCLib('X509_issuer_name_hash_old');
+	@X509_subject_name_hash_old:= LoadFunctionCLib('X509_subject_name_hash_old');
+	@X509_cmp:= LoadFunctionCLib('X509_cmp');
+	@X509_NAME_cmp:= LoadFunctionCLib('X509_NAME_cmp');
+	@X509_NAME_hash:= LoadFunctionCLib('X509_NAME_hash');
+	@X509_NAME_hash_old:= LoadFunctionCLib('X509_NAME_hash_old');
+	@X509_CRL_cmp:= LoadFunctionCLib('X509_CRL_cmp');
+	@X509_CRL_match:= LoadFunctionCLib('X509_CRL_match');
+	@X509_NAME_print:= LoadFunctionCLib('X509_NAME_print');
+	@X509_NAME_print_ex:= LoadFunctionCLib('X509_NAME_print_ex');
+	@X509_print_ex:= LoadFunctionCLib('X509_print_ex');
+	@X509_print:= LoadFunctionCLib('X509_print');
+	@X509_ocspid_print:= LoadFunctionCLib('X509_ocspid_print');
+	@X509_CERT_AUX_print:= LoadFunctionCLib('X509_CERT_AUX_print');
+	@X509_CRL_print:= LoadFunctionCLib('X509_CRL_print');
+	@X509_REQ_print_ex:= LoadFunctionCLib('X509_REQ_print_ex');
+	@X509_REQ_print:= LoadFunctionCLib('X509_REQ_print');
+	@X509_NAME_entry_count:= LoadFunctionCLib('X509_NAME_entry_count');
+	@X509_NAME_get_text_by_NID:= LoadFunctionCLib('X509_NAME_get_text_by_NID');
+	@X509_NAME_get_text_by_OBJ:= LoadFunctionCLib('X509_NAME_get_text_by_OBJ');
+	@X509_NAME_get_index_by_NID:= LoadFunctionCLib('X509_NAME_get_index_by_NID');
+	@X509_NAME_get_index_by_OBJ:= LoadFunctionCLib('X509_NAME_get_index_by_OBJ');
+	@X509_NAME_get_entry:= LoadFunctionCLib('X509_NAME_get_entry');
+	@X509_NAME_delete_entry:= LoadFunctionCLib('X509_NAME_delete_entry');
+	@X509_NAME_add_entry:= LoadFunctionCLib('X509_NAME_add_entry');
+	@X509_NAME_add_entry_by_OBJ:= LoadFunctionCLib('X509_NAME_add_entry_by_OBJ');
+	@X509_NAME_add_entry_by_NID:= LoadFunctionCLib('X509_NAME_add_entry_by_NID');
+	@X509_NAME_ENTRY_create_by_txt:= LoadFunctionCLib('X509_NAME_ENTRY_create_by_txt');
+	@X509_NAME_ENTRY_create_by_NID:= LoadFunctionCLib('X509_NAME_ENTRY_create_by_NID');
+	@X509_NAME_add_entry_by_txt:= LoadFunctionCLib('X509_NAME_add_entry_by_txt');
+	@X509_NAME_ENTRY_create_by_OBJ:= LoadFunctionCLib('X509_NAME_ENTRY_create_by_OBJ');
+	@X509_NAME_ENTRY_set_object:= LoadFunctionCLib('X509_NAME_ENTRY_set_object');
+	@X509_NAME_ENTRY_set_data:= LoadFunctionCLib('X509_NAME_ENTRY_set_data');
+	@X509_NAME_ENTRY_get_object:= LoadFunctionCLib('X509_NAME_ENTRY_get_object');
+	@X509_NAME_ENTRY_get_data:= LoadFunctionCLib('X509_NAME_ENTRY_get_data');
+	@X509v3_get_ext_count:= LoadFunctionCLib('X509v3_get_ext_count');
+	@X509v3_get_ext_by_NID:= LoadFunctionCLib('X509v3_get_ext_by_NID');
+	@X509v3_get_ext_by_OBJ:= LoadFunctionCLib('X509v3_get_ext_by_OBJ');
+	@X509v3_get_ext_by_critical:= LoadFunctionCLib('X509v3_get_ext_by_critical');
+	@X509v3_get_ext:= LoadFunctionCLib('X509v3_get_ext');
+	@X509v3_delete_ext:= LoadFunctionCLib('X509v3_delete_ext');
+	@X509v3_add_ext:= LoadFunctionCLib('X509v3_add_ext');
+	@X509_get_ext_count:= LoadFunctionCLib('X509_get_ext_count');
+	@X509_get_ext_by_NID:= LoadFunctionCLib('X509_get_ext_by_NID');
+	@X509_get_ext_by_OBJ:= LoadFunctionCLib('X509_get_ext_by_OBJ');
+	@X509_get_ext_by_critical:= LoadFunctionCLib('X509_get_ext_by_critical');
+	@X509_get_ext:= LoadFunctionCLib('X509_get_ext');
+	@X509_delete_ext:= LoadFunctionCLib('X509_delete_ext');
+	@X509_add_ext:= LoadFunctionCLib('X509_add_ext');
+	@X509_get_ext_d2i:= LoadFunctionCLib('X509_get_ext_d2i');
+	@X509_add1_ext_i2d:= LoadFunctionCLib('X509_add1_ext_i2d');
+	@X509_CRL_get_ext_count:= LoadFunctionCLib('X509_CRL_get_ext_count');
+	@X509_CRL_get_ext_by_NID:= LoadFunctionCLib('X509_CRL_get_ext_by_NID');
+	@X509_CRL_get_ext_by_OBJ:= LoadFunctionCLib('X509_CRL_get_ext_by_OBJ');
+	@X509_CRL_get_ext_by_critical:= LoadFunctionCLib('X509_CRL_get_ext_by_critical');
+	@X509_CRL_get_ext:= LoadFunctionCLib('X509_CRL_get_ext');
+	@X509_CRL_delete_ext:= LoadFunctionCLib('X509_CRL_delete_ext');
+	@X509_CRL_add_ext:= LoadFunctionCLib('X509_CRL_add_ext');
+	@X509_CRL_get_ext_d2i:= LoadFunctionCLib('X509_CRL_get_ext_d2i');
+	@X509_CRL_add1_ext_i2d:= LoadFunctionCLib('X509_CRL_add1_ext_i2d');
+	@X509_REVOKED_get_ext_count:= LoadFunctionCLib('X509_REVOKED_get_ext_count');
+	@X509_REVOKED_get_ext_by_NID:= LoadFunctionCLib('X509_REVOKED_get_ext_by_NID');
+	@X509_REVOKED_get_ext_by_OBJ:= LoadFunctionCLib('X509_REVOKED_get_ext_by_OBJ');
+	@X509_REVOKED_get_ext_by_critical:= LoadFunctionCLib('X509_REVOKED_get_ext_by_critical');
+	@X509_REVOKED_get_ext:= LoadFunctionCLib('X509_REVOKED_get_ext');
+	@X509_REVOKED_delete_ext:= LoadFunctionCLib('X509_REVOKED_delete_ext');
+	@X509_REVOKED_add_ext:= LoadFunctionCLib('X509_REVOKED_add_ext');
+	@X509_REVOKED_get_ext_d2i:= LoadFunctionCLib('X509_REVOKED_get_ext_d2i');
+	@X509_REVOKED_add1_ext_i2d:= LoadFunctionCLib('X509_REVOKED_add1_ext_i2d');
+	@X509_EXTENSION_create_by_NID:= LoadFunctionCLib('X509_EXTENSION_create_by_NID');
+	@X509_EXTENSION_create_by_OBJ:= LoadFunctionCLib('X509_EXTENSION_create_by_OBJ');
+	@X509_EXTENSION_set_object:= LoadFunctionCLib('X509_EXTENSION_set_object');
+	@X509_EXTENSION_set_critical:= LoadFunctionCLib('X509_EXTENSION_set_critical');
+	@X509_EXTENSION_set_data:= LoadFunctionCLib('X509_EXTENSION_set_data');
+	@X509_EXTENSION_get_object:= LoadFunctionCLib('X509_EXTENSION_get_object');
+	@X509_EXTENSION_get_data:= LoadFunctionCLib('X509_EXTENSION_get_data');
+	@X509_EXTENSION_get_critical:= LoadFunctionCLib('X509_EXTENSION_get_critical');
+	@X509at_get_attr_count:= LoadFunctionCLib('X509at_get_attr_count');
+	@X509at_get_attr_by_NID:= LoadFunctionCLib('X509at_get_attr_by_NID');
+	@X509at_get_attr_by_OBJ:= LoadFunctionCLib('X509at_get_attr_by_OBJ');
+	@X509at_get_attr:= LoadFunctionCLib('X509at_get_attr');
+	@X509at_delete_attr:= LoadFunctionCLib('X509at_delete_attr');
+	@X509at_add1_attr:= LoadFunctionCLib('X509at_add1_attr');
+	@X509at_add1_attr_by_OBJ:= LoadFunctionCLib('X509at_add1_attr_by_OBJ');
+	@X509at_add1_attr_by_NID:= LoadFunctionCLib('X509at_add1_attr_by_NID');
+	@X509at_add1_attr_by_txt(= LoadFunctionCLib('X509at_add1_attr_by_txt');
+	@X509at_get0_data_by_OBJ:= LoadFunctionCLib('X509at_get0_data_by_OBJ');
+	@X509_ATTRIBUTE_create_by_NID:= LoadFunctionCLib('X509_ATTRIBUTE_create_by_NID');
+	@X509_ATTRIBUTE_create_by_OBJ:= LoadFunctionCLib('X509_ATTRIBUTE_create_by_OBJ');
+	@X509_ATTRIBUTE_create_by_txt:= LoadFunctionCLib('X509_ATTRIBUTE_create_by_txt');
+	@X509_ATTRIBUTE_set1_object:= LoadFunctionCLib('X509_ATTRIBUTE_set1_object');
+	@X509_ATTRIBUTE_set1_data:= LoadFunctionCLib('X509_ATTRIBUTE_set1_data');
+	@X509_ATTRIBUTE_get0_data:= LoadFunctionCLib('X509_ATTRIBUTE_get0_data');
+	@X509_ATTRIBUTE_count:= LoadFunctionCLib('X509_ATTRIBUTE_count');
+	@X509_ATTRIBUTE_get0_object:= LoadFunctionCLib('X509_ATTRIBUTE_get0_object');
+	@X509_ATTRIBUTE_get0_type:= LoadFunctionCLib('X509_ATTRIBUTE_get0_type');
+	@EVP_PKEY_get_attr_count:= LoadFunctionCLib('EVP_PKEY_get_attr_count');
+	@EVP_PKEY_get_attr_by_NID:= LoadFunctionCLib('EVP_PKEY_get_attr_by_NID');
+	@EVP_PKEY_get_attr_by_OBJ:= LoadFunctionCLib('EVP_PKEY_get_attr_by_OBJ');
+	@EVP_PKEY_get_attr:= LoadFunctionCLib('EVP_PKEY_get_attr');
+	@EVP_PKEY_delete_attr:= LoadFunctionCLib('EVP_PKEY_delete_attr');
+	@EVP_PKEY_add1_attr:= LoadFunctionCLib('EVP_PKEY_add1_attr');
+	@EVP_PKEY_add1_attr_by_OBJ:= LoadFunctionCLib('EVP_PKEY_add1_attr_by_OBJ');
+	@EVP_PKEY_add1_attr_by_NID:= LoadFunctionCLib('EVP_PKEY_add1_attr_by_NID');
+	@EVP_PKEY_add1_attr_by_txt:= LoadFunctionCLib('EVP_PKEY_add1_attr_by_txt');
+	@X509_verify_cert:= LoadFunctionCLib('X509_verify_cert');
+	@X509_find_by_issuer_and_serial:= LoadFunctionCLib('X509_find_by_issuer_and_serial');
+	@X509_find_by_subject:= LoadFunctionCLib('X509_find_by_subject');
+	@PKCS5_pbe_set0_algor:= LoadFunctionCLib('PKCS5_pbe_set0_algor');
+	@PKCS5_pbe_set:= LoadFunctionCLib('PKCS5_pbe_set');
+	@PKCS5_pbe2_set:= LoadFunctionCLib('PKCS5_pbe2_set');
+	@PKCS5_pbe2_set_iv:= LoadFunctionCLib('PKCS5_pbe2_set_iv');
+	@PKCS5_pbkdf2_set:= LoadFunctionCLib('PKCS5_pbkdf2_set');
+	@EVP_PKCS82PKEY:= LoadFunctionCLib('EVP_PKCS82PKEY');
+	@EVP_PKEY2PKCS8:= LoadFunctionCLib('EVP_PKEY2PKCS8');
+	@EVP_PKEY2PKCS8_broken:= LoadFunctionCLib('EVP_PKEY2PKCS8_broken');
+	@PKCS8_set_broken:= LoadFunctionCLib('PKCS8_set_broken');
+	@PKCS8_pkey_set0:= LoadFunctionCLib('PKCS8_pkey_set0');
+	@PKCS8_pkey_get0:= LoadFunctionCLib('PKCS8_pkey_get0');
+	@X509_PUBKEY_set0_param:= LoadFunctionCLib('X509_PUBKEY_set0_param');
+	@X509_PUBKEY_get0_param:= LoadFunctionCLib('X509_PUBKEY_get0_param');
+	@X509_check_trust:= LoadFunctionCLib('X509_check_trust');
+	@X509_TRUST_get_count:= LoadFunctionCLib('X509_TRUST_get_count');
+	@X509_TRUST_get0:= LoadFunctionCLib('X509_TRUST_get0');
+	@X509_TRUST_get_by_id:= LoadFunctionCLib('X509_TRUST_get_by_id');
+	@X509_TRUST_cleanup:= LoadFunctionCLib('X509_TRUST_cleanup');
+	@X509_TRUST_get_flags:= LoadFunctionCLib('X509_TRUST_get_flags');
+	@X509_TRUST_get0_name:= LoadFunctionCLib('X509_TRUST_get0_name');
+	@X509_TRUST_get_trust:= LoadFunctionCLib('X509_TRUST_get_trust');	
 
   end;
 end;
