@@ -52,7 +52,7 @@ procedure EVP_PKEY_assign_DSA(key: PEVP_PKEY; dsa: PDSA); inline;
 procedure SSL_InitDSA;
 
 implementation
-uses ssl_lib, ssl_evp;
+uses ssl_lib, ssl_evp, ssl_const;
 
 procedure EVP_PKEY_assign_DSA(key: PEVP_PKEY; dsa: PDSA); inline;
 begin
