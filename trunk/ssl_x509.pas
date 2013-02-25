@@ -122,29 +122,27 @@ int X509_TRUST_add(int id, int flags, int (*ck)(X509_TRUST *, X509 *, int),
   i2d_PKCS8_PRIV_KEY_INFO_bio: function(bp: PBIO;p8inf: PPKCS8_PRIV_KEY_INFO): TC_INT; cdecl = nil;
   i2d_PKCS8PrivateKeyInfo_bio: function(bp: PBIO; key: PEVP_PKEY): TC_INT; cdecl = nil;
 
-	X509_dup: function(X509 *x509): PX509; cdecl = nil;
+	X509_dup: function(_x509: PX509): PX509; cdecl = nil;
 	X509_ATTRIBUTE_dup: function(xa: PX509_ATTRIBUTE): PX509_ATTRIBUTE; cdecl = nil;
 	X509_EXTENSION_dup: function(ex: PX509_EXTENSION): PX509_EXTENSION; cdecl = nil;
 	X509_CRL_dup: function(crl: PX509_CRL): PX509_CRL; cdecl = nil;
 	X509_REQ_dup: function(req: PX509_REQ): PX509_REQ; cdecl = nil;
 	X509_ALGOR_dup: function(xn: PX509_ALGOR): PX509_ALGOR; cdecl = nil;
 	X509_ALGOR_set0: function(alg: PX509_ALGOR; aobj: PASN1_OBJECT; ptype: TC_INT; pval: Pointer): TC_INT; cdecl = nil;
-	X509_ALGOR_get0: procedure(var paobj: PASN1_OBJECT; var pptype: TC_INT; var ppval: Pointer; algor: PX509_ALGOR; cdecl = nil;
+	X509_ALGOR_get0: procedure(var paobj: PASN1_OBJECT; var pptype: TC_INT; var ppval: Pointer; algor: PX509_ALGOR); cdecl = nil;
 	X509_ALGOR_set_md: procedure(alg: PX509_ALGOR; const md: PEVP_MD); cdecl = nil;
 	X509_NAME_dup: function(xn: PX509_NAME): PX509_NAME; cdecl = nil;
 	X509_NAME_ENTRY_dup: function(ne: PX509_NAME_ENTRY): PX509_NAME_ENTRY; cdecl = nil;
-	X509_cmp_time(const ASN1_TIME *s, time_t *t): TC_INT; cdecl = nil;
-	X509_cmp_current_time(const ASN1_TIME *s): TC_INT; cdecl = nil;
+	X509_cmp_time:function(const s: PASN1_TIME; t: TC_TIME_T): TC_INT; cdecl = nil;
+	X509_cmp_current_time: function(const s: PASN1_TIME): TC_INT; cdecl = nil;
 	X509_time_adj: function(s: PASN1_TIME; adj: TC_LONG; var t: TC_TIME_T): PASN1_TIME; cdecl = nil;
 	X509_time_adj_ex: function(s: PASN1_TIME; offset_day: TC_INT; offset_sec: TC_LONG; var t: TC_TIME_T): PASN1_TIME; cdecl = nil;
-	X509_gmtime_adj: function(s: PASN1_TIME; adj: TC_LONG): PASN1_TIME; cdecl = nil;
 	X509_get_default_cert_area: function: PAnsiChar; cdecl = nil;
 	X509_get_default_cert_dir: function: PAnsiChar; cdecl = nil;
 	X509_get_default_cert_file: function: PAnsiChar; cdecl = nil;
 	X509_get_default_cert_dir_env: function: PAnsiChar; cdecl = nil;
 	X509_get_default_cert_file_env: function: PAnsiChar; cdecl = nil;
 	X509_get_default_private_dir: function: PAnsiChar; cdecl = nil;
-	X509_to_X509_REQ: function(x: PX509; pkey: PEVP_PKEY; const md: PEVP_MD): PX509_REQ; cdecl = nil;
 	X509_REQ_to_X509: function(r: PX509_REQ; days: TC_INT; pkey: PEVP_PKEY): PX509; cdecl = nil;
 	X509_PUBKEY_set: function(var x: PX509_PUBKEY; pkey: PEVP_PKEY): TC_INT; cdecl = nil;
 	X509_PUBKEY_get: function(key: PX509_PUBKEY): PEVP_PKEY; cdecl = nil;
@@ -184,7 +182,6 @@ int X509_TRUST_add(int id, int flags, int (*ck)(X509_TRUST *, X509 *, int),
 	d2i_X509_PKEY: function(var a: PX509_PKEY; var pp: PAnsiChar; _length: TC_LONG): PX509_PKEY; cdecl = nil;
 
 	X509_INFO_new: function: PX509_INFO; cdecl = nil;
-	X509_INFO_free: procedure(a: PX509_INFO); cdecl = nil;
 	X509_NAME_oneline: function(a: PX509_NAME; buf: PAnsiChar; size: TC_INT): PAnsiChar; cdecl = nil;
 
 	ASN1_verify: function(i2d: i2d_of_void; algor1: PX509_ALGOR; signature: PASN1_BIT_STRING; data: PAnsiChar; pkey: PEVP_PKEY): TC_INT; cdecl = nil;
@@ -193,36 +190,29 @@ int X509_TRUST_add(int id, int flags, int (*ck)(X509_TRUST *, X509 *, int),
 
 	ASN1_sign: function(i2d: i2d_of_void;  algor1: PX509_ALGOR; algor2: PX509_ALGOR; signature: PASN1_BIT_STRING; data: PAnsiChar; pkey: PEVP_PKEY; const _type: PEVP_MD): TC_INT; cdecl = nil;
 
-	ASN1_item_digest: function(const it: PASN1_ITEM; const _type: PEVP_MD; data: Pointer; md: PAnsiChar; var len: TC__UINT): TC_INT; cdecl = nil;
+	ASN1_item_digest: function(const it: PASN1_ITEM; const _type: PEVP_MD; data: Pointer; md: PAnsiChar; var len: TC_UINT): TC_INT; cdecl = nil;
 
 	ASN1_item_verify: function(const it: PASN1_ITEM; algor1: PX509_ALGOR; signature: PASN1_BIT_STRING; data: Pointer; pkey: PEVP_PKEY): TC_INT; cdecl = nil;
 
 	ASN1_item_sign: function(const it: PASN1_ITEM; algor1: PX509_ALGOR; algor2: PX509_ALGOR; signature: PASN1_BIT_STRING; data: Pointer; pkey: PEVP_PKEY; const _type: PEVP_MD): TC_INT; cdecl = nil;
 	ASN1_item_sign_ctx: function(const it: PASN1_ITEM; algor1: PX509_ALGOR; algor2: PX509_ALGOR; signature: PASN1_BIT_STRING; asn: Pointer; ctx: PEVP_MD_CTX): TC_INT; cdecl = nil;
-	X509_set_version: function(x: PX509; version: TC_LONG): TC_INT; cdecl = nil;
 	X509_set_serialNumber: function(x: PX509; serial: PASN1_INTEGER): TC_INT; cdecl = nil;
-	X509_get_serialNumber: function(x: PX509): PASN1_INTEGER; cdecl = nil;
 	X509_set_issuer_name: function(x: PX509; name: PX509_NAME): TC_INT; cdecl = nil;
 	X509_get_issuer_name: function(a: PX509): PX509_NAME; cdecl = nil;
 	X509_set_subject_name: function(x: PX509; name: PX509_NAME): TC_INT; cdecl = nil;
 	X509_get_subject_name: function(a: PX509): PX509_NAME; cdecl = nil;
-	X509_set_notBefore: function(x: PX509; const tm: PASN1_TIME): TC_INT; cdecl = nil;
-	X509_set_notAfter: function(x: PX509; const tm: PASN1_TIME): TC_INT; cdecl = nil;
-	X509_set_pubkey: function(x: PX509; pkey: PEVP_PKEY): TC_INT; cdecl = nil;
 	X509_get_pubkey: function(x: PX509): PEVP_PKEY; cdecl = nil;
 	X509_get0_pubkey_bitstr: function(const x: PX509): PASN1_BIT_STRING; cdecl = nil;
 	X509_certificate_type: function(x: PX509; pubkey: PEVP_PKEY): TC_INT; cdecl = nil;
 
 	X509_REQ_set_version: function(x: PX509_REQ; version: TC_LONG): TC_INT; cdecl = nil;
 	X509_REQ_set_subject_name: function(req: PX509_REQ; name: PX509_NAME): TC_INT; cdecl = nil;
-	X509_REQ_set_pubkey: function(x: PX509_REQ; pkey: PEVP_PKEY): TC_INT; cdecl = nil;
 	X509_REQ_get_pubkey: function(req: PX509_REQ): PEVP_PKEY; cdecl = nil;
 	X509_REQ_extension_nid: function(nid: TC_INT): TC_INT; cdecl = nil;
 	X509_REQ_get_extension_nids: function: PC_INT; cdecl = nil;
 	X509_REQ_set_extension_nids: procedure(nids: PC_INT); cdecl = nil;
 	X509_REQ_get_extensions: function(req: PX509_REQ): PSTACK_OF_X509_EXTENSION;
-	X509_REQ_add_extensions_nid: function(req: PX509_REQ; exts: PSTAKC_OF_X509_EXTENSION; nid: TC_INT): TC_INT; cdecl = nil;
-	X509_REQ_add_extensions: function(req: PX509_REQ; exts: PSTAKC_OF_X509_EXTENSION): TC_INT; cdecl = nil;
+	X509_REQ_add_extensions_nid: function(req: PX509_REQ; exts: PSTACK_OF_X509_EXTENSION; nid: TC_INT): TC_INT; cdecl = nil;
 	X509_REQ_get_attr_count: function(const req: PX509_REQ): TC_INT; cdecl = nil;
 	X509_REQ_get_attr_by_NID: function(const req: PX509_REQ; nid: TC_INT; lastpos: TC_INT): TC_INT; cdecl = nil;
 	X509_REQ_get_attr_by_OBJ: function(const req: PX509_REQ; obj: PASN1_OBJECT; lastpos: TC_INT): TC_INT; cdecl = nil;
@@ -230,7 +220,7 @@ int X509_TRUST_add(int id, int flags, int (*ck)(X509_TRUST *, X509 *, int),
 	X509_REQ_delete_attr: function(req: PX509_REQ; loc: TC_INT): PX509_ATTRIBUTE; cdecl = nil;
 	X509_REQ_add1_attr: function(req: PX509_REQ; attr: PX509_ATTRIBUTE): TC_INT; cdecl = nil;
 	X509_REQ_add1_attr_by_OBJ: function(req: PX509_REQ; const obj: PASN1_OBJECT; _type: TC_INT; const bytes: PAnsiChar; len: TC_INT): TC_INT; cdecl = nil;
-	X509_REQ_add1_attr_by_NID: function(req: PX509_REQ; nid: TC_INT; _type: TC_INT;	const bytes: PAnsoChar; len: TC_INT): TC_INT; cdecl = nil;
+	X509_REQ_add1_attr_by_NID: function(req: PX509_REQ; nid: TC_INT; _type: TC_INT;	const bytes: PAnsiChar; len: TC_INT): TC_INT; cdecl = nil;
 	X509_REQ_add1_attr_by_txt: function(req: PX509_REQ; attrname: PAnsiChar; _type: TC_INT; const bytes: PAnsiChar; len: TC_INT): TC_INT; cdecl = nil;
 
 	X509_CRL_set_version: function(x: PX509_CRL; _version: TC_LONG): TC_INT; cdecl = nil;
@@ -250,7 +240,7 @@ int X509_TRUST_add(int id, int flags, int (*ck)(X509_TRUST *, X509 *, int),
 	X509_issuer_and_serial_hash: function(a: PX509): TC_ULONG; cdecl = nil;
 
 	X509_issuer_name_cmp: function(const a: PX509; const b: PX509): TC_INT; cdecl = nil;
-	X509_issuer_name_hash: function(X509 *a): TC_ULONG; cdecl = nil;
+	X509_issuer_name_hash: function(a: PX509): TC_ULONG; cdecl = nil;
 	X509_subject_name_cmp: function(const a: PX509; const b: PX509): TC_INT; cdecl = nil;
 	X509_subject_name_hash: function(x: PX509): TC_ULONG; cdecl = nil;
 
@@ -268,7 +258,6 @@ int X509_TRUST_add(int id, int flags, int (*ck)(X509_TRUST *, X509 *, int),
 	X509_NAME_print: function(bp: PBIO; name: PX509_NAME; obase: TC_INT): TC_INT; cdecl = nil;
 	X509_NAME_print_ex: function(_out: PBIO; nm: PX509_NAME; _indent: TC_INT; flags: TC_ULONG): TC_INT; cdecl = nil;
 	X509_print_ex: function(bp: PBIO; x: PX509; nmflag: TC_ULONG; cflag: TC_ULONG): TC_INT; cdecl = nil;
-	X509_print: function(bp: PBIO; x: PX509): TC_INT; cdecl = nil;
 	X509_ocspid_print: function(bp: PBIO; x: PX509): TC_INT; cdecl = nil;
 	X509_CERT_AUX_print: function(bp: PBIO; x: PX509_CERT_AUX; _indent: TC_INT): TC_INT; cdecl = nil;
 	X509_CRL_print: function(bp: PBIO; x: PX509_CRL): TC_INT; cdecl = nil;
@@ -287,7 +276,6 @@ int X509_TRUST_add(int id, int flags, int (*ck)(X509_TRUST *, X509 *, int),
 	X509_NAME_add_entry_by_NID: function(name: PX509_NAME; _nid: TC_INT; _type: TC_INT; bytes: PAnsiChar; _len: TC_INT; _loc: TC_INT; _set: TC_INT): TC_INT; cdecl = nil;
 	X509_NAME_ENTRY_create_by_txt: function(var ne: PX509_NAME_ENTRY; field: PAnsiChar; _type: TC_INT; bytes: PAnsiChar; _len: TC_INT): PX509_NAME_ENTRY; cdecl = nil;
 	X509_NAME_ENTRY_create_by_NID: function(var n: PX509_NAME_ENTRY; _nid: TC_INT; _type: TC_INT; bytes: PAnsiChar; _len: TC_INT): PX509_NAME_ENTRY; cdecl = nil;
-	X509_NAME_add_entry_by_txt: function(name: PX509_NAME; field: PAnsiChar; _type: TC_INT; bytes: PAnsiChar; _len: TC_INT; _loc: TC_INT; _set: TC_INT): TC_INT; cdecl = nil;
 	X509_NAME_ENTRY_create_by_OBJ: function(var n: PX509_NAME_ENTRY; obj: PASN1_OBJECT; _type: TC_INT; bytes: PAnsiChar; _len: TC_INT): PX509_NAME_ENTRY; cdecl = nil;
 	X509_NAME_ENTRY_set_object: function(ne: PX509_NAME_ENTRY; obj: PASN1_OBJECT): TC_INT; cdecl = nil;
 	X509_NAME_ENTRY_set_data: function(ne: PX509_NAME_ENTRY; _type: TC_INT; const bytes: PAnsiChar; _len: TC_INT): TC_INT; cdecl = nil;
@@ -301,15 +289,15 @@ int X509_TRUST_add(int id, int flags, int (*ck)(X509_TRUST *, X509 *, int),
 
 	X509v3_get_ext: function(const x: PSTACK_OF_X509_EXTENSION; _loc: TC_INT): PX509_EXTENSION; cdecl = nil;
 	X509v3_delete_ext: function(x: PSTACK_OF_X509_EXTENSION; _loc: TC_INT): PX509_EXTENSION; cdecl = nil;
-	X509v3_add_ext: function(var x: PSTACK_OF_X509_EXTENSION; ex: PX509_EXTENSION; _loc: TC_INT): PSTACK_OF_X509_EXTENSION
+	X509v3_add_ext: function(var x: PSTACK_OF_X509_EXTENSION; ex: PX509_EXTENSION; _loc: TC_INT): PSTACK_OF_X509_EXTENSION; cdecl = nil;
 
 	X509_get_ext_count: function(x: PX509): TC_INT; cdecl = nil;
+
 	X509_get_ext_by_NID: function(x: PX509; _nid: TC_INT; _lastpos: TC_INT): TC_INT; cdecl = nil;
 	X509_get_ext_by_OBJ: function(x: PX509; obj: PASN1_OBJECT; _lastpos: TC_INT): TC_INT; cdecl = nil;
 	X509_get_ext_by_critical: function(x: PX509;  _crit: TC_INT; _lastpos: TC_INT): TC_INT; cdecl = nil;
 	X509_get_ext: function(x: PX509;  _loc: TC_INT): PX509_EXTENSION; cdecl = nil;
 	X509_delete_ext: function(x: PX509;  _loc: TC_INT): PX509_EXTENSION; cdecl = nil;
-	X509_add_ext: function(x: PX509;  ex: PX509_EXTENSION; _loc: TC_INT): TC_INT; cdecl = nil;
 	X509_get_ext_d2i: function(x: PX509; _nid: TC_INT; var _crit: TC_INT; var _idx: TC_INT): Pointer; cdecl = nil;
 	X509_add1_ext_i2d: function(x: PX509; _nid: TC_INT; value: Pointer; _crit: TC_INT; flags: TC_ULONG): TC_INT; cdecl = nil;
 
@@ -333,7 +321,6 @@ int X509_TRUST_add(int id, int flags, int (*ck)(X509_TRUST *, X509 *, int),
 	X509_REVOKED_get_ext_d2i: function(x: PX509_REVOKED; _nid: TC_INT; var _crit: TC_INT; var _idx: TC_INT): Pointer; cdecl = nil;
 	X509_REVOKED_add1_ext_i2d: function(x: PX509_REVOKED; _nid: TC_INT; value: Pointer; _crit: TC_INT;	_flags: TC_ULONG): TC_INT; cdecl = nil;
 
-	X509_EXTENSION_create_by_NID: function(var e: PX509_EXTENSION; _nid: TC_INT; _crit: TC_INT; data: PASN1_OCTET_STRING): PX509_EXTENSION; cdecl = nil;
 	X509_EXTENSION_create_by_OBJ: function(var e: PX509_EXTENSION; obj: PASN1_OBJECT; _crit: TC_INT; data: PASN1_OCTET_STRING): PX509_EXTENSION; cdecl = nil;
 	X509_EXTENSION_set_object: function(ex: PX509_EXTENSION; obj: PASN1_OBJECT): TC_INT; cdecl = nil;
 	X509_EXTENSION_set_critical: function(ex: PX509_EXTENSION; _crit: TC_INT): TC_INT; cdecl = nil;
@@ -345,12 +332,12 @@ int X509_TRUST_add(int id, int flags, int (*ck)(X509_TRUST *, X509 *, int),
 	X509at_get_attr_count: function(const x: PSTACK_OF_X509_ATTRIBUTE): TC_INT; cdecl = nil;
 	X509at_get_attr_by_NID: function(const x: PSTACK_OF_X509_ATTRIBUTE; _nid: TC_INT; _lastpos: TC_INT): TC_INT; cdecl = nil;
 	X509at_get_attr_by_OBJ: function(const sk: PSTACK_OF_X509_ATTRIBUTE; obj: PASN1_OBJECT; _lastpos: TC_INT): TC_INT; cdecl = nil;
-	X509at_get_attr: function(const x: PSTACK_OF+X509_ATTRIBUTE; _loc: TC_INT): PX509_ATTRIBUTE; cdecl = nil;
+	X509at_get_attr: function(const x: PSTACK_OF_X509_ATTRIBUTE; _loc: TC_INT): PX509_ATTRIBUTE; cdecl = nil;
 	X509at_delete_attr: function(x: PSTACK_OF_X509_ATTRIBUTE; _loc: TC_INT): PX509_ATTRIBUTE; cdecl = nil;
 	X509at_add1_attr: function(var x: PSTACK_OF_X509_ATTRIBUTE; attr: PX509_ATTRIBUTE): PSTACK_OF_X509_ATTRIBUTE; cdecl = nil;
 	X509at_add1_attr_by_OBJ: function(var x: PSTACK_OF_X509_ATTRIBUTE; const obj: PASN1_OBJECT; _type: TC_INT; bytes: PAnsiChar;_len: TC_INT): PSTACK_OF_X509_ATTRIBUTE; cdecl = nil;
 	X509at_add1_attr_by_NID: function(x: PSTACK_OF_X509_ATTRIBUTE; _nid: TC_INT;_type: TC_INT;	bytes: PAnsiChar; _len: TC_INT): PSTACK_OF_X509_ATTRIBUTE; cdecl = nil;
-	X509at_add1_attr_by_txt(var x: PSTACK_OF(X509_ATTRIBUTE; const attrname: PAnsiChar; _type: TC_INT;	const bytes: PAnsiChar; _len: TC_INT): PSTACK_OF_X509_ATTRIBUTE; cdecl = nil;
+	X509at_add1_attr_by_txt: function(var x: PSTACK_OF_X509_ATTRIBUTE; const attrname: PAnsiChar; _type: TC_INT;	const bytes: PAnsiChar; _len: TC_INT): PSTACK_OF_X509_ATTRIBUTE; cdecl = nil;
 	X509at_get0_data_by_OBJ: function(x: PSTACK_OF_X509_ATTRIBUTE; obj: PASN1_OBJECT; _lastpos: TC_INT; _type: TC_INT): pointer; cdecl = nil;
 	X509_ATTRIBUTE_create_by_NID: function(var a: PX509_ATTRIBUTE; _nid: TC_INT;_atrtype: TC_INT; const data: Pointer; _len: TC_INT): PX509_ATTRIBUTE; cdecl = nil;
 	X509_ATTRIBUTE_create_by_OBJ: function(var a: PX509_ATTRIBUTE; const obj: PASN1_OBJECT; _atrtype: TC_INT; const data: Pointer; _len: TC_INT): PX509_ATTRIBUTE; cdecl = nil;
@@ -391,10 +378,10 @@ int X509_TRUST_add(int id, int flags, int (*ck)(X509_TRUST *, X509 *, int),
 	PKCS8_set_broken: function(p8: PPKCS8_PRIV_KEY_INFO; _broken: TC_INT): PPKCS8_PRIV_KEY_INFO; cdecl = nil;
 
 	PKCS8_pkey_set0: function(priv: PPKCS8_PRIV_KEY_INFO; aobj: PASN1_OBJECT; _version: TC_INT; _ptype: TC_INT; pval: Pointer; penc: PAnsiChar;_penclen: TC_INT): TC_INT; cdecl = nil;
-	PKCS8_pkey_get0: function(var p: PASN1_OBJECT; var pk: PAnsiChar; var _ppklen: TC_INT; var p: PX509_ALGOR; p8: PPKCS8_PRIV_KEY_INFO): TC_INT; cdecl = nil;
+	PKCS8_pkey_get0: function(var p: PASN1_OBJECT; var pk: PAnsiChar; var _ppklen: TC_INT; var palg: PX509_ALGOR; p8: PPKCS8_PRIV_KEY_INFO): TC_INT; cdecl = nil;
 
 	X509_PUBKEY_set0_param: function(pub: PX509_PUBKEY; aobj: PASN1_OBJECT; _ptype: TC_INT; pval: Pointer; penc: PAnsiChar; _penclen: TC_INT): TC_INT; cdecl = nil;
-	X509_PUBKEY_get0_param: function(var p: PASN1_OBJECT; var pk: PAnsiChar; var _ppklen: TC_INT; var p: PX509_ALGOR; pub: PX509_PUBKEY): TC_INT; cdecl = nil;
+	X509_PUBKEY_get0_param: function(var p: PASN1_OBJECT; var pk: PAnsiChar; var _ppklen: TC_INT; var palg: PX509_ALGOR; pub: PX509_PUBKEY): TC_INT; cdecl = nil;
 
 	X509_check_trust: function(x: PX509;  _id: TC_INT;_flags: TC_INT): TC_INT; cdecl = nil;
 	X509_TRUST_get_count: function: TC_INT; cdecl = nil;
@@ -514,8 +501,8 @@ begin
 	@X509_ALGOR_set_md:= LoadFunctionCLib('X509_ALGOR_set_md');
 	@X509_NAME_dup:= LoadFunctionCLib('X509_NAME_dup');
 	@X509_NAME_ENTRY_dup:= LoadFunctionCLib('X509_NAME_ENTRY_dup');
-	@X509_cmp_time(= LoadFunctionCLib('X509_cmp_time');
-	@X509_cmp_current_time(= LoadFunctionCLib('X509_cmp_current_time');
+	@X509_cmp_time:= LoadFunctionCLib('X509_cmp_time');
+	@X509_cmp_current_time:= LoadFunctionCLib('X509_cmp_current_time');
 	@X509_time_adj:= LoadFunctionCLib('X509_time_adj');
 	@X509_time_adj_ex:= LoadFunctionCLib('X509_time_adj_ex');
 	@X509_gmtime_adj:= LoadFunctionCLib('X509_gmtime_adj');
@@ -702,7 +689,7 @@ begin
 	@X509at_add1_attr:= LoadFunctionCLib('X509at_add1_attr');
 	@X509at_add1_attr_by_OBJ:= LoadFunctionCLib('X509at_add1_attr_by_OBJ');
 	@X509at_add1_attr_by_NID:= LoadFunctionCLib('X509at_add1_attr_by_NID');
-	@X509at_add1_attr_by_txt(= LoadFunctionCLib('X509at_add1_attr_by_txt');
+	@X509at_add1_attr_by_txt:= LoadFunctionCLib('X509at_add1_attr_by_txt');
 	@X509at_get0_data_by_OBJ:= LoadFunctionCLib('X509at_get0_data_by_OBJ');
 	@X509_ATTRIBUTE_create_by_NID:= LoadFunctionCLib('X509_ATTRIBUTE_create_by_NID');
 	@X509_ATTRIBUTE_create_by_OBJ:= LoadFunctionCLib('X509_ATTRIBUTE_create_by_OBJ');
