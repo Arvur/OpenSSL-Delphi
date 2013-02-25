@@ -1082,11 +1082,18 @@ type
   PX509_NAME = ^X509_NAME;
   PX509_REQ_INFO = ^X509_REQ_INFO;
   PX509_POLICY_CACHE = Pointer;
-
+  PX509_CRL_METHOD = Pointer;
   PSTACK_OF_X509_REVOKED = PSTACK_OF;
   PSTACK_OF_X509_NAME_ENTRY = PSTACK_OF;
   PSTACK_OF_X509 = PSTACK_OF;
   PSTACK_OF_X509_NAME = PSTACK_OF;
+
+  PX509_OBJECTS = ^X509_OBJECTS;
+  X509_OBJECTS = record
+    nid: TC_INT;
+    a2i: function: TC_INT; cdecl;
+    i2a: function: TC_INT; cdecl;
+  end;
 
   X509_HASH_DIR_CTX = record
     num_dirs : TC_INT;
@@ -1164,7 +1171,8 @@ type
     entries : PSTACK_OF_X509_NAME_ENTRY;
     modified : TC_Int;
     bytes : PBUF_MEM;
-    hash : TC_ULONG;
+    canon_enc: PAnsiChar;
+    canon_enclen: TC_INT;
   end;
 
   X509_EXTENSION = record
@@ -1182,7 +1190,7 @@ type
   x509_attributes_union = record
     case Byte of
       $FF :(Ptr : PAnsiChar);
-      0 : (_set: PSTACK_OF_ASN1_TYPE); // 0
+      0  : (_set: PSTACK_OF_ASN1_TYPE); // 0
       1  : (_single: PASN1_TYPE);
   end;
 
@@ -1199,7 +1207,7 @@ type
     version: PASN1_INTEGER;
     subject: PX509_NAME;
     pubkey: PX509_PUBKEY;
-    attributes: PSTACK_OF_X509_ATTRIBUTE; // [ 0 ]
+    attributes: PSTACK_OF_X509_ATTRIBUTE;
   end;
 
   X509_REQ = record
@@ -1252,6 +1260,9 @@ type
     skid : PASN1_OCTET_STRING;
     akid : PAUTHORITY_KEYID;
     policy_cache : PX509_POLICY_CACHE;
+    crldp: PSTACK_OF;
+    altName: PSTACK_OF;
+    nc: Pointer;
     rfc3779_addr : PSTACK_OF_IPAddressFamily;
     rfc3779_asid : PASIdentifiers;
     sha1_hash : array [0..SHA_DIGEST_LENGTH-1] of AnsiChar;
@@ -1300,6 +1311,17 @@ type
     sig_alg : PX509_ALGOR;
     signature : PASN1_BIT_STRING;
     references : TC_Int;
+    flags: TC_INT;
+    akid: PAUTHORITY_KEYID;
+    idp: Pointer;
+    idp_flags: TC_INT;
+    idp_reason: TC_INT;
+    crl_number: PASN1_INTEGER;
+    base_crl_number: PASN1_INTEGER;
+    sha1_hash: array[0..SHA_DIGEST_LENGTH-1] of AnsiChar;
+    issuers: PSTACK_OF;
+    meth: PX509_CRL_METHOD;
+    meth_data: Pointer;
   end;
   PSTACK_OF_X509_CRL = PSTACK;
 
@@ -1377,13 +1399,26 @@ type
     serialNumber: PASN1_INTEGER;
     revocationDate: PASN1_TIME;
     extensions: PSTACK_OF_X509_EXTENSION;
+    issuer: PSTACK_OF;
+    reason: TC_INT;
     sequence: TC_Int;
   end;
   PX509_REVOKED      = ^X509_REVOKED;
   PPX509_REVOKED     =^PX509_REVOKED;
 
-  PX509_PKEY       = Pointer;
+  PX509_PKEY       = ^X509_PKEY;
   PPX509_PKEY      =^PX509_PKEY;
+  X509_PKEY = record
+    version: TC_INT;
+    enc_algor: PX509_ALGOR;
+    enc_pkey: PASN1_OCTET_STRING;
+    dec_pkey: PEVP_PKEY;
+    key_length: TC_INT;
+    key_data: PAnsiChar;
+    key_free: TC_INT;
+    cipher: EVP_CIPHER_INFO;
+    references: TC_INT;
+  end;
 
   X509_INFO = record
     x509 : PX509;
@@ -1397,6 +1432,12 @@ type
   PX509_INFO       = ^X509_INFO;
   PPX509_INFO      =^PX509_INFO;
   PSTACK_OF_X509_INFO = PSTACK;
+
+  PX509_CERT_PAIR = ^X509_CERT_PAIR;
+  X509_CERT_PAIR = record
+    _forward: PX509;
+    _reverse: PX509;
+  end;
 
   PPKCS8_PRIV_KEY_INFO = ^PKCS8_PRIV_KEY_INFO;
   PKCS8_PRIV_KEY_INFO = record
@@ -1429,6 +1470,26 @@ type
   end;
   PNETSCAPE_CERT_SEQUENCE = ^NETSCAPE_CERT_SEQUENCE;
   PPNETSCAPE_CERT_SEQUENCE = ^PNETSCAPE_CERT_SEQUENCE;
+
+  PPBEPARAM = ^PBEPARAM;
+  PBEPARAM = record
+    salt: PASN1_OCTET_STRING;
+    iter: PASN1_INTEGER;
+  end;
+
+  PPBE2PARAM = ^PBE2PARAM;
+  PBE2PARAM = record
+    keyfunc: PX509_ALGOR;
+    encryption: PX509_ALGOR;
+  end;
+
+  PPBKDF2PARAM = ^PBKDF2PARAM;
+  PBKDF2PARAM = record
+    salt: PASN1_TYPE;
+    iter: PASN1_INTEGER;
+    keylength: PASN1_INTEGER;
+    prf: PX509_ALGOR;
+  end;
 
   EVP_pub_decode_t = function(pk: PEVP_PKEY; pub: PX509_PUBKEY): TC_INT; cdecl;
   EVP_pub_encode_t = function(pub: PX509_PUBKEY;  pk: PEVP_PKEY): TC_INT; cdecl;
