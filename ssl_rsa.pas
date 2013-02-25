@@ -27,7 +27,7 @@ procedure SSL_InitRSA;
 
 implementation
 
-uses ssl_lib, ssl_evp;
+uses ssl_lib, ssl_evp, ssl_const;
 
 procedure EVP_PKEY_assign_RSA(key: PEVP_PKEY; rsa: PRSA); inline;
 begin

@@ -227,8 +227,10 @@ var
   ASN1_VISIBLESTRING_free: procedure(a: PASN1_VISIBLESTRING); cdecl = nil;
   ASN1_VISIBLESTRING_it: function: PASN1_ITEM; cdecl = nil;
 
-   (* void *ASN1_d2i_bio(void *(*xnew)(void), d2i_of_void *d2i, BIO *in, void **x);
-      void *ASN1_d2i_fp(void *(*xnew)(void), d2i_of_void *d2i, FILE *in, void **x);
+  ASN1_d2i_bio: function(xnew: void_func; d2i: D2I_OF_void; _in: PBIO; var x: Pointer): pointer; cdecl = nil;
+  ASN1_d2i_fp: function(xnew: void_func; d2i: D2I_OF_void; var _in: FILE; var x: Pointer): Pointer; cdecl = nil;
+
+   (*
       STACK_OF(OPENSSL_BLOCK) *ASN1_seq_unpack(const unsigned char *buf, int len,
 				 d2i_of_void *d2i, void (*free_func)(OPENSSL_BLOCK));
    *)
@@ -578,6 +580,10 @@ begin
       @ASN1_template_free:= LoadFunctionCLib('ASN1_template_free');
       @ASN1_template_i2d:= LoadFunctionCLib('ASN1_template_i2d');
       @ASN1_template_new:= LoadFunctionCLib('ASN1_template_new');
+
+      @ASN1_d2i_bio:= LoadFunctionCLib('ASN1_d2i_bio');
+      @ASN1_d2i_fp:= LoadFunctionCLib('ASN1_d2i_fp');
+
 
   end;
 end;

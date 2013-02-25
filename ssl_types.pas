@@ -27,6 +27,7 @@ type
   PBN_ULONG = ^BN_ULONG;
   TC_UCHAR = AnsiChar;
   DES_LONG= TC_ULONG;
+  PDES_LONG = ^DES_LONG;
   point_conversion_form_t = byte;
 
 type
@@ -107,6 +108,12 @@ type
     max: TC_SIZE_T;
   end;
   PBUF_MEM = ^BUF_MEM;
+
+  ERR_STRING_DATA = record
+    error: TC_ULONG;
+    _string: PAnsiChar;
+  end;
+  PERR_STRING_DATA = ^ERR_STRING_DATA;
 
 
 {$REGION 'CRYPTO'}
@@ -574,6 +581,7 @@ type
 
   PASN1_PCTX = ^ASN1_PCTX;
 
+  void_func = function: pointer;
   I2D_OF_void = function(_para1 : Pointer; var _para2 : PByte) : TC_INT cdecl;
   D2I_OF_void = function (_para1 : PPointer;  var _para2 : PByte; _para3 : TC_LONG) : Pointer cdecl;
 
@@ -790,6 +798,7 @@ type
 
 {$REGION 'DH'}
 
+  DH_Callback = procedure(_par1: TC_INT;_par2: TC_INT; _par3: Pointer); cdecl;
   PDH = ^DH;
 
   PDH_METHOD = ^DH_METHOD;
@@ -938,6 +947,9 @@ type
   PEVP_MD = ^EVP_MD;
   PEVP_PKEY_CTX = pointer;
 
+  EVP_SIGN_METHOD = function(_type: TC_INT; m: PAnsiChar; m_length: TC_UINT; sigret: PAnsiChar; var siglen: TC_UINT; key: Pointer): TC_INT; cdecl;
+  EVP_VERIFY_METHOD = function(_type: TC_INT; m: PAnsiChar; m_length: TC_UINT; sigbuf: PAnsiChar; siglen: TC_UINT; key: Pointer): TC_INT; cdecl;
+
   EVP_PKEY_union = record
     case byte of
       0: (ptr : PAnsiChar);
@@ -963,6 +975,7 @@ type
     references : TC_INT;
     ameth : PEVP_PKEY_ASN1_METHOD;
     pkey : EVP_PKEY_union;
+    save_parameters: TC_INT;
     attributes : PSTACK_OF_X509_ATTRIBUTE;
   end;
 
@@ -974,17 +987,14 @@ type
     block_size : TC_Int;
     key_len : TC_Int;
     iv_len : TC_Int;
-    flags : TC_UINT;
+    flags : TC_ULONG;
     init : function (ctx : PEVP_CIPHER_CTX; key : PAnsiChar; iv : PAnsiChar; enc : TC_Int): TC_Int; cdecl;
     do_cipher : function (ctx : PEVP_CIPHER_CTX; _out : PAnsiChar; _in : PAnsiChar; inl : size_t) : TC_Int; cdecl;
     cleanup : function (_para1 : PEVP_CIPHER_CTX): TC_Int; cdecl;
     ctx_size : TC_Int;
-    set_asn1_parameters : function (_para1 : PEVP_CIPHER_CTX;
-      _para2 : PASN1_TYPE) : TC_Int; cdecl;
-    get_asn1_parameters :function (_para1 : PEVP_CIPHER_CTX;
-      _para2 :  PASN1_TYPE) : TC_Int; cdecl;
-    ctrl : function (_para1 : PEVP_CIPHER_CTX; _type : TC_Int; arg : TC_Int;
-      ptr : Pointer): TC_Int; cdecl;
+    set_asn1_parameters : function (_para1 : PEVP_CIPHER_CTX; _para2 : PASN1_TYPE) : TC_Int; cdecl;
+    get_asn1_parameters :function (_para1 : PEVP_CIPHER_CTX; _para2 :  PASN1_TYPE) : TC_Int; cdecl;
+    ctrl : function (_para1 : PEVP_CIPHER_CTX; _type : TC_Int; arg : TC_Int;  ptr : Pointer): TC_Int; cdecl;
     app_data : Pointer;
   end;
 
@@ -1015,11 +1025,11 @@ type
   PEVP_MD_CTX = ^EVP_MD_CTX;
   EVP_MD_CTX = record
     digest : PEVP_MD;
-    engine : PENGINE; // functional reference if 'digest' is ENGINE-provided
+    engine : PENGINE;
     flags : TC_ULONG;
     md_data : Pointer;
-      pctx : PEVP_PKEY_CTX;
-     update : function (ctx : PEVP_MD_CTX; const data : Pointer; count : size_t) : TC_INT cdecl;
+    pctx : PEVP_PKEY_CTX;
+    update : function (ctx : PEVP_MD_CTX; const data : Pointer; count : size_t) : TC_INT cdecl;
   end;
 
 
@@ -1033,14 +1043,24 @@ type
     _final : function (ctx : PEVP_MD_CTX; md : PAnsiChar) : TC_Int; cdecl;
     copy : function (_to : PEVP_MD_CTX; from : PEVP_MD_CTX ) : TC_Int; cdecl;
     cleanup : function(ctx : PEVP_MD_CTX) : TC_Int; cdecl;
-    sign : function(_type : TC_Int; m : PAnsiChar; m_length : TC_UINT;
-      sigret : PAnsiChar; siglen : TC_UINT; key : Pointer) : TC_Int; cdecl;
-    verify : function(_type : TC_Int; m : PAnsiChar; m_length : PAnsiChar;
-      sigbuf : PAnsiChar; siglen : TC_UINT; key : Pointer) : TC_Int; cdecl;
+    sign : function(_type : TC_Int; m : PAnsiChar; m_length : TC_UINT;  sigret : PAnsiChar; siglen : TC_UINT; key : Pointer) : TC_Int; cdecl;
+    verify : function(_type : TC_Int; m : PAnsiChar; m_length : PAnsiChar;  sigbuf : PAnsiChar; siglen : TC_UINT; key : Pointer) : TC_Int; cdecl;
     required_pkey_type : array [0..4] of TC_Int; // EVP_PKEY_xxx
     block_size : TC_Int;
-    ctx_size : TC_Int; // how big does the ctx->md_data need to be
+    ctx_size : TC_Int;
+    md_ctrl: function( ctx: PEVP_MD_CTX; cmd: TC_INT; p1: TC_INT; p2: Pointer): TC_INT; cdecl;
   end;
+
+  PEVP_ENCODE_CTX = ^EVP_ENCODE_CTX;
+  EVP_ENCODE_CTX = record
+    num: TC_INT;
+    _length: TC_INT;
+    enc_data: array[0..79] of AnsiChar;
+    line_num: TC_INT;
+    expect_nl: TC_INT;
+  end;
+
+  EVP_PBE_KEYGEN = function(ctx: PEVP_CIPHER_CTX; pass: PAnsiChar; passlen: TC_INT; param: PASN1_TYPE; cipher: PEVP_CIPHER; md: PEVP_MD; en_de: TC_INT): TC_INT;
 
 {$ENDREGION}
 
@@ -1641,15 +1661,16 @@ type
   end;
 
   CMS_ContentInfo_union = record
-    data: PASN1_OCTET_STRING;
-    signedData: PCMS_SignedData;
-        envelopedData: PCMS_EnvelopedData;
-        digestedData: PCMS_DigestedData;
-        encryptedData: PCMS_EncryptedData;
-        authenticatedData: PCMS_AuthenticatedData;
-        compressedData: PCMS_CompressedData;
-        other: PASN1_TYPE;
-        otherData: Pointer;
+  case byte  of
+    0: (data: PASN1_OCTET_STRING);
+    1: (signedData: PCMS_SignedData);
+    2: (envelopedData: PCMS_EnvelopedData);
+    3: (digestedData: PCMS_DigestedData);
+    4: (encryptedData: PCMS_EncryptedData);
+    5: (authenticatedData: PCMS_AuthenticatedData);
+    6: (compressedData: PCMS_CompressedData);
+    7: (other: PASN1_TYPE);
+    8: (otherData: Pointer);
   end;
 
   PCMS_ContentInfo = ^CMS_ContentInfo;
@@ -1665,8 +1686,9 @@ type
   end;
 
    CMS_SignerIdentifier_union = record
-        issuerAndSerialNumber: PCMS_IssuerAndSerialNumber;
-        subjectKeyIdentifier: PASN1_OCTET_STRING;
+    case byte of
+      0: (issuerAndSerialNumber: PCMS_IssuerAndSerialNumber);
+      1: (subjectKeyIdentifier: PASN1_OCTET_STRING);
    end;
 
    PCMS_SignerIdentifier = ^CMS_SignerIdentifier;
@@ -1720,8 +1742,9 @@ type
   end;
 
   CMS_KeyAgreeRecipientIdentifier_union = record
-    issuerAndSerialNumber: PCMS_IssuerAndSerialNumber;
-    rKeyId: PCMS_RecipientKeyIdentifier;
+   case byte of
+    0: (issuerAndSerialNumber: PCMS_IssuerAndSerialNumber);
+    1: (rKeyId: PCMS_RecipientKeyIdentifier);
   end;
 
   PCMS_KeyAgreeRecipientIdentifier = ^CMS_KeyAgreeRecipientIdentifier;
@@ -1739,9 +1762,10 @@ type
 
 
   CMS_OriginatorIdentifierOrKey_union = record
-    issuerAndSerialNumber: PCMS_IssuerAndSerialNumber;
-    subjectKeyIdentifier: PASN1_OCTET_STRING;
-    originatorKey: PCMS_OriginatorPublicKey;
+   case Byte of
+    0: (issuerAndSerialNumber: PCMS_IssuerAndSerialNumber);
+    1: (subjectKeyIdentifier: PASN1_OCTET_STRING);
+    2: (originatorKey: PCMS_OriginatorPublicKey);
   end;
 
   PCMS_OriginatorIdentifierOrKey = ^CMS_OriginatorIdentifierOrKey;
@@ -1792,12 +1816,13 @@ type
     oriValue: ASN1_TYPE;
   end;
 
-    CMS_RecipientInfo_union = record
-    ktri: PCMS_KeyTransRecipientInfo;
-    kari: PCMS_KeyAgreeRecipientInfo;
-    kekri: PCMS_KEKRecipientInfo;
-    pwri: PCMS_PasswordRecipientInfo;
-    ori: PCMS_OtherRecipientInfo;
+  CMS_RecipientInfo_union = record
+  case byte of
+    0: (ktri: PCMS_KeyTransRecipientInfo);
+    1: (kari: PCMS_KeyAgreeRecipientInfo);
+    2: (kekri: PCMS_KEKRecipientInfo);
+    3: (pwri: PCMS_PasswordRecipientInfo);
+    4: (ori: PCMS_OtherRecipientInfo);
   end;
 
   PCMS_RecipientInfo = ^CMS_RecipientInfo;
@@ -1813,8 +1838,9 @@ type
   end;
 
   CMS_RevocationInfoChoice_union = record
-    crl: PX509_CRL;
-    other: PCMS_OtherRevocationInfoFormat;
+   case byte of
+    0: (crl: PX509_CRL);
+    1: (other: PCMS_OtherRevocationInfoFormat);
   end;
 
   PCMS_RevocationInfoChoice = ^CMS_RevocationInfoChoice;
@@ -1830,11 +1856,12 @@ type
   end;
 
   CMS_CertificateChoices_union = record
-    certificate: PX509;
-    extendedCertificate: PASN1_STRING;
-    v1AttrCert: PASN1_STRING;
-    v2AttrCert: PASN1_STRING;
-    other: PCMS_OtherCertificateFormat;
+  case byte of
+    0: (certificate: PX509);
+    1: (extendedCertificate: PASN1_STRING);
+    2: (v1AttrCert: PASN1_STRING);
+    3: (v2AttrCert: PASN1_STRING);
+    4: (other: PCMS_OtherCertificateFormat);
   end;
 
   PCMS_CertificateChoices = ^CMS_CertificateChoices;
@@ -1849,11 +1876,15 @@ type
 
 type
   DES_cblock = array[0..7] of TC_UCHAR;
+  PDES_cblock = ^DES_cblock;
   const_DES_cblock = array[0..7] of TC_UCHAR;
+  Pconst_DES_cblock = ^const_DES_cblock;
+  DES_cblock_array = array of DES_cblock;
 
   DES_key_schedule_union = record
-     cblock: DES_cblock;
-     deslong: array[0..1] of DES_LONG;
+  case Byte of
+     0: (cblock: DES_cblock);
+     1: (deslong: array[0..1] of DES_LONG);
   end;
 
   PDES_key_schedule = ^DES_key_schedule;
@@ -1903,8 +1934,9 @@ type
     KEY_TABLE_TYPE = array [0..CAMELLIA_TABLE_WORD_LEN-1] of TC_UINT;
     CAMELLIA_BUF = array[0..CAMELLIA_BLOCK_SIZE-1] of AnsiChar;
     CAMELLIA_KEY_union = record
-        d: double;
-        rd_key: KEY_TABLE_TYPE;
+     case byte of
+        0: (d: double);
+        1: (rd_key: KEY_TABLE_TYPE);
     end;
     
     PCAMELLIA_KEY = ^CAMELLIA_KEY;

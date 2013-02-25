@@ -152,7 +152,7 @@ procedure SSL_InitEC;
 
 implementation
 
-uses ssl_util, ssl_lib, ssl_evp;
+uses ssl_util, ssl_lib, ssl_evp, ssl_const;
 
 
 procedure LoadCurves;
