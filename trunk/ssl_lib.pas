@@ -27,6 +27,9 @@ end;
 
 function LoadFunctionCLib(const FceName: String; const ACritical : Boolean = True): Pointer;
 begin
+ if SSLCryptHandle = 0 then
+  LoadSSLCrypt;
+
   Result := Windows.GetProcAddress(SSLCryptHandle, PChar(FceName));
   if ACritical then
   begin

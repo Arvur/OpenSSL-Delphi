@@ -136,6 +136,10 @@ type
   CRYPTO_EX_dup = function(_to: PCRYPTO_EX_DATA; _from: PCRYPTO_EX_DATA; from_d: Pointer;
                     idx: TC_INT; argl: TC_LONG; argp: Pointer): TC_INT; cdecl;
 
+  CRYPTO_mem_alloc_func = function(_size: TC_SIZE_T): Pointer; cdecl;
+  CRYPTO_mem_realloc_func = function(_mem: Pointer; _size: TC_SIZE_T): Pointer; cdecl;
+  CRYPTO_mem_free_func = procedure(_mem: pointer); cdecl;
+
 {$ENDREGION}
 
 
@@ -258,7 +262,7 @@ type
     comment : PAnsiChar;
   end;
 
-  PEC_GROUP = Pointer;
+  PEC_GROUP = ^EC_GROUP;
 
   PEC_METHOD = ^EC_METHOD;
 
@@ -330,19 +334,17 @@ type
     generator: PEC_POINT;
     order, cofactor: PBIGNUM;
     curve_name : TC_INT;
-      asn1_flag: TC_INT;
-      asn1_form: point_conversion_form_t;
-      seed: PAnsiChar;
+    asn1_flag: TC_INT;
+    asn1_form: point_conversion_form_t;
+    seed: PAnsiChar;
     seed_len: TC_SIZE_T;
-
     extra_data: PEC_EXTRA_DATA;
-
-      field : BIGNUM;
-      poly: array[0..5] of TC_INT;
-      a, b: BIGNUM;
-      a_is_minus3: TC_INT;
+    field : BIGNUM;
+    poly: array[0..5] of TC_INT;
+    a, b: BIGNUM;
+    a_is_minus3: TC_INT;
     field_data1: Pointer;
-      field_data2: Pointer;
+    field_data2: Pointer;
     field_mod_func: function(a, b, c: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl;
   end;
 
@@ -975,6 +977,7 @@ type
     save_type : TC_INT;
     references : TC_INT;
     ameth : PEVP_PKEY_ASN1_METHOD;
+    enigne: PENGINE;
     pkey : EVP_PKEY_union;
     save_parameters: TC_INT;
     attributes : PSTACK_OF_X509_ATTRIBUTE;
@@ -1474,7 +1477,7 @@ type
 
 {$REGION 'PEM'}
 type
-    pem_password_cb = function(buf: PAnsiChar; size: TC_INT; rwflag: TC_INT; userdata: pointer): integer; cdecl;
+    pem_password_cb = function(buf: PAnsiString; size: TC_INT; rwflag: TC_INT; userdata: pointer): integer; cdecl;
 
 {$ENDREGION}
 
