@@ -14,6 +14,7 @@ uses
 
 procedure SSL_InitLib;
 begin
+  ssl_util.SSL_InitUtil;
   ssl_bio.SSL_InitBIO;
   ssl_ec.SSL_InitEC;
   ssl_evp.SSL_InitEVP;

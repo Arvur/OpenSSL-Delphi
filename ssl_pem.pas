@@ -109,6 +109,15 @@ var
  PEM_write_NETSCAPE_CERT_SEQUENCE: function(var fp: FILE; x: PNETSCAPE_CERT_SEQUENCE): TC_INT; cdecl = nil;
 {$ENDREGION}
 
+ PEM_write_ECPrivateKey: function(var fp: FILE; x: PEC_KEY; enc: PEVP_CIPHER; kstr: PAnsiChar;
+            klen: TC_INT; cb: pem_password_cb; u: pointer): TC_INT; cdecl = nil;
+ PEM_write_bio_ECPrivateKey: function(bp: PBIO; x: PEC_KEY; enc: PEVP_CIPHER; kstr: PAnsiChar;
+            klen: TC_INT; cb: pem_password_cb; u: pointer): TC_INT; cdecl = nil;
+
+ i2d_PKCS8PrivateKey_bio: function(bp: PBIO; x: PEVP_PKEY; enc: PEVP_CIPHER; kstr: PAnsiChar;
+            klen: TC_INT; cb: pem_password_cb; u: pointer): TC_INT; cdecl = nil;
+
+
 procedure SSL_InitPEM;
 
 implementation
@@ -203,6 +212,10 @@ begin
    @PEM_write_NETSCAPE_CERT_SEQUENCE:= LoadFunctionCLib('PEM_write_NETSCAPE_CERT_SEQUENCE');
 {$ENDREGION}
 
+
+  @PEM_write_ECPrivateKey := LoadFunctionCLib('PEM_write_ECPrivateKey');
+  @PEM_write_bio_ECPrivateKey := LoadFunctionCLib('PEM_write_bio_ECPrivateKey');
+  @i2d_PKCS8PrivateKey_bio := LoadFunctionCLib('i2d_PKCS8PrivateKey_bio');
   end;
 end;
 

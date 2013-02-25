@@ -34,6 +34,11 @@ var
   X509_STORE_add_lookup : function (v : PX509_STORE; m : PX509_LOOKUP_METHOD) : PX509_LOOKUP cdecl = nil;
   X509_STORE_load_locations : function ( ctx : PX509_STORE; const _file, path : PAnsiChar) : TC_Int cdecl = nil;
 
+  i2d_PUBKEY_bio: function(bp: PBIO; pkey: PEVP_PKEY): TC_INT; cdecl = nil;
+  d2i_PUBKEY_bio: function(bp: PBIO; var a: PEVP_PKEY): PEVP_PKEY; cdecl = nil;
+  i2d_PrivateKey_bio: function(bp: PBIO; pkey: PEVP_PKEY): TC_INT; cdecl = nil;
+  d2i_PrivateKey_bio: function(bp: PBIO; var a: PEVP_PKEY): PEVP_PKEY; cdecl = nil;
+
 
 procedure SSL_InitX509;
 
@@ -71,6 +76,11 @@ begin
     @X509_print := LoadFunctionCLib('X509_print');
     @X509_STORE_add_lookup := LoadFunctionCLib('X509_STORE_add_lookup');
     @X509_STORE_load_locations := LoadFunctionCLib('X509_STORE_load_locations');
+
+    @i2d_PUBKEY_bio:= LoadFunctionCLib('i2d_PUBKEY_bio');
+    @d2i_PUBKEY_bio:= LoadFunctionCLib('d2i_PUBKEY_bio');
+    @i2d_PrivateKey_bio:= LoadFunctionCLib('i2d_PrivateKey_bio');
+    @d2i_PrivateKey_bio:= LoadFunctionCLib('d2i_PrivateKey_bio');
 
   end;
 end;
