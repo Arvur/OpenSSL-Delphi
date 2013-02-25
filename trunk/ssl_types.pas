@@ -950,6 +950,7 @@ type
   EVP_SIGN_METHOD = function(_type: TC_INT; m: PAnsiChar; m_length: TC_UINT; sigret: PAnsiChar; var siglen: TC_UINT; key: Pointer): TC_INT; cdecl;
   EVP_VERIFY_METHOD = function(_type: TC_INT; m: PAnsiChar; m_length: TC_UINT; sigbuf: PAnsiChar; siglen: TC_UINT; key: Pointer): TC_INT; cdecl;
 
+
   EVP_PKEY_union = record
     case byte of
       0: (ptr : PAnsiChar);
@@ -997,6 +998,9 @@ type
     ctrl : function (_para1 : PEVP_CIPHER_CTX; _type : TC_Int; arg : TC_Int;  ptr : Pointer): TC_Int; cdecl;
     app_data : Pointer;
   end;
+
+  EVP_CIPHER_DO = procedure(ciph: PEVP_CIPHER; from: PAnsiChar; _to: PAnsiChar; x: Pointer); cdecl;
+  EVP_MD_DO = procedure(ciph: PEVP_MD; from: PAnsiChar; _to: PAnsiChar; x: Pointer); cdecl;
 
   EVP_CIPHER_CTX = record
     cipher : PEVP_CIPHER;
@@ -1061,6 +1065,7 @@ type
   end;
 
   EVP_PBE_KEYGEN = function(ctx: PEVP_CIPHER_CTX; pass: PAnsiChar; passlen: TC_INT; param: PASN1_TYPE; cipher: PEVP_CIPHER; md: PEVP_MD; en_de: TC_INT): TC_INT;
+  EVP_PKEY_gen_cb = function(ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
 
 {$ENDREGION}
 
@@ -1390,6 +1395,16 @@ type
   PPX509_INFO      =^PX509_INFO;
   PSTACK_OF_X509_INFO = PSTACK;
 
+  PPKCS8_PRIV_KEY_INFO = ^PKCS8_PRIV_KEY_INFO;
+  PKCS8_PRIV_KEY_INFO = record
+        broken: TC_INT;
+        version: PASN1_INTEGER;
+        pkeyalg: PX509_ALGOR;
+        pkey: PASN1_TYPE;
+        attributes: PSTACK_OF_X509_ATTRIBUTE;
+  end;
+
+
   NETSCAPE_SPKAC = record
     pubkey : PX509_PUBKEY;
     challenge : PASN1_IA5STRING;
@@ -1412,6 +1427,25 @@ type
   PNETSCAPE_CERT_SEQUENCE = ^NETSCAPE_CERT_SEQUENCE;
   PPNETSCAPE_CERT_SEQUENCE = ^PNETSCAPE_CERT_SEQUENCE;
 
+  EVP_pub_decode_t = function(pk: PEVP_PKEY; pub: PX509_PUBKEY): TC_INT; cdecl;
+  EVP_pub_encode_t = function(pub: PX509_PUBKEY;  pk: PEVP_PKEY): TC_INT; cdecl;
+  EVP_pub_cmp_t = function(const a: PEVP_PKEY; const b: PEVP_PKEY): TC_INT; cdecl;
+  EVP_pub_print_t = function(_out: PBIO; const pkey: PEVP_PKEY; indent: TC_INT; pctx: ASN1_PCTX): TC_INT; cdecl;
+  EVP_pkey_size_t = function(const pk: PEVP_PKEY): TC_INT; cdecl;
+  EVP_pkey_bits_t = function(const pk: PEVP_PKEY): TC_INT; cdecl;
+
+  EVP_priv_decode_t = function(pk: PEVP_PKEY; p8inf: PPKCS8_PRIV_KEY_INFO): TC_INT; cdecl;
+  EVP_priv_encode_t = function(p8: PPKCS8_PRIV_KEY_INFO; const pk : PEVP_PKEY): TC_INT; cdecl;
+  EVP_priv_print_t =  function(_out: PBIO; const pkey: PEVP_PKEY; indent: TC_INT; pctx: ASN1_PCTX): TC_INT; cdecl;
+
+  EVP_param_decode_t = function(pkey: PEVP_PKEY;var pder: PAnsiChar; derlen: TC_INT): TC_INT; cdecl;
+  EVP_param_encode_t = function(const pkey: PEVP_PKEY; var pder: PAnsiChar): TC_INT; cdecl;
+  EVP_param_missing_t = function(const pk: PEVP_PKEY): TC_INT; cdecl;
+  EVP_param_copy_t = function(_to: PEVP_PKEY; const _from: PEVP_PKEY): TC_INT; cdecl;
+  EVP_param_cmp_t = function(const a: PEVP_PKEY; const b: PEVP_PKEY): TC_INT; cdecl;
+  EVP_param_print_t = function(_out: PBIO; const pkey: PEVP_PKEY; indent: TC_INT;	pctx: ASN1_PCTX): TC_INT; cdecl;
+  EVP_pkey_free_t = procedure(pkey: PEVP_PKEY); cdecl;
+  EVP_pkey_ctrl_t = function(pkey: PEVP_PKEY; op:TC_INT;arg1: TC_LONG; arg2: Pointer): TC_INT; cdecl;
 {$ENDREGION}
 
 {$REGION 'X509V3}
