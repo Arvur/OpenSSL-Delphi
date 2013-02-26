@@ -109,12 +109,6 @@ type
   end;
   PBUF_MEM = ^BUF_MEM;
 
-  ERR_STRING_DATA = record
-    error: TC_ULONG;
-    _string: PAnsiChar;
-  end;
-  PERR_STRING_DATA = ^ERR_STRING_DATA;
-
 
 {$REGION 'CRYPTO'}
 type
@@ -139,6 +133,29 @@ type
   CRYPTO_mem_alloc_func = function(_size: TC_SIZE_T): Pointer; cdecl;
   CRYPTO_mem_realloc_func = function(_mem: Pointer; _size: TC_SIZE_T): Pointer; cdecl;
   CRYPTO_mem_free_func = procedure(_mem: pointer); cdecl;
+
+{$ENDREGION}
+
+
+{$REGION 'ERR'}
+type
+  ERR_STATE = record
+    tid: CRYPTO_THREADID;
+    err_flags: array [0..ERR_NUM_ERRORS-1] of TC_INT;
+    err_buffer: array[0..ERR_NUM_ERRORS-1] of TC_ULONG;
+    err_data: array[0..ERR_NUM_ERRORS-1] of PAnsiChar;
+    err_data_flags: array[0..ERR_NUM_ERRORS-1] of TC_INT;
+    err_file: array[0..ERR_NUM_ERRORS-1] of PAnsiChar;
+    err_line: array[0..ERR_NUM_ERRORS-1] of TC_INT;
+    top,bottom: TC_INT;
+  end;
+  PERR_STATE = ^ERR_STATE;
+
+  ERR_STRING_DATA = record
+	  error: TC_LONG;
+	  _string: PAnsiChar;
+  end;
+  PERR_STRING_DATA = ^ERR_STRING_DATA;
 
 {$ENDREGION}
 
@@ -2072,7 +2089,8 @@ type
 
 
 {$ENDREGION}  
-  
+
+
 implementation
 
 end.
