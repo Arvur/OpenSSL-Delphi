@@ -114,6 +114,7 @@ var
   BIO_sock_non_fatal_error: function(error: TC_INT): TC_INT; cdecl = nil;
   BIO_sock_should_retry: function(i: TC_INT): TC_INT; cdecl = nil;
 
+function BIO_get_mem_data (bp: PBIO; buf: Pointer): TC_ULONG;
 
 {
  BIO *BIO_new_CMS(BIO *out, CMS_ContentInfo *cms);
@@ -132,7 +133,7 @@ procedure SSL_InitBIO;
 
 implementation
 
-uses ssl_lib;
+uses ssl_lib, ssl_const;
 
 procedure SSL_InitBIO;
 begin
@@ -241,7 +242,12 @@ begin
     @BIO_set_ex_data:= LoadFunctionCLib('BIO_set_ex_data');
     @BIO_sock_non_fatal_error:= LoadFunctionCLib('BIO_sock_non_fatal_error');
     @BIO_sock_should_retry:= LoadFunctionCLib('BIO_sock_should_retry');
-
   end;
 end;
+
+function BIO_get_mem_data (bp: PBIO; buf: Pointer): TC_ULONG;
+begin
+  BIO_ctrl(bp, BIO_CTRL_INFO, 0, buf);
+end;
+
 end.
