@@ -157,6 +157,9 @@ type
   end;
   PERR_STRING_DATA = ^ERR_STRING_DATA;
 
+  ERR_CALLBACK = function(str: PAnsiChar; len: TC_SIZE_T; u: Pointer): TC_INT; cdecl;
+  PERR_FNS = Pointer;
+
 {$ENDREGION}
 
 

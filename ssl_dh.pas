@@ -38,6 +38,7 @@ var
   i2d_DHparams: function(const a: PDH;var pp: PAnsiChar): TC_INT; cdecl = nil;
   DHparams_print_fp: function(var fp: FILE; x: PDH): TC_INT; cdecl = nil;
   DHparams_print: function(bp: BIO; x: PDH): TC_INT; cdecl = nil;
+  ERR_load_DH_strings: procedure; cdecl = nil;
 
 procedure SSL_InitDH;
 
@@ -83,7 +84,7 @@ begin
     @i2d_DHparams:= LoadFunctionCLib('i2d_DHparams');
     @DHparams_print_fp:= LoadFunctionCLib('DHparams_print_fp');
     @DHparams_print:= LoadFunctionCLib('DHparams_print');
-
+    @ERR_load_DH_strings := LoadFunctionCLib('ERR_load_DH_strings');
   end;
 end;
 

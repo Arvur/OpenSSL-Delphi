@@ -20,6 +20,7 @@ var
   RSA_free : procedure(rsa: PRSA) cdecl = nil;
   RSA_up_ref: function(rsa: PRSA): TC_INT; cdecl = nil;
   RSA_flags: function(rsa: PRSA): TC_INT; cdecl = nil;
+  ERR_load_RSA_strings: procedure; cdecl = nil;
 
 procedure EVP_PKEY_assign_RSA(key: PEVP_PKEY; rsa: PRSA); inline;
 
@@ -51,6 +52,7 @@ begin
     @RSA_free := LoadFunctionCLib('RSA_free');
     @RSA_up_ref := LoadFunctionCLib('RSA_up_ref');
     @RSA_flags := LoadFunctionCLib('RSA_flags');
+    @ERR_load_RSA_strings := LoadFunctionCLib('ERR_load_RSA_strings');
   end;
 end;
 

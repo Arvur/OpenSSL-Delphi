@@ -372,7 +372,6 @@ begin
        @get_rfc3526_prime_8192:= LoadFunctionCLib('get_rfc3526_prime_8192');
        @BN_bntest_rand:= LoadFunctionCLib('BN_bntest_rand');
        @ERR_load_BN_strings:= LoadFunctionCLib('ERR_load_BN_strings');
-
    end;
 end;
 
