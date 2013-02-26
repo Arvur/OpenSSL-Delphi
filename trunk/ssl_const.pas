@@ -1314,6 +1314,12 @@ const
   EVP_PKEY_MO_DECRYPT = $8;
 {$ENDREGION}
 
+
+{$REGION 'ERR'}
+const
+  ERR_NUM_ERRORS = 16;
+{$ENDREGION}
+
 {$REGION 'X509'}
 
  X509_F_ADD_CERT_DIR                         = 100;
