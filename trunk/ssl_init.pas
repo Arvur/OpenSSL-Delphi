@@ -9,12 +9,13 @@ implementation
 uses
   ssl_ec, ssl_util, ssl_types, ssl_lib, ssl_evp, ssl_const, ssl_rsa, ssl_dsa, ssl_x509, ssl_bio, ssl_pem, ssl_asn,
   ssl_aes, ssl_bf, ssl_bn, ssl_buffer, ssl_cast, ssl_cmac, ssl_engine, ssl_rand, ssl_camellia, ssl_comp, ssl_des,
-  ssl_dh;
+  ssl_dh, ssl_err;
 
 
 procedure SSL_InitLib;
 begin
   ssl_util.SSL_InitUtil;
+  ssl_err.SSL_InitERR;
   ssl_bio.SSL_InitBIO;
   ssl_ec.SSL_InitEC;
   ssl_evp.SSL_InitEVP;

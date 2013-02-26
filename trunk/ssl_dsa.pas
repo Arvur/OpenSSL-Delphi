@@ -100,7 +100,6 @@ begin
     @DSAparams_print_fp:= LoadFunctionCLib('DSAparams_print_fp');
     @DSA_print_fp:= LoadFunctionCLib('DSA_print_fp');
     @ERR_load_DSA_strings:= LoadFunctionCLib('ERR_load_DSA_strings');
-
   end;
 end;
 
