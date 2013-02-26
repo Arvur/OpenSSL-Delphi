@@ -14,11 +14,15 @@ procedure OpenSSL_free(ptr: Pointer);
 
 function Asn1ToString(str: PASN1_STRING): String;
 function StringToASN1(s: String; nid: Integer): PASN1_STRING;
+function OBJ_ln2sn(ln: PAnsiChar): PAnsiChar;
+function OBJ_sn2ln(ln: PAnsiChar): PAnsiChar;
+function OBJ_obj2sn(a: PASN1_OBJECT): PAnsiChar;
+function OBJ_obj2String(a: PASN1_OBJECT; no_name: Integer = 0): String;
 
 procedure SSL_InitUtil;
 
 implementation
-uses ssl_lib, ssl_const, Winapi.WinSock, SysUtils, ssl_err;
+uses ssl_lib, ssl_const, Winapi.WinSock, SysUtils, ssl_err, ssl_objects;
 
 function _CR_alloc(_size: TC_SIZE_T): Pointer; cdecl;
 begin
@@ -113,6 +117,31 @@ begin
 
 end;
 
+function OBJ_ln2sn(ln: PAnsiChar): PAnsiChar;
+begin
+  Result := OBJ_nid2sn(OBJ_ln2nid(ln))
+end;
+
+function OBJ_sn2ln(ln: PAnsiChar): PAnsiChar;
+begin
+  Result := OBJ_nid2ln(OBJ_sn2nid(ln))
+end;
+
+function OBJ_obj2sn(a: PASN1_OBJECT): PAnsiChar;
+begin
+ OBJ_obj2nid(a);
+ SSL_CheckError;
+ Result := OBJ_nid2sn(OBJ_obj2nid(a));
+end;
+
+function OBJ_obj2String(a: PASN1_OBJECT; no_name: Integer = 0): String;
+var len: Integer;
+    buf: PAnsiChar;
+begin
+  Len := OBJ_obj2txt(buf, 256, a, no_name);
+  SSL_CheckError;
+  Result := buf;
+end;
 
 end.
 
