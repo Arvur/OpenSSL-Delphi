@@ -109,6 +109,19 @@ type
   end;
   PBUF_MEM = ^BUF_MEM;
 
+  POBJ_NAME = ^OBJ_NAME;
+  OBJ_NAME = record
+	  _type: TC_INT;
+    _alias: TC_INT;
+	  _name: PAnsiChar;
+	  _data: PAnsiChar;
+  end;
+  OBJ_NAME_CALLBACK = procedure(_par1: POBJ_NAME; arg: Pointer); cdecl;
+  OBJ_CMP_CALLBACK = function(_par1, _par2: Pointer): TC_INT; cdecl;
+
+  OBJ_hash_func = function(_par1: PAnsiChar): TC_ULONG; cdecl;
+  OBJ_cmp_func = function(_par1: PAnsiChar; _par2: PAnsiChar): TC_INT; cdecl;
+  OBJ_free_func = procedure(_par1: PAnsiChar; _par2: TC_INT; _par3: PAnsiChar); cdecl;
 
 {$REGION 'CRYPTO'}
 type
@@ -399,6 +412,7 @@ type
   PSTACK_OF_IPAddressFamily = PSTACK;
   PSTACK_OF_ASN1_TYPE = PSTACK; // may be ^
   PSTACK_OF_ASN1_OBJECT = PSTACK;
+  PSTACK_OF_ASN1_INTEGER = PSTACK_OF;
   PSTACK_OF_GENERAL_NAME = PSTACK;
   PGENERAL_NAMES = PSTACK_OF_GENERAL_NAME;
   PSTACK_OF_ASIdOrRange = PSTACK;
@@ -794,6 +808,7 @@ type
     value : PAnsiChar;
   end;
   PCONF_VALUE = ^CONF_VALUE;
+  PLHASH_OF_CONF_VALUE = PLHASH;
 
   PCONF_METHOD = ^CONF_METHOD;
   PCONF = ^CONF;
@@ -1535,6 +1550,7 @@ type
 
 {$REGION 'X509V3}
 
+  PX509V3_CONF_METHOD = ^X509V3_CONF_METHOD;
   X509V3_CONF_METHOD = record
     get_string : function(db : Pointer; section, value : PAnsiChar) : PAnsiChar; cdecl;
     get_section : function(db : Pointer; section : PAnsiChar) : PSTACK_OF_CONF_VALUE; cdecl;
@@ -1554,6 +1570,227 @@ type
 
   X509V3_CTX = V3_EXT_CTX;
   PX509V3_CTX = ^X509V3_CTX;
+
+  POTHERNAME = ^OTHERNAME;
+  OTHERNAME = record
+    type_id: PASN1_OBJECT;
+    value: PASN1_TYPE;
+  end;
+
+  PEDIPARTYNAME = ^EDIPARTYNAME;
+  EDIPARTYNAME = record
+	  nameAssigner: PASN1_STRING;
+	  partyName: PASN1_STRING;
+  end;
+
+  GENERAL_NAME_union = record
+  case byte of
+    0: (ptr: PAnsiChar);
+    1: (otherName: POTHERNAME);
+	  2: (rfc822Name: PASN1_IA5STRING);
+	  3: (dNSName: PASN1_IA5STRING);
+	  4: (x400Address: PASN1_TYPE);
+	  5: (directoryName: PX509_NAME);
+	  6: (ediPartyName: PEDIPARTYNAME);
+	  7: (uniformResourceIdentifier: PASN1_IA5STRING);
+	  8: (iPAddress: PASN1_OCTET_STRING);
+	  9: (registeredID: PASN1_OBJECT);
+	  10: (ip: PASN1_OCTET_STRING);
+	  11: (dirn: PX509_NAME);
+	  12: (ia5: PASN1_IA5STRING);
+    13: (rid: PASN1_OBJECT);
+	  14: (other: PASN1_TYPE);
+  end;
+
+  PGENERAL_NAME = ^GENERAL_NAME;
+  GENERAL_NAME = record
+    _type: TC_INT;
+    d: GENERAL_NAME_union;
+  end;
+  PX509V3_EXT_METHOD = ^X509V3_EXT_METHOD;
+
+  X509V3_EXT_NEW_func = function: Pointer; cdecl;
+  X509V3_EXT_FREE_func = procedure(p: Pointer); cdecl;
+  X509V3_EXT_D2I_func = function(_par1: Pointer; var _par2: PAnsiChar; _par3: TC_LONG): Pointer; cdecl;
+  X509V3_EXT_I2D_func = function(_par1: Pointer; var _par2: PAnsiChar): TC_INT; cdecl;
+  X509V3_EXT_I2V_func = function(method: PX509V3_EXT_METHOD; ext: Pointer; extlist: PSTACK_OF_CONF_VALUE): PSTACK_OF_CONF_VALUE; cdecl;
+  X509V3_EXT_V2I_func = function(method: PX509V3_EXT_METHOD; ctx: PX509V3_CTX; values: PSTACK_OF_CONF_VALUE): Pointer; cdecl;
+  X509V3_EXT_I2S_func = function(method: PX509V3_EXT_METHOD; ext: Pointer): PAnsiChar; cdecl;
+  X509V3_EXT_S2I_func = function(method: PX509V3_EXT_METHOD; ctx: PX509V3_CTX; str: PAnsiChar): Pointer; cdecl;
+  X509V3_EXT_I2R_func = function(method: PX509V3_EXT_METHOD; ext: Pointer; _out: PBIO; indent: TC_INT): TC_INT; cdecl;
+  X509V3_EXT_R2I_func = function(method: PX509V3_EXT_METHOD; ctx: PX509V3_CTX; str: PAnsiChar): Pointer; cdecl;
+
+  V3_EXT_METHOD = record
+    ext_nid: TC_INT;
+    ext_flags: TC_INT;
+    it: PASN1_ITEM_EXP;
+    ext_new: X509V3_EXT_NEW_func;
+    ext_free: X509V3_EXT_FREE_func;
+    d2i: X509V3_EXT_D2I_func;
+    i2d: X509V3_EXT_I2D_func;
+    i2s: X509V3_EXT_I2S_func;
+    s2i: X509V3_EXT_S2I_func;
+    i2v: X509V3_EXT_I2V_func;
+    v2i: X509V3_EXT_V2I_func;
+    i2r: X509V3_EXT_I2R_func;
+    r2i: X509V3_EXT_R2I_func;
+    usr_data: Pointer;
+  end;
+  X509V3_EXT_METHOD = V3_EXT_METHOD;
+  PSTACK_OF_X509V3_EXT_METHOD = PSTACK_OF;
+  ENUMERATED_NAMES = BIT_STRING_BITNAME;
+  PEXTENDED_KEY_USAGE = PSTACK_OF_ASN1_OBJECT;
+
+  PBASIC_CONSTRAINTS = ^BASIC_CONSTRAINTS;
+  BASIC_CONSTRAINTS = record
+    ca: TC_INT;
+    pathlen: PASN1_INTEGER;
+  end;
+
+  PPKEY_USAGE_PERIOD = ^PKEY_USAGE_PERIOD;
+  PKEY_USAGE_PERIOD = record
+    notBefore: PASN1_GENERALIZEDTIME;
+    notAfter: PASN1_GENERALIZEDTIME;
+  end;
+
+  PACCESS_DESCRIPTION = ^ACCESS_DESCRIPTION;
+  ACCESS_DESCRIPTION = record
+	  method: PASN1_OBJECT;
+	  location: PGENERAL_NAME;
+  end;
+  PSTACK_OF_ACCESS_DESCRIPTION = PSTACK_OF;
+  PAUTHORITY_INFO_ACCESS = PSTACK_OF_ACCESS_DESCRIPTION;
+
+  DIST_POINT_NAME_union = record
+  case Byte of
+	  0: (fullname: PGENERAL_NAMES);
+	  1: (relativename: PSTACK_OF_X509_NAME_ENTRY);
+  end;
+
+  PDIST_POINT_NAME = ^DIST_POINT_NAME;
+  DIST_POINT_NAME = record
+    _type: TC_INT;
+    name: DIST_POINT_NAME_union;
+    dpname: PX509_NAME;
+  end;
+
+  PDIST_POINT = ^DIST_POINT;
+  DIST_POINT = record
+    distpoint: PDIST_POINT_NAME;
+    reasons: PASN1_BIT_STRING;
+    CRLissuer: PGENERAL_NAMES;
+    dp_reasons: TC_INT;
+  end;
+  PSTACK_OF_DIST_POINT = PSTACK_OF;
+  PCRL_DIST_POINTS = PSTACK_OF_DIST_POINT;
+
+  PSXNETID = ^SXNETID;
+  SXNETID = record
+	  zone: PASN1_INTEGER;
+	  user: PASN1_OCTET_STRING;
+  end;
+  PSTACK_OF_SXNETID = PSTACK_OF;
+
+  PSXNET = ^SXNET;
+  SXNET = record
+	  version: PASN1_INTEGER;
+	  ids: PSTACK_OF_SXNETID;
+  end;
+
+  PNOTICEREF = ^NOTICEREF;
+  NOTICEREF = record
+	  organization: PASN1_STRING;
+	  noticenos: PSTACK_OF_ASN1_INTEGER;
+  end;
+
+  PUSERNOTICE = ^USERNOTICE;
+  USERNOTICE = record
+	  noticeref: PNOTICEREF;
+	  exptext: PASN1_STRING;
+  end;
+
+  POLICYQUALINFO_union = record
+		cpsuri: PASN1_IA5STRING;
+		usernotice: PUSERNOTICE;
+		other: PASN1_TYPE;
+  end;
+
+  PPOLICYQUALINFO = ^POLICYQUALINFO;
+  POLICYQUALINFO = record
+	  pqualid: PASN1_OBJECT;
+    d: POLICYQUALINFO_union
+  end;
+  PSTACK_OF_POLICYQUALINFO = PSTACK_OF;
+
+  PPOLICYINFO = ^POLICYINFO;
+  POLICYINFO =  record
+	  policyid: PASN1_OBJECT;
+	  qualifiers: PSTACK_OF_POLICYQUALINFO;
+  end;
+  PSTACK_OF_POLICYINFO = PSTACK_OF;
+  PCERTIFICATEPOLICIES = PSTACK_OF_POLICYINFO;
+
+  PPOLICY_MAPPING = ^POLICY_MAPPING;
+  POLICY_MAPPING = record
+	  issuerDomainPolicy: PASN1_OBJECT;
+	  subjectDomainPolicy: PASN1_OBJECT;
+  end;
+  PSTACK_OF_POLICY_MAPPING = PSTACK_OF;
+
+  PGENERAL_SUBTREE = ^GENERAL_SUBTREE;
+  GENERAL_SUBTREE = record
+	  base: PGENERAL_NAME;
+	  minimum: PASN1_INTEGER;
+	  maximum: PASN1_INTEGER;
+  end;
+  PSTACK_OF_GENERAL_SUBTREE = PSTACK_OF;
+
+  PNAME_CONSTRAINTS = ^NAME_CONSTRAINTS;
+  NAME_CONSTRAINTS = record
+	  permittedSubtrees: PSTACK_OF_GENERAL_SUBTREE;
+	  excludedSubtrees: PSTACK_OF_GENERAL_SUBTREE;
+  end;
+
+  PPOLICY_CONSTRAINTS = ^POLICY_CONSTRAINTS;
+  POLICY_CONSTRAINTS = record
+	  requireExplicitPolicy: PASN1_INTEGER;
+	  inhibitPolicyMapping: PASN1_INTEGER;
+  end;
+
+  PPROXY_POLICY = ^PROXY_POLICY;
+  PROXY_POLICY = record
+    policyLanguage: PASN1_OBJECT;
+	  policy: PASN1_OCTET_STRING;
+  end;
+
+  PPROXY_CERT_INFO_EXTENSION = ^PROXY_CERT_INFO_EXTENSION;
+  PROXY_CERT_INFO_EXTENSION = record
+	  pcPathLengthConstraint: PASN1_INTEGER;
+	  proxyPolicy: PPROXY_POLICY;
+  end;
+
+  PISSUING_DIST_POINT = ^ISSUING_DIST_POINT;
+  ISSUING_DIST_POINT = record
+	  distpoint: PDIST_POINT_NAME;
+	  onlyuser: TC_INT;
+	  onlyCA: TC_INT;
+	  onlysomereasons: PASN1_BIT_STRING;
+	  indirectCRL: TC_INT;
+	  onlyattr: TC_INT;
+  end;
+
+  PX509_PURPOSE = ^X509_PURPOSE;
+  X509_PURPOSE = record
+	  purpose: TC_INT;
+	  trust: TC_INT;
+	  flags: TC_INT;
+	  check_purpose: function(p: PX509_PURPOSE; _x509: PX509; _i: TC_INT): TC_INT; cdecl;
+	  name: PAnsiChar;
+	  sname: PAnsiChar;
+	  usr_data: Pointer;
+  end;
+  PSTACK_OF_X509_PURPOSE = PSTACK_OF;
+
 
 {$ENDREGION}
 
