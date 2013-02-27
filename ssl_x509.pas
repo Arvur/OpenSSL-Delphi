@@ -4,7 +4,7 @@ interface
 uses ssl_types;
 
 var
-  X509_new : function: PPX509 cdecl = nil;
+  X509_new : function: PX509 cdecl = nil;
   X509_free : procedure(x: PX509) cdecl = nil;
   X509_NAME_new : function :PX509_NAME cdecl = nil;
   X509_NAME_free : procedure(x:PX509_NAME) cdecl = nil;
