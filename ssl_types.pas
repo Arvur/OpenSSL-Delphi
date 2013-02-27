@@ -60,21 +60,22 @@ type
   end;
 
   PENGINE = ^ENGINE;
+  PPENGINE = ^PENGINE;
   ENGINE = record
-      id: PAnsiChar;
-      name: PAnsiChar;
-      rsa_meth: Pointer;
-      dsa_meth: Pointer;
-      dh_meth: Pointer;
+    id: PAnsiChar;
+    name: PAnsiChar;
+    rsa_meth: Pointer;
+    dsa_meth: Pointer;
+    dh_meth: Pointer;
     ecdh_meth: Pointer;
     ecdsa_meth: Pointer;
-      rand_meth: Pointer;
-      store_meth: Pointer;
+    rand_meth: Pointer;
+    store_meth: Pointer;
     ciphers: Pointer;
-      digests: Pointer;
-      pkey_meths: Pointer;
-      pkey_asn1_meths: Pointer;
-      _destroy: Pointer;
+    digests: Pointer;
+    pkey_meths: Pointer;
+    pkey_asn1_meths: Pointer;
+    _destroy: Pointer;
     init: Pointer;
     finish: Pointer;
     ctrl: Pointer;
@@ -185,6 +186,7 @@ type
     flags : TC_INT;
   end;
   PBIGNUM = ^BIGNUM;
+  PPBIGNUM = ^PBIGNUM;
   BIGNUM_ARR = array[0..1] of BIGNUM;
   PBIGNUM_ARR = ^BIGNUM_ARR;
 
@@ -213,6 +215,7 @@ type
     flags : TC_INT;
   end;
   PBN_MONT_CTX = ^BN_MONT_CTX;
+  PPBN_MONT_CTX = ^PBN_MONT_CTX;
 
   PBN_CTX_STACK = ^BN_CTX_STACK;
   BN_CTX_STACK = record
@@ -296,6 +299,7 @@ type
   end;
 
   PEC_GROUP = ^EC_GROUP;
+  PPEC_GROUP = ^PEC_GROUP;
 
   PEC_METHOD = ^EC_METHOD;
 
@@ -353,6 +357,7 @@ type
   end;
 
   PEC_EXTRA_DATA = ^EC_EXTRA_DATA;
+  PPEC_EXTRA_DATA = ^PEC_EXTRA_DATA;
   EC_EXTRA_DATA = record
     next: PEC_EXTRA_DATA;
     data: Pointer;
@@ -386,6 +391,7 @@ type
 
 
   PEC_KEY = ^EC_KEY;
+  PPEC_KEY = ^PEC_KEY;
   EC_KEY = record
       version: TC_INT;
     group: PEC_GROUP;
@@ -415,10 +421,11 @@ type
   PSTACK_OF_ASN1_INTEGER = PSTACK_OF;
   PSTACK_OF_GENERAL_NAME = PSTACK;
   PGENERAL_NAMES = PSTACK_OF_GENERAL_NAME;
+  PPGENERAL_NAMES = ^PGENERAL_NAMES;
   PSTACK_OF_ASIdOrRange = PSTACK;
   PASIdOrRanges = PSTACK_OF_ASIdOrRange;
   PSTACK_OF_CONF_VALUE = PSTACK;
-
+  PPSTACK_OF_CONF_VALUE = ^PSTACK_OF_CONF_VALUE;
 
 
 
@@ -432,6 +439,7 @@ type
 
 {$REGION 'BIO'}
   PBIO = ^BIO;
+  PPBIO = ^PBIO;
   PBIO_METHOD = ^BIO_METHOD;
 
   Pbio_info_cb = procedure (_para1 : PBIO; _para2 : TC_INT; _para3 : PAnsiChar;
@@ -496,6 +504,8 @@ type
   PPASN1_INTEGER = ^PASN1_INTEGER;
 
   PASN1_OBJECT = ^ASN1_OBJECT;
+  PPASN1_OBJECT = ^PASN1_OBJECT;
+
   ASN1_UNIVERSALSTRING = ASN1_STRING;
   PASN1_UNIVERSALSTRING = ^ASN1_UNIVERSALSTRING;
   PPASN1_UNIVERSALSTRING = ^PASN1_UNIVERSALSTRING;
@@ -516,24 +526,34 @@ type
   PPASN1_NULL = ^PASN1_NULL;
   ASN1_ENUMERATED = ASN1_STRING;
   PASN1_ENUMERATED = ^ASN1_ENUMERATED;
+  PPASN1_ENUMERATED = ^PASN1_ENUMERATED;
   ASN1_BIT_STRING = ASN1_STRING;
   PASN1_BIT_STRING = ^ASN1_BIT_STRING;
+  PPASN1_BIT_STRING = ^PASN1_BIT_STRING;
   ASN1_OCTET_STRING = ASN1_STRING;
   PASN1_OCTET_STRING = ^ASN1_OCTET_STRING;
+  PPASN1_OCTET_STRING = ^PASN1_OCTET_STRING;
   ASN1_PRINTABLESTRING = ASN1_STRING;
   PASN1_PRINTABLESTRING = ^ASN1_PRINTABLESTRING;
+  PPASN1_PRINTABLESTRING = ^PASN1_PRINTABLESTRING;
   ASN1_T61STRING = ASN1_STRING;
   PASN1_T61STRING = ^ASN1_T61STRING;
+  PPASN1_T61STRING = ^PASN1_T61STRING;
   ASN1_IA5STRING = ASN1_STRING;
   PASN1_IA5STRING = ^ASN1_IA5STRING;
+  PPASN1_IA5STRING = ^PASN1_IA5STRING;
   ASN1_GENERALSTRING = ASN1_STRING;
   PASN1_GENERALSTRING = ^ASN1_GENERALSTRING;
+  PPASN1_GENERALSTRING = ^PASN1_GENERALSTRING;
   ASN1_UTCTIME = ASN1_STRING;
   PASN1_UTCTIME = ^ASN1_UTCTIME;
+  PPASN1_UTCTIME = ^PASN1_UTCTIME;
   ASN1_GENERALIZEDTIME = ASN1_STRING;
   PASN1_GENERALIZEDTIME = ^ASN1_GENERALIZEDTIME;
+  PPASN1_GENERALIZEDTIME = ^PASN1_GENERALIZEDTIME;
   ASN1_TIME = ASN1_STRING;
   PASN1_TIME = ^ASN1_TIME;
+  PPASN1_TIME = ^PASN1_TIME;
 
   ASN1_ENCODING = record
     enc: PAnsiChar;
@@ -566,6 +586,7 @@ type
       19: (sequence: PASN1_STRING);
   end;
   PASN1_TYPE = ^ASN1_TYPE;
+  PPASN1_TYPE = ^PASN1_TYPE;
 
   AUTHORITY_KEYID = record
     keyid : PASN1_OCTET_STRING;
@@ -573,6 +594,24 @@ type
     serial : PASN1_INTEGER;
   end;
   PAUTHORITY_KEYID = ^AUTHORITY_KEYID;
+  PPAUTHORITY_KEYID = ^PAUTHORITY_KEYID;
+
+  PASRange = ^ASRange;
+  ASRange = record
+    min, max: PASN1_INTEGER;
+  end;
+
+  ASIdOrRange_union = record
+  case byte of
+    0: (id: PASN1_INTEGER);
+    1: (range: PASRange);
+  end;
+
+  PASIdOrRange = ^ASIdOrRange;
+  ASIdOrRange = record
+    _type: TC_INT;
+    u: ASIdOrRange_union;
+  end;
 
   ASIdentifierChoice_union = record
   case byte of
@@ -591,6 +630,46 @@ type
     rdi : PASIdentifierChoice;
   end;
   PASIdentifiers = ^ASIdentifiers;
+
+  PIPAddressRange = ^IPAddressRange;
+  IPAddressRange = record
+    min, max: PASN1_BIT_STRING;
+  end;
+
+  IPAddressOrRange_union = record
+  case byte of
+    0: (addressPrefix: PASN1_BIT_STRING);
+    1: (addressRange: PIPAddressRange);
+  end;
+
+  PIPAddressOrRange = ^IPAddressOrRange;
+  IPAddressOrRange = record
+    _type: TC_INT;
+    u: IPAddressOrRange_union;
+  end;
+
+  PSTACK_OF_IPAddressOrRange = PSTACK_OF;
+  PIPAddressOrRanges = PSTACK_OF_IPAddressOrRange;
+
+  IPAddressChoice_union = record
+  case byte of
+    0: (inherit: PASN1_NULL);
+    1: (addressesOrRanges: PIPAddressOrRanges);
+  end;
+
+  PIPAddressChoice = ^IPAddressChoice;
+  IPAddressChoice = record
+    _type: TC_INT;
+    u: IPAddressChoice_union;
+  end;
+
+  PIPAddressFamily = ^IPAddressFamily;
+  IPAddressFamily = record
+    addressFamily: PASN1_OCTET_STRING;
+    ipAddressChoice: PIPAddressChoice;
+  end;
+
+  PIPAddrBlocks = PSTACK_OF_IPAddressFamily;
 
   ASN1_CTX = record
     p : PAnsiChar;   // work char pointer
@@ -702,6 +781,7 @@ type
       hdrlen : TC_INT;  // header length
   end;
   PASN1_VALUE = Pointer;
+  PPASN1_VALUE = ^PASN1_VALUE;
 
   ASN1_new_func = function : PASN1_VALUE; cdecl;
   ASN1_free_func = procedure (a : PASN1_VALUE); cdecl;
@@ -837,6 +917,7 @@ type
 
   DH_Callback = procedure(_par1: TC_INT;_par2: TC_INT; _par3: Pointer); cdecl;
   PDH = ^DH;
+  PPDH = ^PDH;
 
   PDH_METHOD = ^DH_METHOD;
   DH_METHOD = record
@@ -878,6 +959,7 @@ type
 {$REGION 'RSA'}
 type
   PRSA = ^RSA;
+  PPRSA = ^PRSA;
   RSA_METHOD = record
     name : PAnsiChar;
     rsa_pub_enc : function (flen : TC_INT; const from : PAnsiChar;
@@ -930,12 +1012,13 @@ type
 
 {$REGION 'DSA'}
   PDSA = ^DSA;
-
+  PPDSA = ^PDSA;
   DSA_SIG = record
     r : PBIGNUM;
     s : PBIGNUM;
   end;
   PDSA_SIG = ^DSA_SIG;
+  PPDSA_SIG = ^PDSA_SIG;
 
   DSA_METHOD = record
     name : PAnsiChar;
@@ -983,6 +1066,7 @@ type
 
   PEVP_MD = ^EVP_MD;
   PEVP_PKEY_CTX = pointer;
+  PPEVP_PKEY_CTX = ^PEVP_PKEY_CTX;
 
   EVP_SIGN_METHOD = function(_type: TC_INT; m: PAnsiChar; m_length: TC_UINT; sigret: PAnsiChar; var siglen: TC_UINT; key: Pointer): TC_INT; cdecl;
   EVP_VERIFY_METHOD = function(_type: TC_INT; m: PAnsiChar; m_length: TC_UINT; sigbuf: PAnsiChar; siglen: TC_UINT; key: Pointer): TC_INT; cdecl;
@@ -1001,12 +1085,14 @@ type
     _stack: STACK;
   end;
   PSTACK_OF_X509_ATTRIBUTE = ^STACK_OF_X509_ATTRIBUTE;
+  PPSTACK_OF_X509_ATTRIBUTE = ^PSTACK_OF_X509_ATTRIBUTE;
 
 
   PEVP_PKEY_ASN1_METHOD = pointer;
   PEVP_PKEY_METHOD = Pointer;
 
   PEVP_PKEY = ^EVP_PKEY;
+  PPEVP_PKEY = ^PEVP_PKEY;
   EVP_PKEY = record
     _type : TC_INT;
     save_type : TC_INT;
@@ -1103,6 +1189,7 @@ type
   end;
 
   EVP_PBE_KEYGEN = function(ctx: PEVP_CIPHER_CTX; pass: PAnsiChar; passlen: TC_INT; param: PASN1_TYPE; cipher: PEVP_CIPHER; md: PEVP_MD; en_de: TC_INT): TC_INT;
+  PEVP_PBE_KEYGEN = ^EVP_PBE_KEYGEN;
   EVP_PKEY_gen_cb = function(ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
 
 {$ENDREGION}
@@ -1115,9 +1202,12 @@ type
   PX509_REQ = ^X509_REQ;
   PX509_CRL = ^X509_CRL;
   PX509_NAME = ^X509_NAME;
+  PPX509_NAME = ^PX509_NAME;
   PX509_NAME_ENTRY = ^X509_NAME_ENTRY;
+  PPX509_NAME_ENTRY = ^PX509_NAME_ENTRY;
   PX509_REQ_INFO = ^X509_REQ_INFO;
-  PX509_POLICY_CACHE = Pointer;
+  PPX509_REQ_INFO = ^PX509_REQ_INFO;
+  PX509_POLICY_CACHE = ^X509_POLICY_CACHE;
   PX509_CRL_METHOD = Pointer;
   PSTACK_OF_X509_REVOKED = PSTACK_OF;
   PSTACK_OF_X509_NAME_ENTRY = PSTACK_OF;
@@ -1269,6 +1359,8 @@ type
     enc : ASN1_ENCODING;
   end;
   PX509_CINF = ^X509_CINF;
+  PPX509_CINF = ^PX509_CINF;
+
 
   X509_CERT_AUX = record
     trust : PSTACK_OF_ASN1_OBJECT;
@@ -1278,6 +1370,7 @@ type
     other : PSTACK_OF_X509_ALGOR;
   end;
   PX509_CERT_AUX = ^X509_CERT_AUX;
+  PPX509_CERT_AUX = ^PX509_CERT_AUX;
 
   X509 = record
     cert_info: PX509_CINF;
@@ -1474,8 +1567,10 @@ type
     _forward: PX509;
     _reverse: PX509;
   end;
+  PPX509_CERT_PAIR = ^PX509_CERT_PAIR;
 
   PPKCS8_PRIV_KEY_INFO = ^PKCS8_PRIV_KEY_INFO;
+  PPPKCS8_PRIV_KEY_INFO = ^PPKCS8_PRIV_KEY_INFO;
   PKCS8_PRIV_KEY_INFO = record
         broken: TC_INT;
         version: PASN1_INTEGER;
@@ -1550,6 +1645,7 @@ type
 
 {$REGION 'X509V3}
 
+
   PX509V3_CONF_METHOD = ^X509V3_CONF_METHOD;
   X509V3_CONF_METHOD = record
     get_string : function(db : Pointer; section, value : PAnsiChar) : PAnsiChar; cdecl;
@@ -1572,12 +1668,14 @@ type
   PX509V3_CTX = ^X509V3_CTX;
 
   POTHERNAME = ^OTHERNAME;
+  PPOTHERNAME = ^POTHERNAME;
   OTHERNAME = record
     type_id: PASN1_OBJECT;
     value: PASN1_TYPE;
   end;
 
   PEDIPARTYNAME = ^EDIPARTYNAME;
+  PPEDIPARTYNAME = ^PEDIPARTYNAME;
   EDIPARTYNAME = record
 	  nameAssigner: PASN1_STRING;
 	  partyName: PASN1_STRING;
@@ -1603,6 +1701,7 @@ type
   end;
 
   PGENERAL_NAME = ^GENERAL_NAME;
+  PPGENERAL_NAME = ^PGENERAL_NAME;
   GENERAL_NAME = record
     _type: TC_INT;
     d: GENERAL_NAME_union;
@@ -1640,26 +1739,31 @@ type
   PSTACK_OF_X509V3_EXT_METHOD = PSTACK_OF;
   ENUMERATED_NAMES = BIT_STRING_BITNAME;
   PEXTENDED_KEY_USAGE = PSTACK_OF_ASN1_OBJECT;
+  PPEXTENDED_KEY_USAGE = ^PEXTENDED_KEY_USAGE;
 
   PBASIC_CONSTRAINTS = ^BASIC_CONSTRAINTS;
+  PPBASIC_CONSTRAINTS = ^PBASIC_CONSTRAINTS;
   BASIC_CONSTRAINTS = record
     ca: TC_INT;
     pathlen: PASN1_INTEGER;
   end;
 
   PPKEY_USAGE_PERIOD = ^PKEY_USAGE_PERIOD;
+  PPPKEY_USAGE_PERIOD = ^PPKEY_USAGE_PERIOD;
   PKEY_USAGE_PERIOD = record
     notBefore: PASN1_GENERALIZEDTIME;
     notAfter: PASN1_GENERALIZEDTIME;
   end;
 
   PACCESS_DESCRIPTION = ^ACCESS_DESCRIPTION;
+  PPACCESS_DESCRIPTION = ^PACCESS_DESCRIPTION;
   ACCESS_DESCRIPTION = record
 	  method: PASN1_OBJECT;
 	  location: PGENERAL_NAME;
   end;
   PSTACK_OF_ACCESS_DESCRIPTION = PSTACK_OF;
   PAUTHORITY_INFO_ACCESS = PSTACK_OF_ACCESS_DESCRIPTION;
+  PPAUTHORITY_INFO_ACCESS = ^PAUTHORITY_INFO_ACCESS;
 
   DIST_POINT_NAME_union = record
   case Byte of
@@ -1668,6 +1772,7 @@ type
   end;
 
   PDIST_POINT_NAME = ^DIST_POINT_NAME;
+  PPDIST_POINT_NAME = ^PDIST_POINT_NAME;
   DIST_POINT_NAME = record
     _type: TC_INT;
     name: DIST_POINT_NAME_union;
@@ -1675,6 +1780,7 @@ type
   end;
 
   PDIST_POINT = ^DIST_POINT;
+  PPDIST_POINT = ^PDIST_POINT;
   DIST_POINT = record
     distpoint: PDIST_POINT_NAME;
     reasons: PASN1_BIT_STRING;
@@ -1683,8 +1789,10 @@ type
   end;
   PSTACK_OF_DIST_POINT = PSTACK_OF;
   PCRL_DIST_POINTS = PSTACK_OF_DIST_POINT;
+  PPCRL_DIST_POINTS = ^PCRL_DIST_POINTS;
 
   PSXNETID = ^SXNETID;
+  PPSXNETID = ^PSXNETID;
   SXNETID = record
 	  zone: PASN1_INTEGER;
 	  user: PASN1_OCTET_STRING;
@@ -1692,18 +1800,21 @@ type
   PSTACK_OF_SXNETID = PSTACK_OF;
 
   PSXNET = ^SXNET;
+  PPSXNET = ^PSXNET;
   SXNET = record
 	  version: PASN1_INTEGER;
 	  ids: PSTACK_OF_SXNETID;
   end;
 
   PNOTICEREF = ^NOTICEREF;
+  PPNOTICEREF = ^PNOTICEREF;
   NOTICEREF = record
 	  organization: PASN1_STRING;
 	  noticenos: PSTACK_OF_ASN1_INTEGER;
   end;
 
   PUSERNOTICE = ^USERNOTICE;
+  PPUSERNOTICE = ^PUSERNOTICE;
   USERNOTICE = record
 	  noticeref: PNOTICEREF;
 	  exptext: PASN1_STRING;
@@ -1716,6 +1827,7 @@ type
   end;
 
   PPOLICYQUALINFO = ^POLICYQUALINFO;
+  PPPOLICYQUALINFO = ^PPOLICYQUALINFO;
   POLICYQUALINFO = record
 	  pqualid: PASN1_OBJECT;
     d: POLICYQUALINFO_union
@@ -1723,12 +1835,14 @@ type
   PSTACK_OF_POLICYQUALINFO = PSTACK_OF;
 
   PPOLICYINFO = ^POLICYINFO;
+  PPPOLICYINFO = ^PPOLICYINFO;
   POLICYINFO =  record
 	  policyid: PASN1_OBJECT;
 	  qualifiers: PSTACK_OF_POLICYQUALINFO;
   end;
   PSTACK_OF_POLICYINFO = PSTACK_OF;
   PCERTIFICATEPOLICIES = PSTACK_OF_POLICYINFO;
+  PPCERTIFICATEPOLICIES = ^PCERTIFICATEPOLICIES;
 
   PPOLICY_MAPPING = ^POLICY_MAPPING;
   POLICY_MAPPING = record
@@ -1758,18 +1872,21 @@ type
   end;
 
   PPROXY_POLICY = ^PROXY_POLICY;
+  PPPROXY_POLICY = ^PPROXY_POLICY;
   PROXY_POLICY = record
     policyLanguage: PASN1_OBJECT;
 	  policy: PASN1_OCTET_STRING;
   end;
 
   PPROXY_CERT_INFO_EXTENSION = ^PROXY_CERT_INFO_EXTENSION;
+  PPPROXY_CERT_INFO_EXTENSION = ^PPROXY_CERT_INFO_EXTENSION;
   PROXY_CERT_INFO_EXTENSION = record
 	  pcPathLengthConstraint: PASN1_INTEGER;
 	  proxyPolicy: PPROXY_POLICY;
   end;
 
   PISSUING_DIST_POINT = ^ISSUING_DIST_POINT;
+  PPISSUING_DIST_POINT = ^PISSUING_DIST_POINT;
   ISSUING_DIST_POINT = record
 	  distpoint: PDIST_POINT_NAME;
 	  onlyuser: TC_INT;
@@ -1779,17 +1896,68 @@ type
 	  onlyattr: TC_INT;
   end;
 
+
+
   PX509_PURPOSE = ^X509_PURPOSE;
+
+  X509_CHECK_PURPOSE_FUNC = function(p: PX509_PURPOSE; _x509: PX509; _i: TC_INT): TC_INT; cdecl;
   X509_PURPOSE = record
 	  purpose: TC_INT;
 	  trust: TC_INT;
 	  flags: TC_INT;
-	  check_purpose: function(p: PX509_PURPOSE; _x509: PX509; _i: TC_INT): TC_INT; cdecl;
+	  check_purpose: X509_CHECK_PURPOSE_FUNC;
 	  name: PAnsiChar;
 	  sname: PAnsiChar;
 	  usr_data: Pointer;
   end;
   PSTACK_OF_X509_PURPOSE = PSTACK_OF;
+
+  PSTACK_OF_X509_POLICY_NODE = PSTACK_OF;
+  PSTACK_OF_OPENSSL_STRING = PSTACK_OF;
+
+  PX509_POLICY_DATA = ^X509_POLICY_DATA;
+  X509_POLICY_DATA = record
+	  flags: TC_UINT;
+	  valid_policy: PASN1_OBJECT;
+	  qualifier_set: PSTACK_OF_POLICYQUALINFO;
+	  expected_policy_set: PSTACK_OF_ASN1_OBJECT;
+  end;
+  PSTACK_OF_X509_POLICY_DATA = PSTACK_OF;
+
+  X509_POLICY_CACHE = record
+	  anyPolicy: PX509_POLICY_DATA;
+	  data: PSTACK_OF_X509_POLICY_DATA;
+	  any_skip: TC_LONG;
+	  explicit_skip: TC_LONG;
+	  map_skip: TC_LONG;
+  end;
+
+
+  PX509_POLICY_NODE = ^X509_POLICY_NODE;
+  X509_POLICY_NODE = record
+    data: PX509_POLICY_DATA;
+	  parent: PX509_POLICY_NODE;
+	  nchild: TC_INT;
+  end;
+
+  PX509_POLICY_LEVEL = ^X509_POLICY_LEVEL;
+  X509_POLICY_LEVEL = record
+	  cert: PX509;
+	  nodes: PSTACK_OF_X509_POLICY_NODE;
+	  anyPolicy: pX509_POLICY_NODE;
+	  flags: TC_UINT;
+  end;
+
+  PX509_POLICY_TREE = ^X509_POLICY_TREE;
+  X509_POLICY_TREE = record
+	  levels: PX509_POLICY_LEVEL;
+	  nlevel: TC_INT;
+	  extra_data: PSTACK_OF_X509_POLICY_DATA;
+	  auth_policies: PSTACK_OF_X509_POLICY_NODE;
+	  user_policies: PSTACK_OF_X509_POLICY_NODE;
+	  flags: TC_UINT;
+  end;
+
 
 
 {$ENDREGION}
@@ -1803,6 +1971,7 @@ type
 {$REGION 'PKCS7'}
 type
   PPKCS7 = ^PKCS7;
+  PPPKCS7 = ^PPKCS7;
   PSTACK_OF_PKCS7_SIGNER_INFO = PSTACK;
   PSTACK_OF_PKCS7_RECIP_INFO = PSTACK;
 
@@ -2299,7 +2468,7 @@ type
     CAMELLIA_KEY = record
         u: CAMELLIA_KEY_union;
         grand_rounds: TC_INT;
-    end;    
+    end;
       
 {$ENDREGION}  
   
@@ -2330,6 +2499,8 @@ type
 
 {$ENDREGION}  
 
+type
+  SK_POP_FREE_PROC = procedure(_par1: Pointer); cdecl;
 
 implementation
 

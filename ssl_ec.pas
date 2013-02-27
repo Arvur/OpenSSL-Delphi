@@ -28,12 +28,12 @@ var
   EC_GFp_nistp521_method: function: PEC_METHOD; cdecl = nil;
   EC_GF2m_simple_method: function: PEC_METHOD; cdecl = nil;
 
-  EC_EX_DATA_set_data: function(var par: PEC_EXTRA_DATA; data: Pointer;	dup_func: EC_dup_func; free_func: EC_free_func; clear_free_func: EC_clear_free_func): TC_INT; cdecl = nil;
+  EC_EX_DATA_set_data: function(par: PPEC_EXTRA_DATA; data: Pointer;	dup_func: EC_dup_func; free_func: EC_free_func; clear_free_func: EC_clear_free_func): TC_INT; cdecl = nil;
   EC_EX_DATA_get_data: function(par: PEC_EXTRA_DATA; dup_func: EC_dup_func; free_func: EC_free_func; clear_free_func: EC_clear_free_func): Pointer; cdecl = nil;
-  EC_EX_DATA_free_data: procedure(var par: PEC_EXTRA_DATA; dup_func: EC_dup_func; free_func: EC_free_func; clear_free_func: EC_clear_free_func);cdecl = nil;
-  EC_EX_DATA_clear_free_data: procedure(var par: PEC_EXTRA_DATA; dup_func: EC_dup_func; free_func: EC_free_func; clear_free_func: EC_clear_free_func);cdecl = nil;
-  EC_EX_DATA_free_all_data: procedure(var par: PEC_EXTRA_DATA);cdecl = nil;
-  EC_EX_DATA_clear_free_all_data: procedure(var par: PEC_EXTRA_DATA);cdecl = nil;
+  EC_EX_DATA_free_data: procedure(par: PPEC_EXTRA_DATA; dup_func: EC_dup_func; free_func: EC_free_func; clear_free_func: EC_clear_free_func);cdecl = nil;
+  EC_EX_DATA_clear_free_data: procedure(par: PPEC_EXTRA_DATA; dup_func: EC_dup_func; free_func: EC_free_func; clear_free_func: EC_clear_free_func);cdecl = nil;
+  EC_EX_DATA_free_all_data: procedure(par: PPEC_EXTRA_DATA);cdecl = nil;
+  EC_EX_DATA_clear_free_all_data: procedure(par: PPEC_EXTRA_DATA);cdecl = nil;
 
   EC_GROUP_clear_free: procedure(group: PEC_GROUP); cdecl = nil;
   EC_GROUP_set_curve_name: procedure(group: PEC_GROUP; nid: TC_INT); cdecl = nil;
@@ -65,8 +65,8 @@ var
   EC_GROUP_cmp: function(a: PEC_GROUP; b: PEC_GROUP; ctx: PBN_CTX): TC_INT; cdecl = nil;
   EC_GROUP_new_curve_GFp: function(const p: PBIGNUM; const a: PBIGNUM; const b: PBIGNUM; ctx: PBN_CTX): PEC_GROUP; cdecl = nil;
   EC_GROUP_new_curve_GF2m: function(const p: PBIGNUM; const a: PBIGNUM; const b: PBIGNUM; ctx: PBN_CTX): PEC_GROUP; cdecl = nil;
-  d2i_ECPKParameters: function(var group: PEC_GROUP; var _in: PAnsiChar; len: TC_LONG): PEC_GROUP; cdecl = nil;
-  i2d_ECPKParameters: function(group: PEC_GROUP; var _out: PAnsiChar): TC_INT; cdecl = nil;
+  d2i_ECPKParameters: function(group: PPEC_GROUP; _in: PPAnsiChar; len: TC_LONG): PEC_GROUP; cdecl = nil;
+  i2d_ECPKParameters: function(group: PEC_GROUP; _out: PPAnsiChar): TC_INT; cdecl = nil;
   ECPKParameters_print: function(bp: PBIO; x: PEC_GROUP; off: TC_INT): TC_INT; cdecl = nil;
   ECPKParameters_print_fp: function(var fp: FILE; x: PEC_GROUP; off: TC_INT): TC_INT; cdecl = nil;
 
@@ -132,12 +132,12 @@ var
 
   EC_KEY_precompute_mult: function(key: PEC_KEY; ctx: PBN_CTX): TC_INT; cdecl = nil;
   EC_KEY_set_public_key_affine_coordinates: function(key: PEC_KEY; x: PBIGNUM; y: PBIGNUM): TC_INT; cdecl = nil;
-  d2i_ECPrivateKey: function(var key: PEC_KEY; var _in: PAnsiChar; len: TC_LONG): PEC_KEY;
-  i2d_ECPrivateKey: function(key: PEC_KEY; var _out: PAnsiChar): TC_INT; cdecl = nil;
-  d2i_ECParameters: function(var key: PEC_KEY; var _in: PAnsiChar; len: TC_LONG): PEC_KEY;
-  i2d_ECParameters: function(key: PEC_KEY; var _out: PAnsiChar): TC_INT; cdecl = nil;
-  o2i_ECPublicKey: function(var key: PEC_KEY; var _in: PAnsiChar; len: TC_LONG): PEC_KEY;
-  i2o_ECPublicKey: function(key: PEC_KEY; var _out: PAnsiChar): TC_INT; cdecl = nil;
+  d2i_ECPrivateKey: function(key: PPEC_KEY; _in: PPAnsiChar; len: TC_LONG): PEC_KEY;
+  i2d_ECPrivateKey: function(key: PEC_KEY; _out: PPAnsiChar): TC_INT; cdecl = nil;
+  d2i_ECParameters: function(key: PPEC_KEY; _in: PPAnsiChar; len: TC_LONG): PEC_KEY;
+  i2d_ECParameters: function(key: PEC_KEY; _out: PPAnsiChar): TC_INT; cdecl = nil;
+  o2i_ECPublicKey: function(key: PPEC_KEY; _in: PPAnsiChar; len: TC_LONG): PEC_KEY;
+  i2o_ECPublicKey: function(key: PEC_KEY; _out: PPAnsiChar): TC_INT; cdecl = nil;
   ECParameters_print: function(bp: PBIO; const key: PEC_KEY): TC_INT; cdecl = nil;
   EC_KEY_print: function(bp: PBIO; const key: PEC_KEY; off: TC_INT): TC_INT; cdecl = nil;
   ECParameters_print_fp: function(var fp: FILE; const key: PEC_KEY): TC_INT; cdecl = nil;

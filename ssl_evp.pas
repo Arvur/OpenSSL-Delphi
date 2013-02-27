@@ -88,17 +88,17 @@ var
 
   EVP_VerifyFinal: function(ctx: PEVP_MD_CTX;const sigbuf: PAnsiChar; siglen: TC_UINT;pkey: PEVP_PKEY): TC_INT; cdecl = nil;
 
-  EVP_DigestSignInit: function(ctx: PEVP_MD_CTX; var pctx: PEVP_PKEY_CTX; const _type: PEVP_MD; e: PENGINE; pkey: PEVP_PKEY): TC_INT; cdecl = nil;
+  EVP_DigestSignInit: function(ctx: PEVP_MD_CTX; pctx: PPEVP_PKEY_CTX; const _type: PEVP_MD; e: PENGINE; pkey: PEVP_PKEY): TC_INT; cdecl = nil;
   EVP_DigestSignFinal: function(ctx: PEVP_MD_CTX; sigret: PAnsiChar; var siglen: TC_SIZE_T): TC_INT; cdecl = nil;
 
-  EVP_DigestVerifyInit: function(ctx: PEVP_MD_CTX; var pctx: PEVP_PKEY_CTX; const _type: PEVP_MD; e: PENGINE; pkey: PEVP_PKEY): TC_INT; cdecl = nil;
+  EVP_DigestVerifyInit: function(ctx: PEVP_MD_CTX; pctx: PPEVP_PKEY_CTX; const _type: PEVP_MD; e: PENGINE; pkey: PEVP_PKEY): TC_INT; cdecl = nil;
   EVP_DigestVerifyFinal: function(ctx: PEVP_MD_CTX; sig: PAnsiChar; siglen: TC_SIZE_T): TC_INT; cdecl = nil;
 
   EVP_OpenInit: function(ctx: PEVP_CIPHER_CTX;const _type: PEVP_CIPHER; ek: PAnsiChar; ekl:  TC_INT; const iv: PAnsiChar;  priv: PEVP_PKEY): TC_INT; cdecl = nil;
   EVP_OpenFinal: function(ctx: PEVP_CIPHER_CTX; _out: PAnsiChar; var outl: TC_INT): TC_INT; cdecl = nil;
 
-  EVP_SealInit: function(ctx: PEVP_CIPHER_CTX; const _type: PEVP_CIPHER; var ek: PAnsiChar; var ekl: TC_INT; iv: PAnsiChar; var pubk: PEVP_PKEY; npubk: TC_INT): TC_INT; cdecl = nil;
-  EVP_SealFinal: function(ctx: PEVP_CIPHER_CTX;_out: PAnsiChar;var outl: TC_INT): TC_INT; cdecl = nil;
+  EVP_SealInit: function(ctx: PEVP_CIPHER_CTX; const _type: PEVP_CIPHER; ek: PPAnsiChar; var ekl: TC_INT; iv: PAnsiChar; pubk: PPEVP_PKEY; npubk: TC_INT): TC_INT; cdecl = nil;
+  EVP_SealFinal: function(ctx: PEVP_CIPHER_CTX; _out: PAnsiChar;var outl: TC_INT): TC_INT; cdecl = nil;
 
   EVP_EncodeInit: procedure(ctx: PEVP_ENCODE_CTX); cdecl = nil;
   EVP_EncodeUpdate: procedure(ctx: PEVP_ENCODE_CTX;_out: PAnsiChar;var outl: TC_INT; const _in: PAnsiChar;var inl: TC_INT); cdecl = nil;
@@ -294,12 +294,12 @@ var
   EVP_PKEY_new: function: PEVP_PKEY; cdecl = nil;
   EVP_PKEY_free: procedure(pkey: PEVP_PKEY); cdecl = nil;
 
-  d2i_PublicKey: function(_type: TC_INT;var a: PEVP_PKEY; var pp: PAnsiChar; _length: TC_LONG): PEVP_PKEY; cdecl = nil;
-  i2d_PublicKey: function(a: PEVP_PKEY; var pp: PAnsiChar): TC_INT; cdecl = nil;
+  d2i_PublicKey: function(_type: TC_INT; a: PPEVP_PKEY; pp: PPAnsiChar; _length: TC_LONG): PEVP_PKEY; cdecl = nil;
+  i2d_PublicKey: function(a: PEVP_PKEY; pp: PPAnsiChar): TC_INT; cdecl = nil;
 
-  d2i_PrivateKey: function(_type: TC_INT;var a: PEVP_PKEY; var pp: PAnsiChar;   _length: TC_LONG): PEVP_PKEY; cdecl = nil;
-  d2i_AutoPrivateKey: function(var a: PEVP_PKEY; var pp: PAnsiChar; _length: TC_LONG): PEVP_PKEY; cdecl = nil;
-  i2d_PrivateKey: function(a: PEVP_PKEY; var pp: PAnsiChar): TC_INT; cdecl = nil;
+  d2i_PrivateKey: function(_type: TC_INT; a: PPEVP_PKEY; pp: PPAnsiChar;   _length: TC_LONG): PEVP_PKEY; cdecl = nil;
+  d2i_AutoPrivateKey: function(a: PPEVP_PKEY; pp: PPAnsiChar; _length: TC_LONG): PEVP_PKEY; cdecl = nil;
+  i2d_PrivateKey: function(a: PEVP_PKEY; pp: PPAnsiChar): TC_INT; cdecl = nil;
 
   EVP_PKEY_copy_parameters: function(_to: PEVP_PKEY; const _from: PEVP_PKEY): TC_INT; cdecl = nil;
   EVP_PKEY_missing_parameters: function(const pkey: PEVP_PKEY): TC_INT; cdecl = nil;
@@ -327,17 +327,17 @@ var
 
   EVP_PBE_alg_add_type: function(pbe_type: TC_INT;  pbe_nid: TC_INT;  cipher_nid: TC_INT;  md_nid: TC_INT; keygen: EVP_PBE_KEYGEN): TC_INT; cdecl = nil;
   EVP_PBE_alg_add: function(nid: TC_INT; const cipher: PEVP_CIPHER; const md: PEVP_MD; keygen: EVP_PBE_KEYGEN): TC_INT; cdecl = nil;
-  EVP_PBE_find: function(_type: TC_INT; pbe_nid: TC_INT;    var pcnid: TC_INT; var pmnid: TC_INT; var pkeygen: EVP_PBE_KEYGEN): TC_INT; cdecl = nil;
+  EVP_PBE_find: function(_type: TC_INT; pbe_nid: TC_INT;    var pcnid: TC_INT; var pmnid: TC_INT; pkeygen: PEVP_PBE_KEYGEN): TC_INT; cdecl = nil;
 
   EVP_PBE_cleanup: procedure; cdecl = nil;
 
   EVP_PKEY_asn1_get_count: function: TC_INT; cdecl = nil;
   EVP_PKEY_asn1_get0: function(idx: TC_INT): PEVP_PKEY_ASN1_METHOD; cdecl = nil;
-  EVP_PKEY_asn1_find: function(var pe: PENGINE; _type: TC_INT): PEVP_PKEY_ASN1_METHOD; cdecl = nil;
-  EVP_PKEY_asn1_find_str: function(var pe: PENGINE; const str: PAnsiChar; len: TC_INT): PEVP_PKEY_ASN1_METHOD; cdecl = nil;
+  EVP_PKEY_asn1_find: function(pe: PPENGINE; _type: TC_INT): PEVP_PKEY_ASN1_METHOD; cdecl = nil;
+  EVP_PKEY_asn1_find_str: function(pe: PPENGINE; const str: PAnsiChar; len: TC_INT): PEVP_PKEY_ASN1_METHOD; cdecl = nil;
   EVP_PKEY_asn1_add0: function(const ameth: PEVP_PKEY_ASN1_METHOD): TC_INT; cdecl = nil;
   EVP_PKEY_asn1_add_alias: function(_to: TC_INT; _from: TC_INT): TC_INT; cdecl = nil;
-  EVP_PKEY_asn1_get0_info: function(var ppkey_id: TC_INT; var pkey_base_id: TC_INT; var ppkey_flags: TC_INT; var pinfo: PAnsiChar; var ppem_str: PAnsiChar; const ameth: PEVP_PKEY_ASN1_METHOD): TC_INT; cdecl = nil;
+  EVP_PKEY_asn1_get0_info: function(var ppkey_id: TC_INT; var pkey_base_id: TC_INT; var ppkey_flags: TC_INT; pinfo: PPAnsiChar; ppem_str: PPAnsiChar; const ameth: PEVP_PKEY_ASN1_METHOD): TC_INT; cdecl = nil;
 
   EVP_PKEY_get0_asn1: function(pkey: PEVP_PKEY): PEVP_PKEY_ASN1_METHOD; cdecl = nil;
   EVP_PKEY_asn1_new: function(id: TC_INT; flags: TC_INT; pem_str: PAnsiChar; info: PAnsiChar): PEVP_PKEY_ASN1_METHOD; cdecl = nil;
@@ -398,9 +398,9 @@ var
 
 
   EVP_PKEY_paramgen_init: function(ctx: PEVP_PKEY_CTX): TC_INT; cdecl = nil;
-  EVP_PKEY_paramgen: function(ctx: PEVP_PKEY_CTX; var ppkey: PEVP_PKEY): TC_INT; cdecl = nil;
+  EVP_PKEY_paramgen: function(ctx: PEVP_PKEY_CTX; ppkey: PPEVP_PKEY): TC_INT; cdecl = nil;
   EVP_PKEY_keygen_init: function(ctx: PEVP_PKEY_CTX): TC_INT; cdecl = nil;
-  EVP_PKEY_keygen: function(ctx: PEVP_PKEY_CTX; var ppkey: PEVP_PKEY): TC_INT; cdecl = nil;
+  EVP_PKEY_keygen: function(ctx: PEVP_PKEY_CTX; ppkey: PPEVP_PKEY): TC_INT; cdecl = nil;
 
   EVP_PKEY_CTX_set_cb: procedure(ctx: PEVP_PKEY_CTX; cb: EVP_PKEY_gen_cb); cdecl = nil;
   EVP_PKEY_CTX_get_cb: function(ctx: PEVP_PKEY_CTX): EVP_PKEY_gen_cb; cdecl = nil;
