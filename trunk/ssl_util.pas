@@ -112,7 +112,7 @@ begin
      if (tbl.flags and STABLE_NO_MASK) = 0 then
       mask := mask and gmask;
    end;
-   ASN1_mbstring_copy(Result, @_ins[1], -1, MBSTRING_UTF8, mask);
+   ASN1_mbstring_copy(@Result, @_ins[1], -1, MBSTRING_UTF8, mask);
    SSL_CheckError;
 
 end;

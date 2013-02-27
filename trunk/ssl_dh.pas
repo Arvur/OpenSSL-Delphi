@@ -6,7 +6,7 @@ var
   d2i_DHparams_fp: function(var fp: FILE; var x: PAnsiChar): PDH; cdecl = nil;
   i2d_DHparams_fp: procedure(var fp: FILE; x: PAnsiChar); cdecl = nil;
 
-  d2i_DHparams_bio: function(bp: PBIO; var x: PAnsiChar): PDH; cdecl = nil;
+  d2i_DHparams_bio: function(bp: PBIO; x: PPAnsiChar): PDH; cdecl = nil;
   i2d_DHparams_bio: procedure(bp: PBIO; x: PAnsiChar); cdecl = nil;
 
   DHparams_dup: function(_dh: PDH): PDH; cdecl = nil;
@@ -34,8 +34,8 @@ var
   DH_check_pub_key: function(const _dh: PDH;const pub_key: PBIGNUM; var codes: TC_INT): TC_INT; cdecl = nil;
   DH_generate_key: function(_dh: PDH): TC_INT; cdecl = nil;
   DH_compute_key: function(key: PAnsiChar;const pub_key: PBIGNUM;_dh: PDH): TC_INT; cdecl = nil;
-  d2i_DHparams: function(var a: PDH; var pp: PAnsiChar; _length: TC_LONG): PDH;
-  i2d_DHparams: function(const a: PDH;var pp: PAnsiChar): TC_INT; cdecl = nil;
+  d2i_DHparams: function(a: PPDH; pp: PPAnsiChar; _length: TC_LONG): PDH;
+  i2d_DHparams: function(const a: PDH; pp: PPAnsiChar): TC_INT; cdecl = nil;
   DHparams_print_fp: function(var fp: FILE; x: PDH): TC_INT; cdecl = nil;
   DHparams_print: function(bp: BIO; x: PDH): TC_INT; cdecl = nil;
   ERR_load_DH_strings: procedure; cdecl = nil;

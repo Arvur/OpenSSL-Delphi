@@ -67,7 +67,7 @@ var
    BN_mod_exp_simple: function(r: PBIGNUM; a: PBIGNUM; p: PBIGNUM;	m :PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl = nil;
    BN_mask_bits: function(a: PBIGNUM; n: TC_INT): TC_INT; cdecl = nil;
    BN_print_fp: function(var fp: FILE; a: PBIGNUM): TC_INT; cdecl = nil;
-   BN_print: function(var fp: PBIO; a: PBIGNUM): TC_INT; cdecl = nil;
+   BN_print: function(fp: PPBIO; a: PBIGNUM): TC_INT; cdecl = nil;
    BN_reciprocal: function(r: PBIGNUM; const m: PBIGNUM; len: TC_INT; ctx: PBN_CTX): TC_INT; cdecl = nil;
    BN_rshift: function(r: PBIGNUM; const a: PBIGNUM; n: TC_INT): TC_INT; cdecl = nil;
    BN_rshift1: function(r: PBIGNUM; const a: PBIGNUM): TC_INT; cdecl = nil;
@@ -78,9 +78,9 @@ var
    BN_clear_bit: function(a: PBIGNUM; n: TC_INT): TC_INT; cdecl = nil;
    BN_bn2hex: function(const a: PBIGNUM): PAnsiChar; cdecl = nil;
    BN_bn2dec: function(const a: PBIGNUM): PAnsiChar;cdecl = nil;
-   BN_hex2bn: function(var a: PBIGNUM; str: PAnsiChar): TC_INT; cdecl = nil;
-   BN_dec2bn: function(var a: PBIGNUM; str: PAnsiChar): TC_INT; cdecl = nil;
-   BN_asc2bn: function(var a: PBIGNUM; str: PAnsiChar): TC_INT; cdecl = nil;
+   BN_hex2bn: function(a: PPBIGNUM; str: PAnsiChar): TC_INT; cdecl = nil;
+   BN_dec2bn: function(a: PPBIGNUM; str: PAnsiChar): TC_INT; cdecl = nil;
+   BN_asc2bn: function(a: PPBIGNUM; str: PAnsiChar): TC_INT; cdecl = nil;
    BN_gcd: function(r: PBIGNUM;const a: PBIGNUM;const b: PBIGNUM;ctx: PBN_CTX): TC_INT; cdecl = nil;
    BN_kronecker: function(const a: PBIGNUM;const b: PBIGNUM;ctx: PBN_CTX): TC_INT; cdecl = nil;
    BN_mod_inverse: function(ret: PBIGNUM;	const a: PBIGNUM; const n: PBIGNUM;ctx: PBN_CTX): PBIGNUM; cdecl = nil;
@@ -106,7 +106,7 @@ var
 
    BN_MONT_CTX_set: function(mont: PBN_MONT_CTX;const _mod: PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl = nil;
    BN_MONT_CTX_copy: function(_to: PBN_MONT_CTX; _from: PBN_MONT_CTX): PBN_MONT_CTX; cdecl = nil;
-   BN_MONT_CTX_set_locked: function(var pmont: PBN_MONT_CTX; lock: TC_INT; const _mod: PBIGNUM; ctx: PBN_CTX): PBN_MONT_CTX; cdecl = nil;
+   BN_MONT_CTX_set_locked: function(pmont: PPBN_MONT_CTX; lock: TC_INT; const _mod: PBIGNUM; ctx: PBN_CTX): PBN_MONT_CTX; cdecl = nil;
 
    BN_BLINDING_new: function(const A: PBIGNUM; const Ai: PBIGNUM; _mod: PBIGNUM): PBN_BLINDING; cdecl = nil;
    BN_BLINDING_free: procedure(b: PBN_BLINDING); cdecl = nil;

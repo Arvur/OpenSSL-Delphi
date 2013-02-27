@@ -18,14 +18,14 @@ var
     ERR_set_error_data: procedure( _data: PAnsiChar;_flags: TC_INT); cdecl = nil;
 
     ERR_get_error: function: TC_ULONG; cdecl = nil;
-    ERR_get_error_line: function(var  _file: PAnsiChar;var _line: TC_INT): TC_ULONG; cdecl = nil;
-    ERR_get_error_line_data: function(var  _file: PAnsiChar;var _line: TC_INT; var  _data: PAnsiChar; var _flags: TC_INT): TC_ULONG; cdecl = nil;
+    ERR_get_error_line: function(_file: PPAnsiChar;var _line: TC_INT): TC_ULONG; cdecl = nil;
+    ERR_get_error_line_data: function(_file: PPAnsiChar;var _line: TC_INT; _data: PPAnsiChar; var _flags: TC_INT): TC_ULONG; cdecl = nil;
     ERR_peek_error: function: TC_ULONG; cdecl = nil;
-    ERR_peek_error_line: function(var  _file: PAnsiChar;var _line: TC_INT): TC_ULONG; cdecl = nil;
-    ERR_peek_error_line_data: function(var  _file: PAnsiChar;var _line: TC_INT; var _data: PAnsiChar;var _flags: TC_INT): TC_ULONG; cdecl = nil;
+    ERR_peek_error_line: function(_file: PPAnsiChar;var _line: TC_INT): TC_ULONG; cdecl = nil;
+    ERR_peek_error_line_data: function(_file: PPAnsiChar;var _line: TC_INT; _data: PPAnsiChar;var _flags: TC_INT): TC_ULONG; cdecl = nil;
     ERR_peek_last_error: function: TC_ULONG; cdecl = nil;
-    ERR_peek_last_error_line: function(var  _file: PAnsiChar; var _line: TC_INT): TC_ULONG; cdecl = nil;
-    ERR_peek_last_error_line_data: function(var _file: PAnsiChar;var _line: TC_INT; var  _data: PAnsiChar; _flags: TC_INT): TC_ULONG; cdecl = nil;
+    ERR_peek_last_error_line: function(_file: PPAnsiChar; var _line: TC_INT): TC_ULONG; cdecl = nil;
+    ERR_peek_last_error_line_data: function(_file: PPAnsiChar;var _line: TC_INT; _data: PPAnsiChar; _flags: TC_INT): TC_ULONG; cdecl = nil;
     ERR_clear_error: procedure; cdecl = nil;
     ERR_error_string: function(e: TC_ULONG; _buf: PAnsiChar): PAnsiChar; cdecl = nil;
     ERR_error_string_n: procedure(e: TC_ULONG;  _buf: PAnsiChar; len: TC_SIZE_T); cdecl = nil;
