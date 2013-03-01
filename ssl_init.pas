@@ -9,7 +9,7 @@ implementation
 uses
   ssl_ec, ssl_util, ssl_types, ssl_lib, ssl_evp, ssl_const, ssl_rsa, ssl_dsa, ssl_x509, ssl_bio, ssl_pem, ssl_asn,
   ssl_aes, ssl_bf, ssl_bn, ssl_buffer, ssl_cast, ssl_cmac, ssl_engine, ssl_rand, ssl_camellia, ssl_comp, ssl_des,
-  ssl_dh, ssl_err, ssl_objects, ssl_sk;
+  ssl_dh, ssl_err, ssl_objects, ssl_sk, ssl_pkcs12, ssl_pkcs7;
 
 
 procedure SSL_InitLib;
@@ -38,6 +38,8 @@ begin
   ssl_des.SSL_InitDES;
   ssl_dh.SSL_InitDH;
   ssl_sk.SSL_initSk;
+  ssl_pkcs12.SSL_InitPKCS12;
+  ssl_pkcs7.SSL_InitPKCS7;
 end;
 
 end.
