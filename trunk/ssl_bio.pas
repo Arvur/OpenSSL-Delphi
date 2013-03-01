@@ -115,6 +115,7 @@ var
   BIO_sock_should_retry: function(i: TC_INT): TC_INT; cdecl = nil;
 
 function BIO_get_mem_data (bp: PBIO; buf: Pointer): TC_ULONG;
+function BIO_reset(bp: PBIO): TC_INT;
 
 {
  BIO *BIO_new_CMS(BIO *out, CMS_ContentInfo *cms);
@@ -243,6 +244,11 @@ begin
     @BIO_sock_non_fatal_error:= LoadFunctionCLib('BIO_sock_non_fatal_error');
     @BIO_sock_should_retry:= LoadFunctionCLib('BIO_sock_should_retry');
   end;
+end;
+
+function BIO_reset(bp: PBIO): TC_INT;
+begin
+  Result := BIO_ctrl(bp, BIO_CTRL_RESET, 0, nil);
 end;
 
 function BIO_get_mem_data (bp: PBIO; buf: Pointer): TC_ULONG;

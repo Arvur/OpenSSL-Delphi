@@ -12,6 +12,18 @@ var
 	CMS_is_detached: function(_cms: PCMS_ContentInfo): TC_INT; cdecl = nil;
 	CMS_set_detached: function(_cms: PCMS_ContentInfo; _detached: TC_INT): TC_INT; cdecl = nil;
 
+  CMS_ContentInfo_new: function: PCMS_ContentInfo; cdecl = nil;
+  CMS_ContentInfo_free: procedure(a: PCMS_ContentInfo); cdecl = nil;
+  d2i_CMS_ContentInfo: function(a: PPCMS_ContentInfo; _in: PPAnsiChar; len: TC_LONG): PCMS_ContentInfo; cdecl = nil;
+  i2d_CMS_ContentInfo: function(a: PCMS_ContentInfo; _out: PPAnsiChar): TC_INT; cdecl = nil;
+  CMS_ContentInfo_it: function: PASN1_ITEM; cdecl = nil;
+  CMS_ReceiptRequest_new: function: PCMS_ReceiptRequest; cdecl = nil;
+  CMS_ReceiptRequest_free: procedure(a: PCMS_ReceiptRequest); cdecl = nil;
+  d2i_CMS_ReceiptRequest: function(a: PPCMS_ReceiptRequest; _in: PPAnsiChar; len: TC_LONG): PCMS_ReceiptRequest; cdecl = nil;
+  i2d_CMS_ReceiptRequest: function(a: PCMS_ReceiptRequest; _out: PPAnsiChar): TC_INT; cdecl = nil;
+  CMS_ReceiptRequest_it: function: PASN1_ITEM; cdecl = nil;
+
+
 	//CMS_stream: function(unsigned char ***boundary; _cms: PCMS_ContentInfo): TC_INT; cdecl = nil;
 	d2i_CMS_bio: function(_bp: PBIO; _cms: PPCMS_ContentInfo): PCMS_ContentInfo; cdecl = nil;
 	i2d_CMS_bio: function(_bp: PBIO; _cms: PCMS_ContentInfo): TC_INT; cdecl = nil;
@@ -246,8 +258,16 @@ begin
 		 @CMS_add1_ReceiptRequest:= LoadFunctionCLib('CMS_add1_ReceiptRequest');
 		 @CMS_ReceiptRequest_get0_values:= LoadFunctionCLib('CMS_ReceiptRequest_get0_values');
 		 @ERR_load_CMS_strings:= LoadFunctionCLib('ERR_load_CMS_strings');
-
-
+		 @CMS_ContentInfo_new:= LoadFunctionCLib('CMS_ContentInfo_new');
+		 @CMS_ContentInfo_free:= LoadFunctionCLib('CMS_ContentInfo_free');
+		 @d2i_CMS_ContentInfo:= LoadFunctionCLib('d2i_CMS_ContentInfo');
+		 @i2d_CMS_ContentInfo:= LoadFunctionCLib('i2d_CMS_ContentInfo');
+		 @CMS_ContentInfo_it:= LoadFunctionCLib('CMS_ContentInfo_it');
+		 @CMS_ReceiptRequest_new:= LoadFunctionCLib('CMS_ReceiptRequest_new');
+		 @CMS_ReceiptRequest_free:= LoadFunctionCLib('CMS_ReceiptRequest_free');
+		 @d2i_CMS_ReceiptRequest:= LoadFunctionCLib('d2i_CMS_ReceiptRequest');
+		 @i2d_CMS_ReceiptRequest:= LoadFunctionCLib('i2d_CMS_ReceiptRequest');
+		 @CMS_ReceiptRequest_it:= LoadFunctionCLib('CMS_ReceiptRequest_it');
 	 end;
 
 end;
