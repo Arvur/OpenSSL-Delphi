@@ -29,6 +29,7 @@ type
   DES_LONG= TC_ULONG;
   PDES_LONG = ^DES_LONG;
   point_conversion_form_t = byte;
+	TC_OSSL_SSIZE_T = TC_LONG;
 
 type
 
@@ -416,6 +417,8 @@ type
   PSTACK_OF_GENERAL_NAME = PSTACK;
   PGENERAL_NAMES = PSTACK_OF_GENERAL_NAME;
   PPGENERAL_NAMES = ^PGENERAL_NAMES;
+  PSTACK_OF_GENERAL_NAMES = PSTACK_OF;
+  PPSTACK_OF_GENERAL_NAMES = ^PSTACK_OF_GENERAL_NAMES;
   PSTACK_OF_ASIdOrRange = PSTACK;
   PASIdOrRanges = PSTACK_OF_ASIdOrRange;
   PSTACK_OF_CONF_VALUE = PSTACK;
@@ -2198,6 +2201,7 @@ type
   end;
 
   PCMS_ContentInfo = ^CMS_ContentInfo;
+	PPCMS_ContentInfo = ^PCMS_ContentInfo;
   CMS_ContentInfo = record
      contentType: PASN1_OBJECT;
      d: CMS_ContentInfo_union;
@@ -2223,6 +2227,8 @@ type
    PCMS_RecipientIdentifier = ^CMS_RecipientIdentifier;
    CMS_RecipientIdentifier = CMS_SignerIdentifier;
 
+	 PCMS_SignerInfo = ^CMS_SignerInfo;
+	 PPCMS_SignerInfo = ^PCMS_SignerInfo;
    CMS_SignerInfo = record
      version: TC_LONG;
      sid: PCMS_SignerIdentifier;
@@ -2393,6 +2399,27 @@ type
     _type: TC_INT;
     d:CMS_CertificateChoices_union;
   end;
+
+	CMS_RECEIPTSFROM_union = record
+	case byte of
+		0: (_allOrFirstTier: TC_LONG);
+		1: (_receiptList: PSTACK_OF_GENERAL_NAMES);
+	end; { record }
+
+	PCMS_RECEIPTSFROM = ^CMS_RECEIPTSFROM;
+	PPCMS_RECEIPTSFROM = ^PCMS_RECEIPTSFROM;
+	CMS_RECEIPTSFROM = record
+		_type: TC_INT;
+		d: CMS_RECEIPTSFROM_union;
+	end; { record }
+
+	PCMS_RECEIPTREQUEST = ^CMS_RECEIPTREQUEST;
+	PPCMS_RECEIPTREQUEST = ^PCMS_RECEIPTREQUEST;
+	CMS_RECEIPTREQUEST = record
+		_signedContentIdentifier: PASN1_OCTET_STRING;
+		_receiptsFrom: PCMS_ReceiptsFrom;
+		 _receiptsTo: PSTACK_OF_GENERAL_NAMES;
+	end; { record }
 
 {$ENDREGION}
 
