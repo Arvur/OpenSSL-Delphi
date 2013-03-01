@@ -719,6 +719,12 @@ int X509_TRUST_add(int id; int flags; int (*ck)(X509_TRUST *; X509 *; int);
   X509_POLICY_NODE_print: procedure(_out: PBIO; node: PX509_POLICY_NODE; _indent: TC_INT); cdecl = nil;
 
 
+  X509_STORE_new: function: PX509_STORE; cdecl = nil;
+  X509_STORE_free: procedure(v : PX509_STORE); cdecl = nil;
+  X509_STORE_add_cert: function(ctx: PX509_STORE; x: PX509): TC_INT; cdecl = nil;
+  X509_STORE_add_crl: function(ctx: PX509_STORE; x: PX509_CRL):  TC_INT; cdecl = nil;
+
+
 procedure SSL_InitX509;
 
 implementation
@@ -1375,6 +1381,11 @@ begin
    @X509V3_NAME_from_section:= LoadFunctionCLib('X509V3_NAME_from_section');
 
    @X509_POLICY_NODE_print:= LoadFunctionCLib('X509_POLICY_NODE_print');
+
+   @X509_STORE_new:= LoadFunctionCLib('X509_STORE_new');
+   @X509_STORE_free:= LoadFunctionCLib('X509_STORE_free');
+   @X509_STORE_add_cert:= LoadFunctionCLib('X509_STORE_add_cert');
+   @X509_STORE_add_crl:= LoadFunctionCLib('X509_STORE_add_crl');
 
   end;
 end;

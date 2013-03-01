@@ -15,6 +15,8 @@ function sk_X509_EXTENSION_push(_stak: PSTACK_OF_X509_EXTENSION; data: Pointer):
 procedure sk_X509_EXTENSION_pop_free(st: PSTACK_OF_X509_EXTENSION; func: SK_POP_FREE_PROC);
 procedure sk_X509_EXTENSION_free(st: PSTACK_OF_X509_EXTENSION);
 
+function sk_X509_new_null: PSTACK_OF_X509;
+function sk_X509_push(_stak: PSTACK_OF_X509; data: Pointer): TC_INT;
 procedure SSL_initSk;
 
 implementation
@@ -30,7 +32,17 @@ begin
   Result := sk_new_null;
 end;
 
+function sk_X509_new_null: PSTACK_OF_X509;
+begin
+  Result := sk_new_null;
+end;
+
 function sk_X509_EXTENSION_push(_stak: PSTACK_OF_X509_EXTENSION; data: Pointer): TC_INT;
+begin
+  Result := sk_push(_stak, data);
+end;
+
+function sk_X509_push(_stak: PSTACK_OF_X509; data: Pointer): TC_INT;
 begin
   Result := sk_push(_stak, data);
 end;
