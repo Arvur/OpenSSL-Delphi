@@ -1212,6 +1212,8 @@ type
   PSTACK_OF_X509_REVOKED = PSTACK_OF;
   PSTACK_OF_X509_NAME_ENTRY = PSTACK_OF;
   PSTACK_OF_X509 = PSTACK_OF;
+  PPSTACK_OF_X509 = ^PSTACK_OF_X509;
+
   PSTACK_OF_X509_NAME = PSTACK_OF;
 
   PX509_OBJECTS = ^X509_OBJECTS;
@@ -1999,6 +2001,7 @@ type
     enc_data : PPKCS7_ENC_CONTENT;
   end;
   PPKCS7_ENVELOPE = ^PKCS7_ENVELOPE;
+  PPPKCS7_ENVELOPE = ^PPKCS7_ENVELOPE;
 
   PKCS7_SIGN_ENVELOPE = record
     version : PASN1_INTEGER;
@@ -2010,6 +2013,7 @@ type
     recipientinfo : PSTACK_OF_PKCS7_RECIP_INFO;
   end;
   PPKCS7_SIGN_ENVELOPE = ^PKCS7_SIGN_ENVELOPE;
+  PPPKCS7_SIGN_ENVELOPE = ^PPKCS7_SIGN_ENVELOPE;
 
   PKCS7_DIGEST = record
     version : PASN1_INTEGER;
@@ -2024,6 +2028,7 @@ type
     enc_data : PPKCS7_ENC_CONTENT;
   end;
   PPKCS7_ENCRYPT = ^PKCS7_ENCRYPT;
+	PPPKCS7_ENCRYPT = ^PPKCS7_ENCRYPT;
 
   PKCS7_union = record
     case Integer of
@@ -2501,6 +2506,145 @@ type
 
 type
   SK_POP_FREE_PROC = procedure(_par1: Pointer); cdecl;
+
+type
+  tm = record
+    tm_sec: Integer;            // Seconds. [0-60] (1 leap second)
+    tm_min: Integer;            // Minutes. [0-59]
+    tm_hour: Integer;           // Hours.[0-23]
+    tm_mday: Integer;           // Day.[1-31]
+    tm_mon: Integer;            // Month.[0-11]
+    tm_year: Integer;           // Year since 1900
+    tm_wday: Integer;           // Day of week [0-6] (Sunday = 0)
+    tm_yday: Integer;           // Days of year [0-365]
+    tm_isdst: Integer;          // Daylight Savings flag [-1/0/1]
+    tm_gmtoff: LongInt;         // Seconds east of UTC
+    tm_zone: PAnsiChar;         // Timezone abbreviation
+  end;
+  Ptm = ^tm;
+
+{$REGION 'PKCS12'}
+
+	PPKCS12_MAC_DATA = ^PKCS12_MAC_DATA;
+	PPPKCS12_MAC_DATA = ^PPKCS12_MAC_DATA;
+	PKCS12_MAC_DATA = record	
+		dinfo: PX509_SIG;
+		salt: PASN1_OCTET_STRING;
+		iter: PASN1_INTEGER;	
+    end;
+
+	PPKCS12 = ^PKCS12;
+	PPPKCS12 = ^PPKCS12;
+	PKCS12 = record
+		version: PASN1_INTEGER;
+		mac: PPKCS12_MAC_DATA;
+		authsafes: PPKCS7;
+	end;
+
+	PKCS12_BAGS_union = record
+	case byte of
+	 0: (x509cert: PASN1_OCTET_STRING);
+	 1: (x509crl: PASN1_OCTET_STRING);
+	 2: (octet: PASN1_OCTET_STRING);
+	 3: (sdsicert: PASN1_IA5STRING);
+	 4: (other: PASN1_TYPE);
+	end; { record }
+
+	PPKCS12_BAGS = ^PKCS12_BAGS;
+	PPPKCS12_BAGS = ^PPKCS12_BAGS;
+	PKCS12_BAGS = record
+		_type: PASN1_OBJECT;
+		value: PKCS12_BAGS_union;
+	end; { record }
+
+	PSTACK_OF_PKCS12_SAFEBAG = PSTACK_OF;
+	PPSTACK_OF_PKCS12_SAFEBAG = ^PSTACK_OF_PKCS12_SAFEBAG;
+	PPKCS12_SAFEBAG = ^PKCS12_SAFEBAG;
+	PPPKCS12_SAFEBAG = ^PPKCS12_SAFEBAG;
+	PKCS12_SAFEBAG_union = record
+		bag: PPKCS12_BAGS;
+		keybag: PPKCS8_PRIV_KEY_INFO;
+		shkeybag: PX509_SIG;
+		safes: PSTACK_OF_PKCS12_SAFEBAG;
+		other: PASN1_TYPE;
+	end; { record }
+
+	PKCS12_SAFEBAG = record
+		_type: PASN1_OBJECT;
+		value: PKCS12_SAFEBAG_union;
+		attrib: PSTACK_OF_X509_ATTRIBUTE;
+	end; { record }
+	PSTACK_OF_PKCS7 = PSTACK_OF;
+	PPSTACK_OF_PKCS7 = ^PSTACK_OF_PKCS7;
+
+	PPKCS7_ISSUER_AND_SERIAL = ^PKCS7_ISSUER_AND_SERIAL;
+	PPPKCS7_ISSUER_AND_SERIAL = ^PPKCS7_ISSUER_AND_SERIAL;
+	PKCS7_ISSUER_AND_SERIAL = record
+		issuer: PX509_NAME;
+		serial: PASN1_INTEGER;
+	end; { record }
+
+	PPKCS7_SIGNER_INFO = ^PKCS7_SIGNER_INFO;
+	PPPKCS7_SIGNER_INFO = ^PPKCS7_SIGNER_INFO;
+	PKCS7_SIGNER_INFO = record
+		version: PASN1_INTEGER;
+		issuer_and_serial: PPKCS7_ISSUER_AND_SERIAL;
+		digest_alg: PX509_ALGOR;
+		auth_attr: PSTACK_OF_X509_ATTRIBUTE;
+		digest_enc_alg: PX509_ALGOR;
+		enc_digest: PASN1_OCTET_STRING;
+		unauth_attr: PSTACK_OF_X509_ATTRIBUTE;
+		pkey: PEVP_PKEY;
+	end; { record }
+
+
+	PPKCS7_RECIP_INFO = ^PKCS7_RECIP_INFO;
+	PPPKCS7_RECIP_INFO = ^PPKCS7_RECIP_INFO;
+	PKCS7_RECIP_INFO = record
+		_version: PASN1_INTEGER;
+		_issuer_and_serial: PPKCS7_ISSUER_AND_SERIAL;
+		_key_enc_algor: PX509_ALGOR;
+		_enc_key: PASN1_OCTET_STRING;
+		_cert: PX509;
+	end; { record }
+
+	PPPKCS7_SIGNED = ^PPKCS7_SIGNED;
+	PSTACK_OF_PKCS7_SIGNED = PSTACK_OF;
+
+	PPPKCS7_ENC_CONTENT = ^PPKCS7_ENC_CONTENT;
+
+	PPKCS7_ENVELOPED = ^PKCS7_ENVELOPED;
+	PPPKCS7_ENVELOPED = ^PPKCS7_ENVELOPED;
+	PKCS7_ENVELOPED = record
+		_version: PASN1_INTEGER;
+		recipientinfo: PSTACK_OF_PKCS7_RECIP_INFO;
+		_enc_data: PPKCS7_ENC_CONTENT;
+	end; { record }
+
+	PKCS7_SIGNEDANDENVELOPED = record
+		_version: PASN1_INTEGER;
+		_md_algs: PSTACK_OF_X509_ALGOR;
+		_cert: PSTACK_OF_X509;
+		_crl: PSTACK_OF_X509_CRL;
+		_signer_info: PSTACK_OF_PKCS7_SIGNER_INFO;
+		_enc_data: PPKCS7_ENC_CONTENT	;
+		_recipientinfo: PSTACK_OF_PKCS7_RECIP_INFO;
+	end; { record }
+
+	PPPKCS7_DIGEST = ^PPKCS7_DIGEST;
+
+	PPKCS7_ENCRYPTED = ^PKCS7_ENCRYPTED;
+	PPPKCS7_ENCRYPTED = ^PPKCS7_ENCRYPTED;
+	PKCS7_ENCRYPTED = record
+		_version: PASN1_INTEGER;
+		_enc_data: PPKCS7_ENC_CONTENT;
+	end; { record }
+
+  PPKCS7_ATTR_SIGN = Pointer;
+	PPPKCS7_ATTR_SIGN = ^PPKCS7_ATTR_SIGN;
+	PPKCS7_ATTR_VERIFY = Pointer;
+	PPPKCS7_ATTR_VERIFY = ^PPKCS7_ATTR_VERIFY;
+{$ENDREGION}
 
 implementation
 

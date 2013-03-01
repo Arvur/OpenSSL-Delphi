@@ -9,6 +9,8 @@ var
   CRYPTO_malloc_init: procedure; cdecl = nil;
   CRYPTO_set_mem_functions:function (_malloc: CRYPTO_mem_alloc_func; _realloc: CRYPTO_mem_realloc_func; _free: CRYPTO_mem_free_func): TC_INT; cdecl = nil;
 
+  OPENSSL_gmtime: function(var timer: TC_time_t; var time: tm): tm; cdecl = nil;
+
 function OpenSSL_malloc(iSize: TC_INT): Pointer;
 procedure OpenSSL_free(ptr: Pointer);
 
@@ -21,8 +23,14 @@ function OBJ_obj2String(a: PASN1_OBJECT; no_name: Integer = 0): String;
 
 procedure SSL_InitUtil;
 
+function DateTimeToUnixTime(ADateTime: TDateTime): TC_time_t;
+function UnixTimeToDateTime(const AUnixTime: TC_time_t): TDateTime;
+
+function ASN1ToDateTime(a: PASN1_TIME): TDateTime;
+function DateTimeToASN1(ADateTime: TDateTime): PASN1_TIME;
+
 implementation
-uses ssl_lib, ssl_const, Winapi.WinSock, SysUtils, ssl_err, ssl_objects;
+uses ssl_lib, ssl_const, Winapi.WinSock, SysUtils, ssl_err, ssl_objects, Math;
 
 function _CR_alloc(_size: TC_SIZE_T): Pointer; cdecl;
 begin
@@ -49,6 +57,8 @@ begin
     @CRYPTO_realloc := LoadFunctionCLib('CRYPTO_realloc', false);
     @CRYPTO_set_mem_functions := LoadFunctionCLib('CRYPTO_set_mem_functions');
     CRYPTO_set_mem_functions(_CR_alloc, _CR_realloc, _CR_free);
+
+    @OPENSSL_gmtime := LoadFunctionCLib('OPENSSL_gmtime');
   end;
 end;
 
@@ -141,6 +151,43 @@ begin
   Len := OBJ_obj2txt(buf, 256, a, no_name);
   SSL_CheckError;
   Result := buf;
+end;
+
+function DateTimeToUnixTime(ADateTime: TDateTime): TC_time_t;
+begin
+  Result := Round((ADateTime - UnixDateDelta) * SecsPerDay);
+end;
+
+function UnixTimeToDateTime(const AUnixTime: TC_time_t): TDateTime;
+begin
+  Result:= UnixDateDelta + (AUnixTime / SecsPerDay);
+end;
+
+function GeneralizedTimeToDateTime(AGenTime: String): TDateTime;
+var FS: TFormatSettings;
+    y, m, d, h, mm, s: Word;
+begin
+  y := StrToInt(Copy(AGenTime, 1, 4));
+  m := StrToInt(Copy(AGenTime, 5, 2));
+  d := StrToInt(Copy(AGenTime, 7, 2));
+  h := StrToInt(Copy(AGenTime, 9, 2));
+  mm := StrToInt(Copy(AGenTime, 11, 2));
+  s := StrToInt(Copy(AGenTime, 13, 2));
+  Result := EncodeDate(y, m, d)+EncodeTime(h, mm, s, 0);
+end;
+
+function ASN1ToDateTime(a: PASN1_TIME): TDateTime;
+var gt: PASN1_GENERALIZEDTIME;
+begin
+ gt := ASN1_TIME_to_generalizedtime(a, nil);
+ Result := GeneralizedTimeToDateTime(gt.data);
+end;
+
+
+function DateTimeToASN1(ADateTime: TDateTime): PASN1_TIME;
+begin
+  Result := ASN1_TIME_new;
+  ASN1_TIME_set(Result, DateTimeToUnixTime(ADateTime));
 end;
 
 end.
