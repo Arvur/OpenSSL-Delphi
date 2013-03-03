@@ -83,8 +83,8 @@ var
 
   ENGINE_ctrl: function(e: PENGINE; cmd: TC_INT; i: TC_LONG; p: Pointer; f: ENGINE_CB_FUNC): TC_INT; cdecl = nil;
   ENGINE_cmd_is_executable: function(e: PENGINE; cmd: TC_INT): TC_INT; cdecl = nil;
-  ENGINE_ctrl_cmd: function(e: PENGINE; cmd_name: PAnsiChar; i: TC_LONG; p: Pointer; f:ENGINE_CB_FUNC; cmd_optional: TC_INT): TC_INT; cdecl = nil;
-  ENGINE_ctrl_cmd_string: function(e: PENGINE; cmd_name: PAnsiChar; arg: PAnsiChar;	cmd_optional: TC_INT): TC_INT; cdecl = nil;
+  ENGINE_ctrl_cmd: function(e: PENGINE; const cmd_name: PAnsiChar; i: TC_LONG; p: Pointer; f:ENGINE_CB_FUNC; cmd_optional: TC_INT): TC_INT; cdecl = nil;
+  ENGINE_ctrl_cmd_string: function(e: PENGINE; const cmd_name: PAnsiChar; const arg: PAnsiChar;	cmd_optional: TC_INT): TC_INT; cdecl = nil;
 
 
   ENGINE_new: function: PENGINE;
@@ -115,6 +115,8 @@ var
   ENGINE_get_ex_new_index: function(argl: TC_LONG; argp: Pointer; new_func: CRYPTO_EX_new; dup_func: CRYPTO_EX_dup; free_func: CRYPTO_EX_free): TC_INT; cdecl = nil;
   ENGINE_set_ex_data: function(e: PENGINE; idx: TC_INT; arg: Pointer): TC_INT; cdecl = nil;
   ENGINE_get_ex_data: function(const e: PENGINE; idx: TC_INT): Pointer; cdecl = nil;
+  ENGINE_add_conf_module: procedure; cdecl = nil;
+  ENGINE_get_pkey_asn1_meth_str: function(e: PENGINE; const str: PAnsiChar; len: TC_INT): PEVP_PKEY_ASN1_METHOD; cdecl = nil;
 
 
 procedure SSL_InitENGINE;
@@ -216,8 +218,14 @@ begin
      @ENGINE_get_ex_new_index:= LoadFunctionCLib('ENGINE_get_ex_new_index');
      @ENGINE_set_ex_data:= LoadFunctionCLib('ENGINE_set_ex_data');
      @ENGINE_get_ex_data:= LoadFunctionCLib('ENGINE_get_ex_data');
+     @ENGINE_add_conf_module := LoadFunctionCLib('ENGINE_add_conf_module');
 
+     @ENGINE_ctrl:= LoadFunctionCLib('ENGINE_ctrl');
+     @ENGINE_cmd_is_executable:= LoadFunctionCLib('ENGINE_cmd_is_executable');
+     @ENGINE_ctrl_cmd:= LoadFunctionCLib('ENGINE_ctrl_cmd');
+     @ENGINE_ctrl_cmd_string:= LoadFunctionCLib('ENGINE_ctrl_cmd_string');
 
+     @ENGINE_get_pkey_asn1_meth_str := LoadFunctionCLib('ENGINE_get_pkey_asn1_meth_str');
   end;
 
 end;

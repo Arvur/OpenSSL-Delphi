@@ -3764,5 +3764,12 @@ const
 
 {$ENDREGION}
 
+const
+  CRYPTO_LOCK		= 1;
+  CRYPTO_UNLOCK		= 2;
+  CRYPTO_READ		= 4;
+  CRYPTO_WRITE	 = 	8;
+
+
 implementation
 end.

@@ -8,6 +8,8 @@ var
   CRYPTO_free : procedure(ptr : Pointer) cdecl = nil;
   CRYPTO_malloc_init: procedure; cdecl = nil;
   CRYPTO_set_mem_functions:function (_malloc: CRYPTO_mem_alloc_func; _realloc: CRYPTO_mem_realloc_func; _free: CRYPTO_mem_free_func): TC_INT; cdecl = nil;
+  fCRYPTO_lock: procedure(_mode: TC_INT; _type: TC_INT; _file:  PAnsiChar; line: TC_INT); cdecl = nil;
+
 
   OPENSSL_gmtime: function(var timer: TC_time_t; var time: tm): tm; cdecl = nil;
 
@@ -56,6 +58,7 @@ begin
     @CRYPTO_free := LoadFunctionCLib('CRYPTO_free');
     @CRYPTO_realloc := LoadFunctionCLib('CRYPTO_realloc', false);
     @CRYPTO_set_mem_functions := LoadFunctionCLib('CRYPTO_set_mem_functions');
+    @fCRYPTO_lock := LoadFunctionCLib('CRYPTO_lock');
     CRYPTO_set_mem_functions(_CR_alloc, _CR_realloc, _CR_free);
 
     @OPENSSL_gmtime := LoadFunctionCLib('OPENSSL_gmtime');
