@@ -62,38 +62,64 @@ type
 
   PENGINE = ^ENGINE;
   PPENGINE = ^PENGINE;
+  PRSA_METHOD = ^RSA_METHOD;
+  PUI_METHOD = Pointer;
+  PSSL = Pointer;
+  PEVP_PKEY = ^EVP_PKEY;
+  PSTACK_OF_X509_NAME = PSTACK_OF;
+  PX509 = ^X509;
+  PEVP_MD = ^EVP_MD;
+  PPEVP_MD = ^PEVP_MD;
+  PEVP_CIPHER = ^EVP_CIPHER;
+  PPEVP_CIPHER = ^PEVP_CIPHER;
+  PEVP_PKEY_METHOD = Pointer;
+  PPEVP_PKEY_METHOD = ^PEVP_PKEY_METHOD;
+  PEVP_PKEY_ASN1_METHOD = Pointer;
+  PPEVP_PKEY_ASN1_METHOD = ^PEVP_PKEY_ASN1_METHOD;
+
+  PSTACK_OF_X509 = PSTACK_OF;
+  ENGINE_CB_FUNC = procedure;
+  ENGINE_GEN_FUNC_PTR = function: TC_INT; cdecl;
+  ENGINE_GEN_INT_FUNC_PTR = function(engine: PENGINE): TC_INT; cdecl;
+  ENGINE_CTRL_FUNC_PTR = function(engine: PENGINE; _par1: TC_INT; _par2: TC_LONG; _par3: Pointer; f: ENGINE_CB_FUNC): TC_INT; cdecl;
+  ENGINE_LOAD_KEY_PTR = function(engine: PENGINE; buf: PAnsiChar; ui_method: PUI_METHOD; callback_data: Pointer): PEVP_PKEY; cdecl;
+  ENGINE_SSL_CLIENT_CERT_PTR = function(engine: PENGINE; ssl: PSSL; ca_dn: PSTACK_OF_X509_NAME; var cert: PX509; var key: PEVP_PKEY; var pother: PSTACK_OF_X509; ui_method: PUI_METHOD; callback_data: Pointer): TC_INT; cdecl;
+  ENGINE_CIPHERS_PTR =  function(engine: PENGINE; cipher: PPEVP_CIPHER; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
+  ENGINE_DIGESTS_PTR = function(engine: PENGINE; md: PPEVP_MD; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
+  ENGINE_PKEY_METHS_PTR = function(engine: PENGINE; meth: PPEVP_PKEY_METHOD; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
+  ENGINE_PKEY_ASN1_METHS_PTR = function(engine: PENGINE; meth: PPEVP_PKEY_ASN1_METHOD; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
   ENGINE = record
     id: PAnsiChar;
     name: PAnsiChar;
-    rsa_meth: Pointer;
+    rsa_meth: PRSA_METHOD;
     dsa_meth: Pointer;
     dh_meth: Pointer;
     ecdh_meth: Pointer;
     ecdsa_meth: Pointer;
     rand_meth: Pointer;
     store_meth: Pointer;
-    ciphers: Pointer;
-    digests: Pointer;
-    pkey_meths: Pointer;
-    pkey_asn1_meths: Pointer;
-    _destroy: Pointer;
-    init: Pointer;
-    finish: Pointer;
-    ctrl: Pointer;
-    load_privkey: Pointer;
-    load_pubkey: Pointer;
-    load_ssl_client_cert: Pointer;
+    ciphers: ENGINE_CIPHERS_PTR;
+    digests: ENGINE_DIGESTS_PTR;
+    pkey_meths: ENGINE_PKEY_METHS_PTR;
+    pkey_asn1_meths: ENGINE_PKEY_ASN1_METHS_PTR;
+    _destroy: ENGINE_GEN_INT_FUNC_PTR;
+    init: ENGINE_GEN_INT_FUNC_PTR;
+    finish: ENGINE_GEN_INT_FUNC_PTR;
+    ctrl: ENGINE_CTRL_FUNC_PTR;
+    load_privkey: ENGINE_LOAD_KEY_PTR;
+    load_pubkey: ENGINE_LOAD_KEY_PTR;
+    load_ssl_client_cert: ENGINE_SSL_CLIENT_CERT_PTR;
     cmd_defns: PENGINE_CMD_DEFN;
     flags: TC_INT;
-      struct_ref: TC_INT;
+    struct_ref: TC_INT;
     funct_ref: TC_INT;
-      ex_data: CRYPTO_EX_DATA;
+    ex_data: CRYPTO_EX_DATA;
     prev: PENGINE;
-      next: PENGINE;
+    next: PENGINE;
   end;
 
-  PUI_METHOD = Pointer;
-  PSSL = Pointer;
+
+
 
   BF_LONG = TC_ULONG;
   PBF_LONG = ^BF_LONG;
@@ -120,7 +146,7 @@ type
   OBJ_free_func = procedure(_par1: PAnsiChar; _par2: TC_INT; _par3: PAnsiChar); cdecl;
 
 {$REGION 'CRYPTO'}
-type
+
   PCRYPTO_THREADID = ^CRYPTO_THREADID;
 
   CRYPTO_THREADID = record
@@ -147,7 +173,7 @@ type
 
 
 {$REGION 'ERR'}
-type
+
   ERR_STATE = record
     tid: CRYPTO_THREADID;
     err_flags: array [0..ERR_NUM_ERRORS-1] of TC_INT;
@@ -275,7 +301,7 @@ type
 
 {$REGION 'CAST'}
 
-type
+
   CAST_LONG = TC_UINT;
   PCAST_LONG = ^CAST_LONG;
 
@@ -954,7 +980,7 @@ type
 
 
 {$REGION 'RSA'}
-type
+
   PRSA = ^RSA;
   PPRSA = ^PRSA;
   RSA_METHOD = record
@@ -978,8 +1004,6 @@ type
     rsa_verify : function(dtype : TC_INT; const m : PAnsiChar; m_length : PC_UINT; sigbuf : PAnsiChar; siglen : PC_UINT; const rsa :PRSA) : TC_INT; cdecl;
     rsa_keygen : function (rsa : PRSA; bits : TC_INT; e : PBIGNUM; cb : PBN_GENCB) : TC_INT; cdecl;
   end;
-
-  PRSA_METHOD = ^RSA_METHOD;
 
   RSA = record
     pad : TC_INT;
@@ -1061,7 +1085,6 @@ type
 
 {$REGION 'EVP'}
 
-  PEVP_MD = ^EVP_MD;
   PEVP_PKEY_CTX = pointer;
   PPEVP_PKEY_CTX = ^PEVP_PKEY_CTX;
 
@@ -1084,11 +1107,6 @@ type
   PSTACK_OF_X509_ATTRIBUTE = ^STACK_OF_X509_ATTRIBUTE;
   PPSTACK_OF_X509_ATTRIBUTE = ^PSTACK_OF_X509_ATTRIBUTE;
 
-
-  PEVP_PKEY_ASN1_METHOD = pointer;
-  PEVP_PKEY_METHOD = Pointer;
-
-  PEVP_PKEY = ^EVP_PKEY;
   PPEVP_PKEY = ^PEVP_PKEY;
   EVP_PKEY = record
     _type : TC_INT;
@@ -1103,7 +1121,6 @@ type
 
 
   PEVP_CIPHER_CTX = ^EVP_CIPHER_CTX;
-  PEVP_CIPHER = ^EVP_CIPHER;
   EVP_CIPHER = record
     nid : TC_Int;
     block_size : TC_Int;
@@ -1194,7 +1211,7 @@ type
 
 
 {$REGION 'X509'}
-  PX509 = ^X509;
+
   PPX509 = ^PX509;
   PX509_REQ = ^X509_REQ;
   PX509_CRL = ^X509_CRL;
@@ -1207,11 +1224,11 @@ type
   PX509_POLICY_CACHE = ^X509_POLICY_CACHE;
   PX509_CRL_METHOD = Pointer;
   PSTACK_OF_X509_REVOKED = PSTACK_OF;
-  PSTACK_OF_X509_NAME_ENTRY = PSTACK_OF;
-  PSTACK_OF_X509 = PSTACK_OF;
+
+
   PPSTACK_OF_X509 = ^PSTACK_OF_X509;
 
-  PSTACK_OF_X509_NAME = PSTACK_OF;
+  PSTACK_OF_X509_NAME_ENTRY = PSTACK_OF;
 
   PX509_OBJECTS = ^X509_OBJECTS;
   X509_OBJECTS = record
@@ -1962,13 +1979,13 @@ type
 {$ENDREGION}
 
 {$REGION 'PEM'}
-type
+
     pem_password_cb = function(buf: PAnsiString; size: TC_INT; rwflag: TC_INT; userdata: pointer): integer; cdecl;
 
 {$ENDREGION}
 
 {$REGION 'PKCS7'}
-type
+
   PPKCS7 = ^PKCS7;
   PPPKCS7 = ^PPKCS7;
   PSTACK_OF_PKCS7_SIGNER_INFO = PSTACK;
@@ -2050,7 +2067,7 @@ type
 
 {$REGION 'AES'}
 
-type
+
   AES_KEY = record
 {$IFDEF AES_LONG}
     rd_key: array[0..(4*(AES_MAXNR + 1))-1] of TC_ULONG;
@@ -2067,7 +2084,7 @@ type
 
 {$REGION 'BLOWFISH'}
 
-type
+
   BF_KEY = record
     P: array [0..BF_ROUNDS+1] of BF_LONG;
     S: array [0..(4*256)-1] of BF_LONG;
@@ -2078,7 +2095,7 @@ type
 
 {$REGION 'CMAX'}
 
-type
+
   CMAC_CTX = record
     cctx: EVP_CIPHER_CTX;
     k1: array[0..EVP_MAX_BLOCK_LENGTH - 1] of TC_UCHAR;
@@ -2093,7 +2110,6 @@ type
 
 {$REGION 'CMS'}
 
-type
   STACK_OF_CMS_SignerInfo = STACK_OF;
   PSTACK_OF_CMS_SignerInfo = ^STACK_OF_CMS_SignerInfo;
 
@@ -2425,7 +2441,7 @@ type
 
 {$REGION 'DES'}
 
-type
+
   DES_cblock = array[0..7] of TC_UCHAR;
   PDES_cblock = ^DES_cblock;
   const_DES_cblock = array[0..7] of TC_UCHAR;
@@ -2447,17 +2463,6 @@ type
 
 
 {$REGION 'ENGINE'}
-type
-  ENGINE_CB_FUNC = procedure;
-  ENGINE_GEN_FUNC_PTR = function: TC_INT; cdecl;
-  ENGINE_GEN_INT_FUNC_PTR = function(engine: PENGINE): TC_INT; cdecl;
-  ENGINE_CTRL_FUNC_PTR = function(engine: PENGINE; _par1: TC_INT; _par2: TC_LONG; _par3: Pointer; f: ENGINE_CB_FUNC): TC_INT; cdecl;
-  ENGINE_LOAD_KEY_PTR = function(engine: PENGINE; buf: PAnsiChar; ui_method: PUI_METHOD; callback_data: Pointer): PEVP_PKEY; cdecl;
-  ENGINE_SSL_CLIENT_CERT_PTR = function(engine: PENGINE; ssl: PSSL; ca_dn: PSTACK_OF_X509_NAME; var cert: PX509; var key: PEVP_PKEY; var pother: PSTACK_OF_X509; ui_method: PUI_METHOD; callback_data: Pointer): TC_INT; cdecl;
-  ENGINE_CIPHERS_PTR =  function(engine: PENGINE; var cipher: PEVP_CIPHER; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
-  ENGINE_DIGESTS_PTR = function(engine: PENGINE; var md: PEVP_MD; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
-  ENGINE_PKEY_METHS_PTR = function(engine: PENGINE; var meth: PEVP_PKEY_METHOD; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
-  ENGINE_PKEY_ASN1_METHS_PTR = function(engine: PENGINE; var meth: PEVP_PKEY_ASN1_METHOD; var par1: PC_INT; par2: TC_INT): TC_INT; cdecl;
 {$ENDREGION}
 
 {$REGION 'RAND'}
@@ -2475,13 +2480,13 @@ type
 
 {$ENDREGION}
 
-type
+
   PECDH_METHOD = Pointer;
   PECDSA_METHOD = Pointer;
   PSTORE_METHOD = Pointer;
 
 {$REGION 'CAMELLIA'}
-type
+
     KEY_TABLE_TYPE = array [0..CAMELLIA_TABLE_WORD_LEN-1] of TC_UINT;
     CAMELLIA_BUF = array[0..CAMELLIA_BLOCK_SIZE-1] of AnsiChar;
     CAMELLIA_KEY_union = record
@@ -2499,7 +2504,7 @@ type
 {$ENDREGION}  
   
 {$REGION 'COMP'}
-type
+
 	PCOMP_CTX = ^COMP_CTX;
 	PCOMP_METHOD = ^COMP_METHOD;
 	COMP_METHOD = record
@@ -2525,10 +2530,9 @@ type
 
 {$ENDREGION}  
 
-type
+
   SK_POP_FREE_PROC = procedure(_par1: Pointer); cdecl;
 
-type
   tm = record
     tm_sec: Integer;            // Seconds. [0-60] (1 leap second)
     tm_min: Integer;            // Minutes. [0-59]
