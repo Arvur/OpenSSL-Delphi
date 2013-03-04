@@ -3368,7 +3368,81 @@ const
  ENGINE_R_UNIMPLEMENTED_DIGEST               = 147;
  ENGINE_R_UNIMPLEMENTED_PUBLIC_KEY_METHOD    = 101;
  ENGINE_R_VERSION_INCOMPATIBILITY            = 145;
- 
+
+  ENGINE_CMD_FLAG_NUMERIC		= $0001;
+  ENGINE_CMD_FLAG_STRING	  = $0002;
+  ENGINE_CMD_FLAG_NO_INPUT	= $0004;
+  ENGINE_CMD_FLAG_INTERNAL	= $0008;
+  ENGINE_CTRL_SET_LOGSTREAM		= 1;
+  ENGINE_CTRL_SET_PASSWORD_CALLBACK	  = 2;
+  ENGINE_CTRL_HUP				              = 3; // Close and reinitialise any  handles/connections etc.
+  ENGINE_CTRL_SET_USER_INTERFACE      = 4; { Alternative to callback }
+  ENGINE_CTRL_SET_CALLBACK_DATA       = 5; { User-specific data, used   when calling the password
+						                                 callback and the user
+						                                 interface }
+  ENGINE_CTRL_LOAD_CONFIGURATION      = 6; { Load a configuration, given
+						                                 a string that represents a
+						                                 file name or so }
+  ENGINE_CTRL_LOAD_SECTION		        = 7; { Load data from a given
+						                                 section in the already loaded
+                                             configuration }
+  ENGINE_CTRL_HAS_CTRL_FUNCTION		    = 10;
+{ Returns a positive command number for the first command supported by the
+ * engine. Returns zero if no ctrl commands are supported. }
+  ENGINE_CTRL_GET_FIRST_CMD_TYPE		  = 11;
+{ The 'long' argument specifies a command implemented by the engine, and the
+ * return value is the next command supported, or zero if there are no more. }
+  ENGINE_CTRL_GET_NEXT_CMD_TYPE		    = 12;
+{ The 'void*' argument is a command name (cast from 'const char *'), and the
+ * return value is the command that corresponds to it. }
+  ENGINE_CTRL_GET_CMD_FROM_NAME		    = 13;
+{ The next two allow a command to be converted into its corresponding string
+ * form. In each case, the 'long' argument supplies the command. In the NAME_LEN
+ * case, the return value is the length of the command name (not counting a
+ * trailing EOL). In the NAME case, the 'void*' argument must be a string buffer
+ * large enough, and it will be populated with the name of the command (WITH a
+ * trailing EOL). }
+  ENGINE_CTRL_GET_NAME_LEN_FROM_CMD	  = 14;
+  ENGINE_CTRL_GET_NAME_FROM_CMD		    = 15;
+{ The next two are similar but give a "short description" of a command. }
+  ENGINE_CTRL_GET_DESC_LEN_FROM_CMD	  = 16;
+  ENGINE_CTRL_GET_DESC_FROM_CMD		     = 17;
+{ With this command, the return value is the OR'd combination of
+ * ENGINE_CMD_FLAG_*** values that indicate what kind of input a given
+ * engine-specific ctrl command expects. }
+  ENGINE_CTRL_GET_CMD_FLAGS		        = 18;
+
+{ ENGINE implementations should start the numbering of their own control
+ * commands from this value. (ie. ENGINE_CMD_BASE, ENGINE_CMD_BASE + 1, etc). }
+  ENGINE_CMD_BASE				              = 200;
+{ NB: These 2 nCipher "chil" control commands are deprecated, and their
+ * functionality is now available through ENGINE-specific control commands
+ * (exposed through the above-mentioned 'CMD'-handling). Code using these 2
+ * commands should be migrated to the more general command handling before these
+ * are removed. }
+{ Flags specific to the nCipher "chil" engine }
+  ENGINE_CTRL_CHIL_SET_FORKCHECK		  = 100;
+	{ Depending on the value of the (long)i argument, this sets or
+	 * unsets the SimpleForkCheck flag in the CHIL API to enable or
+	 * disable checking and workarounds for applications that fork().
+	 }
+  ENGINE_CTRL_CHIL_NO_LOCKING		      = 101;
+
+  ENGINE_METHOD_RSA		          = $0001;
+  ENGINE_METHOD_DSA		          = $0002;
+  ENGINE_METHOD_DH		          = $0004;
+  ENGINE_METHOD_RAND		        = $0008;
+  ENGINE_METHOD_ECDH		        = $0010;
+  ENGINE_METHOD_ECDSA		        = $0020;
+  ENGINE_METHOD_CIPHERS		      = $0040;
+  ENGINE_METHOD_DIGESTS		      = $0080;
+  ENGINE_METHOD_STORE		        = $0100;
+  ENGINE_METHOD_PKEY_METHS	    = $0200;
+  ENGINE_METHOD_PKEY_ASN1_METHS	= $0400;
+  ENGINE_METHOD_ALL	        	  = $FFFF;
+  ENGINE_METHOD_NONE		        = $0000;
+
+
 {$ENDREGION}
 {$REGION 'RAND'}
 const
