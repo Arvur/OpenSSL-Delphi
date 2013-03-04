@@ -33,6 +33,32 @@ type
 
 type
 
+  PX509_PUBKEY = ^X509_PUBKEY;
+  PPKCS8_PRIV_KEY_INFO = ^PKCS8_PRIV_KEY_INFO;
+  PPPKCS8_PRIV_KEY_INFO = ^PPKCS8_PRIV_KEY_INFO;
+
+  PX509_ALGOR  = ^X509_ALGOR;
+  PPX509_ALGOR =^PX509_ALGOR;
+  PEVP_MD_CTX = ^EVP_MD_CTX;
+  PPEVP_MD_CTX = ^PEVP_MD_CTX;
+
+  PENGINE = ^ENGINE;
+  PPENGINE = ^PENGINE;
+  PRSA_METHOD = ^RSA_METHOD;
+  PUI_METHOD = Pointer;
+  PSSL = Pointer;
+  PEVP_PKEY = ^EVP_PKEY;
+  PX509 = ^X509;
+  PEVP_MD = ^EVP_MD;
+  PPEVP_MD = ^PEVP_MD;
+  PEVP_CIPHER = ^EVP_CIPHER;
+  PPEVP_CIPHER = ^PEVP_CIPHER;
+  PEVP_PKEY_METHOD = ^EVP_PKEY_METHOD;
+  PPEVP_PKEY_METHOD = ^PEVP_PKEY_METHOD;
+  PEVP_PKEY_ASN1_METHOD = ^EVP_PKEY_ASN1_METHOD;
+  PPEVP_PKEY_ASN1_METHOD = ^PEVP_PKEY_ASN1_METHOD;
+
+
   STACK = record
     num : TC_INT;
     data : PPAnsiChar;
@@ -46,6 +72,8 @@ type
   end;
   PSTACK_OF = ^STACK_OF;
   PSTACK    = PSTACK_OF;
+  PSTACK_OF_X509 = PSTACK_OF;
+  PSTACK_OF_X509_NAME = PSTACK_OF;
 
   CRYPTO_EX_DATA = record
     sk : PSTACK;
@@ -60,24 +88,6 @@ type
     cmd_flags: TC_UINT;
   end;
 
-  PENGINE = ^ENGINE;
-  PPENGINE = ^PENGINE;
-  PRSA_METHOD = ^RSA_METHOD;
-  PUI_METHOD = Pointer;
-  PSSL = Pointer;
-  PEVP_PKEY = ^EVP_PKEY;
-  PSTACK_OF_X509_NAME = PSTACK_OF;
-  PX509 = ^X509;
-  PEVP_MD = ^EVP_MD;
-  PPEVP_MD = ^PEVP_MD;
-  PEVP_CIPHER = ^EVP_CIPHER;
-  PPEVP_CIPHER = ^PEVP_CIPHER;
-  PEVP_PKEY_METHOD = Pointer;
-  PPEVP_PKEY_METHOD = ^PEVP_PKEY_METHOD;
-  PEVP_PKEY_ASN1_METHOD = Pointer;
-  PPEVP_PKEY_ASN1_METHOD = ^PEVP_PKEY_ASN1_METHOD;
-
-  PSTACK_OF_X509 = PSTACK_OF;
   ENGINE_CB_FUNC = procedure;
   ENGINE_GEN_FUNC_PTR = function: TC_INT; cdecl;
   ENGINE_GEN_INT_FUNC_PTR = function(engine: PENGINE): TC_INT; cdecl;
@@ -117,9 +127,6 @@ type
     prev: PENGINE;
     next: PENGINE;
   end;
-
-
-
 
   BF_LONG = TC_ULONG;
   PBF_LONG = ^BF_LONG;
@@ -698,7 +705,7 @@ type
     p : PAnsiChar;   // work char pointer
     eos : TC_INT;    // end of sequence read for indefinite encoding
     error : TC_INT;  // error code to use when returning an error
-    inf : TC_INT;    // constructed if 0x20, indefinite is 0x21
+    inf : TC_INT;    // constructed if 0x20; indefinite is 0x21
     tag : TC_INT;    // tag from last 'get object'
     xclass : TC_INT; // class from last 'get object'
     slen : TC_LONG;  // length of last 'get object'
@@ -753,7 +760,7 @@ type
 
   ASN1_TEMPLATE = record
     flags : TC_ULONG;         // Various flags
-    tag : TC_LONG;            // tag, not used if no tagging
+    tag : TC_LONG;            // tag; not used if no tagging
     offset : TC_ULONG;        // Offset of this field in structure
     field_name : PAnsiChar;   // Field name
     item : PASN1_ITEM_EXP;    // Relevant ASN1_ITEM or ASN1_ADB
@@ -761,7 +768,7 @@ type
 
   PASN1_TEMPLATE = ^ASN1_TEMPLATE;
   ASN1_ITEM = record
-    itype : Char;               // The item type, primitive, SEQUENCE, CHOICE or extern
+    itype : Char;               // The item type; primitive; SEQUENCE; CHOICE or extern
     utype : TC_LONG;            // underlying type
     templates : PASN1_TEMPLATE; // If SEQUENCE or CHOICE this contains the contents
     tcount : TC_LONG;           // Number of templates if SEQUENCE or CHOICE
@@ -872,7 +879,7 @@ type
     hash : TC_ULONG;
   end;
 
-  LHASH_COMP_FN_TYPE = function (const p1,p2 : Pointer) : TC_INT; cdecl;
+  LHASH_COMP_FN_TYPE = function (const p1;p2 : Pointer) : TC_INT; cdecl;
   LHASH_HASH_FN_TYPE = function(const p1 : Pointer) : TC_ULONG; cdecl;
   LHASH = record
     b : PPLHASH_NODE;
@@ -1045,19 +1052,14 @@ type
     name : PAnsiChar;
     dsa_do_sign : function (const dgst : PAnsiChar; dlen : TC_INT; dsa : PDSA) : PDSA_SIG; cdecl;
     dsa_sign_setup : function (dsa : PDSA; ctx_in : PBN_CTX; kinvp, rp : PPBN_CTX) : TC_INT; cdecl;
-    dsa_do_verify : function(dgst : PAnsiChar; dgst_len : TC_INT;
-      sig : PDSA_SIG; dsa : PDSA) : TC_INT; cdecl;
-    dsa_mod_exp : function(dsa : PDSA; rr, a1, p1,
-       a2, p2, m : PBIGNUM; ctx : PBN_CTX;
-       in_mont : PBN_MONT_CTX) : TC_INT; cdecl;
-    bn_mod_exp : function (dsa : PDSA; r, a : PBIGNUM; const p, m : PBIGNUM;
-      ctx : PBN_CTX; m_ctx : PBN_CTX): TC_INT; cdecl; // Can be null
+    dsa_do_verify : function(dgst : PAnsiChar; dgst_len : TC_INT; sig : PDSA_SIG; dsa : PDSA) : TC_INT; cdecl;
+    dsa_mod_exp : function(dsa : PDSA; rr, a1, p1, a2, p2, m : PBIGNUM; ctx : PBN_CTX; in_mont : PBN_MONT_CTX) : TC_INT; cdecl;
+    bn_mod_exp : function (dsa : PDSA; r, a : PBIGNUM; const p; m : PBIGNUM;  ctx : PBN_CTX; m_ctx : PBN_CTX): TC_INT; cdecl; // Can be null
     init : function (dsa : PDSA) : TC_INT; cdecl;
     finish : function (dsa : PDSA) : TC_INT; cdecl;
     flags : TC_INT;
     app_data : PAnsiChar;
-     dsa_paramgen : function (dsa : PDSA; bits : TC_INT; seed : PAnsiChar;
-       seed_len : TC_INT; counter_ret : PC_INT; h_ret : PC_ULONG;
+    dsa_paramgen : function (dsa : PDSA; bits : TC_INT; seed : PAnsiChar;  seed_len : TC_INT; counter_ret : PC_INT; h_ret : PC_ULONG;
        cb : PBN_GENCB ) : TC_INT; cdecl;
     dsa_keygen : function(dsa : PDSA) : TC_INT; cdecl;
   end;
@@ -1085,11 +1087,69 @@ type
 
 {$REGION 'EVP'}
 
-  PEVP_PKEY_CTX = pointer;
+  PEVP_PKEY_CTX = ^EVP_PKEY_CTX;
   PPEVP_PKEY_CTX = ^PEVP_PKEY_CTX;
 
   EVP_SIGN_METHOD = function(_type: TC_INT; m: PAnsiChar; m_length: TC_UINT; sigret: PAnsiChar; var siglen: TC_UINT; key: Pointer): TC_INT; cdecl;
   EVP_VERIFY_METHOD = function(_type: TC_INT; m: PAnsiChar; m_length: TC_UINT; sigbuf: PAnsiChar; siglen: TC_UINT; key: Pointer): TC_INT; cdecl;
+  EVP_PKEY_gen_cb = function(ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+
+  EVP_PKEY_CTX = record
+	  pmeth: PEVP_PKEY_METHOD;
+	  engine: PENGINE;
+	  pkey: PEVP_PKEY;
+	  peerkey: PEVP_PKEY;
+	  operation: TC_INT;
+    data: Pointer;
+	  app_data: Pointer;
+	  pkey_gencb: EVP_PKEY_gen_cb;
+	  keygen_info: TC_INT;
+    keygen_info_count: TC_INT;
+	end;
+
+	EVP_PKEY_METHOD = record
+		_pkey_id: TC_INT;
+		_flags: TC_INT;
+
+		init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+		copy: function(_dst: PEVP_PKEY_CTX; _src: PEVP_PKEY_CTX): TC_INT; cdecl;
+		cleanup: procedure(_ctx: PEVP_PKEY_CTX); cdecl;
+
+		paramgen_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+		paramgen: function(_ctx: PEVP_PKEY_CTX; _pkey: PEVP_PKEY): TC_INT; cdecl;
+
+		keygen_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+		keygen: function(_ctx: PEVP_PKEY_CTX; _pkey: PEVP_PKEY): TC_INT; cdecl;
+
+		sign_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+		sign: function(_ctx: PEVP_PKEY_CTX; _sig: PAnsiChar; var _siglen: TC_SIZE_T;const _tbs: PAnsiChar; _tbslen: TC_SIZE_T): TC_INT; cdecl;
+
+		verify_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+		verify: function(_ctx: PEVP_PKEY_CTX;const _sig: PAnsiChar; _siglen: TC_SIZE_T; const _tbs: PAnsiChar; _tbslen: TC_SIZE_T): TC_INT; cdecl;
+
+		verify_recover_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+		verify_recover: function(_ctx: PEVP_PKEY_CTX;_rout: PAnsiChar; var _routlen: TC_SIZE_T;const _sig: PAnsiChar; _siglen: TC_SIZE_T): TC_INT; cdecl;
+
+		signctx_init: function(_ctx: PEVP_PKEY_CTX; _mctx: PEVP_MD_CTX): TC_INT; cdecl;
+		signctx: function(_ctx: PEVP_PKEY_CTX; _sig: PAnsiChar; var siglen: TC_SIZE_T; _mctx: PEVP_MD_CTX): TC_INT; cdecl;
+
+		verifyctx_init: function(_ctx: PEVP_PKEY_CTX; _mctx: PEVP_MD_CTX): TC_INT; cdecl;
+		verifyctx: function(_ctx: PEVP_PKEY_CTX; const _sig: PAnsiChar;_siglen: TC_INT;_mctx: PEVP_MD_CTX): TC_INT; cdecl;
+
+		encrypt_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+		encrypt: function(_ctx: PEVP_PKEY_CTX; _out: PAnsiChar; var _outlen: TC_SIZE_T;const _in: PAnsiChar; _inlen: TC_SIZE_T): TC_INT; cdecl;
+
+		decrypt_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+		decrypt: function(_ctx: PEVP_PKEY_CTX; _out: PAnsiChar; var _outlen: TC_SIZE_T;const _in: PAnsiChar; _inlen: TC_SIZE_T): TC_INT; cdecl;
+
+		derive_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+		derive: function(_ctx: PEVP_PKEY_CTX; _key: PAnsiChar; var _keylen: TC_SIZE_T): TC_INT; cdecl;
+
+		ctrl: function(_ctx: PEVP_PKEY_CTX; _type: TC_INT; _p1: TC_INT; _p2: Pointer): TC_INT; cdecl;
+		ctrl_str: function(_ctx: PEVP_PKEY_CTX; const _type: PAnsiChar; const _value: PAnsiChar): TC_INT; cdecl;
+
+	end; { record }
+
 
 
   EVP_PKEY_union = record
@@ -1119,6 +1179,43 @@ type
     attributes : PSTACK_OF_X509_ATTRIBUTE;
   end;
 
+	EVP_PKEY_ASN1_METHOD = record
+		_pkey_id: TC_INT;
+		_pkey_base_id: TC_INT;
+		_pkey_flags: TC_ULONG;
+
+		_pem_str: PAnsiChar;
+		_info: PAnsiChar;
+
+		pub_decode: function(_pk: PEVP_PKEY; _pub: PX509_PUBKEY): TC_INT; cdecl;
+		pub_encode: function(_pub: PX509_PUBKEY; const _pk: PEVP_PKEY): TC_INT; cdecl;
+		pub_cmp: function(const _a: PEVP_PKEY; const _b: PEVP_PKEY): TC_INT; cdecl;
+		pub_print: function(_out: PBIO; const _pkey: PEVP_PKEY; _indent: TC_INT;_pctx: PASN1_PCTX): TC_INT; cdecl;
+
+		priv_decode: function(_pk: PEVP_PKEY; _p8inf: PPKCS8_PRIV_KEY_INFO): TC_INT; cdecl;
+		priv_encode: function(_p8: PPKCS8_PRIV_KEY_INFO; const _pk: PEVP_PKEY): TC_INT; cdecl;
+		priv_print: function(_out: PBIO; const _pkey: PEVP_PKEY; _indent: TC_INT;_pctx: PASN1_PCTX): TC_INT; cdecl;
+
+		pkey_size: function(const _pk: PEVP_PKEY): TC_INT; cdecl;
+		pkey_bits: function(const _pk: PEVP_PKEY): TC_INT; cdecl;
+
+		param_decode: function(_pkey: PEVP_PKEY;const _pder: PPAnsiChar; _derlen: TC_INT): TC_INT; cdecl;
+		param_encode: function(const _pkey: PEVP_PKEY; _pder: PPAnsiChar): TC_INT; cdecl;
+		param_missing: function(const _pk: PEVP_PKEY): TC_INT; cdecl;
+		param_copy: function(_to: PEVP_PKEY; const _from: PEVP_PKEY): TC_INT; cdecl;
+		param_cmp: function(const _a: PEVP_PKEY; const _b: PEVP_PKEY): TC_INT; cdecl;
+		param_print: function(_out: PBIO; const _pkey: PEVP_PKEY; _indent: TC_INT; _pctx: PASN1_PCTX): TC_INT; cdecl;
+		sig_print: function(_out: PBIO;const _sigalg: PX509_ALGOR; const _sig: PASN1_STRING;_indent: TC_INT; _pctx: PASN1_PCTX): TC_INT; cdecl;
+
+
+		pkey_free: procedure(_pkey: PEVP_PKEY); cdecl;
+		pkey_ctrl: function(_pkey: PEVP_PKEY; _op: TC_INT; _arg1: TC_LONG; _arg2: Pointer): TC_INT; cdecl;
+
+		old_priv_decode: function(_pkey: Pointer;const _pder: PPAnsiChar; _derlen: TC_INT): TC_INT; cdecl;
+		old_priv_encode: function(const _pkey: PEVP_PKEY; _pder: PPAnsiChar): TC_INT; cdecl;
+		item_verify: function(_ctx: PEVP_MD_CTX; const _it: PASN1_ITEM; _asn: Pvoid; _a: PX509_ALGOR; _sig: PASN1_BIT_STRING; _pkey: PEVP_PKEY): TC_INT; cdecl;
+		item_sign: function(_ctx: PEVP_MD_CTX; const _it: PASN1_ITEM; _asn: Pointer; _alg1: PX509_ALGOR; _alg2: PX509_ALGOR; _sig: PASN1_BIT_STRING): TC_INT; cdecl;
+	end; { record }
 
   PEVP_CIPHER_CTX = ^EVP_CIPHER_CTX;
   EVP_CIPHER = record
@@ -1164,7 +1261,7 @@ type
     iv : array [0..EVP_MAX_IV_LENGTH -1] of AnsiChar;
   end;
 
-  PEVP_MD_CTX = ^EVP_MD_CTX;
+
   EVP_MD_CTX = record
     digest : PEVP_MD;
     engine : PENGINE;
@@ -1204,7 +1301,7 @@ type
 
   EVP_PBE_KEYGEN = function(ctx: PEVP_CIPHER_CTX; pass: PAnsiChar; passlen: TC_INT; param: PASN1_TYPE; cipher: PEVP_CIPHER; md: PEVP_MD; en_de: TC_INT): TC_INT;
   PEVP_PBE_KEYGEN = ^EVP_PBE_KEYGEN;
-  EVP_PKEY_gen_cb = function(ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+
 
 {$ENDREGION}
 
@@ -1274,8 +1371,6 @@ type
     algorithm : PASN1_OBJECT;
     parameter : PASN1_TYPE;
   end;
-  PX509_ALGOR  = ^X509_ALGOR;
-  PPX509_ALGOR =^PX509_ALGOR;
 
   PSTACK_OF_X509_ALGOR = PSTACK;
   PPSTACK_OF_X509_ALGOR = ^PSTACK_OF_X509_ALGOR;
@@ -1292,7 +1387,7 @@ type
     public_key : PASN1_BIT_STRING;
     pkey : PEVP_PKEY;
   end;
-  PX509_PUBKEY = ^X509_PUBKEY;
+
   PPX509_PUBKEY =^PX509_PUBKEY;
 
   X509_SIG = record
@@ -1585,8 +1680,6 @@ type
   end;
   PPX509_CERT_PAIR = ^PX509_CERT_PAIR;
 
-  PPKCS8_PRIV_KEY_INFO = ^PKCS8_PRIV_KEY_INFO;
-  PPPKCS8_PRIV_KEY_INFO = ^PPKCS8_PRIV_KEY_INFO;
   PKCS8_PRIV_KEY_INFO = record
         broken: TC_INT;
         version: PASN1_INTEGER;
