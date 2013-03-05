@@ -192,11 +192,15 @@ var
   ERR_load_BN_strings: procedure; cdecl = nil;
 
 
+function BN_num_bytes(a: PBIGNUM): TC_INT;
+
 procedure SSL_InitBN;
+
+
 
 implementation
 
-uses ssl_lib;
+uses ssl_lib, ssl_util;
 
 procedure SSL_InitBN;
 begin
@@ -373,6 +377,11 @@ begin
        @BN_bntest_rand:= LoadFunctionCLib('BN_bntest_rand');
        @ERR_load_BN_strings:= LoadFunctionCLib('ERR_load_BN_strings');
    end;
+end;
+
+function BN_num_bytes(a: PBIGNUM): TC_INT;
+begin
+  Result := (BN_num_bits(a)+7) div 8;
 end;
 
 end.

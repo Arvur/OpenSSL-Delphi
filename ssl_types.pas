@@ -333,10 +333,10 @@ type
 
   PEC_POINT = ^EC_POINT;
   EC_POINT = record
-      meth: PEC_METHOD;
-    X: PBIGNUM;
-    Y: PBIGNUM;
-    Z: PBIGNUM;
+    meth: PEC_METHOD;
+    X: BIGNUM;
+    Y: BIGNUM;
+    Z: BIGNUM;
     Z_is_one: TC_INT;
   end;
   EC_POINT_ARR = array[0..0] of EC_POINT;
@@ -398,7 +398,7 @@ type
   EC_GROUP = record
     meth: PEC_METHOD;
     generator: PEC_POINT;
-    order, cofactor: PBIGNUM;
+    order, cofactor: BIGNUM;
     curve_name : TC_INT;
     asn1_flag: TC_INT;
     asn1_form: point_conversion_form_t;
@@ -421,18 +421,25 @@ type
   PEC_KEY = ^EC_KEY;
   PPEC_KEY = ^PEC_KEY;
   EC_KEY = record
-      version: TC_INT;
+    version: TC_INT;
     group: PEC_GROUP;
 
     pub_key: PEC_POINT;
     priv_key:PBIGNUM;
 
-      enc_flag: TC_UINT;
-      conv_form: point_conversion_form_t;
+    enc_flag: TC_UINT;
+    conv_form: point_conversion_form_t;
 
     references: TC_INT;
     flags: TC_INT;
     method_data: PEC_EXTRA_DATA;
+  end;
+
+  PEC_PKEY_CTX = ^EC_PKEY_CTX;
+  PPEC_PKEY_CTX = ^PEC_PKEY_CTX;
+  EC_PKEY_CTX = record
+	  gen_group: PEC_GROUP;
+	  md: PEVP_MD;
   end;
 
   EC_dup_func = function(par: Pointer): Pointer; cdecl;
@@ -1035,6 +1042,20 @@ type
     blinding : PBN_BLINDING;
     mt_blinding : PBN_BLINDING;
   end;
+
+  PRSA_PKEY_CTX = ^RSA_PKEY_CTX;
+  RSA_PKEY_CTX = record
+	  nbits: TC_INT;
+	  pub_exp: PBIGNUM;
+	  gentmp: array[0..1] of TC_INT;
+	  pad_mode: TC_INT;
+	  md: PEVP_MD;
+	  mgf1md: PEVP_MD;
+	  saltlen: TC_INT;
+	  tbuf: PAnsiChar;
+  end;
+
+
 {$ENDREGION}
 
 
@@ -1103,7 +1124,7 @@ type
     data: Pointer;
 	  app_data: Pointer;
 	  pkey_gencb: EVP_PKEY_gen_cb;
-	  keygen_info: TC_INT;
+	  keygen_info: PC_INT;
     keygen_info_count: TC_INT;
 	end;
 
