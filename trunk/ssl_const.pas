@@ -3369,86 +3369,86 @@ const
  ENGINE_R_UNIMPLEMENTED_PUBLIC_KEY_METHOD    = 101;
  ENGINE_R_VERSION_INCOMPATIBILITY            = 145;
 
-  ENGINE_CMD_FLAG_NUMERIC		= $0001;
-  ENGINE_CMD_FLAG_STRING	  = $0002;
-  ENGINE_CMD_FLAG_NO_INPUT	= $0004;
-  ENGINE_CMD_FLAG_INTERNAL	= $0008;
-  ENGINE_CTRL_SET_LOGSTREAM		= 1;
-  ENGINE_CTRL_SET_PASSWORD_CALLBACK	  = 2;
-  ENGINE_CTRL_HUP				              = 3; // Close and reinitialise any  handles/connections etc.
+  ENGINE_CMD_FLAG_NUMERIC       = $0001;
+  ENGINE_CMD_FLAG_STRING      = $0002;
+  ENGINE_CMD_FLAG_NO_INPUT  = $0004;
+  ENGINE_CMD_FLAG_INTERNAL  = $0008;
+  ENGINE_CTRL_SET_LOGSTREAM     = 1;
+  ENGINE_CTRL_SET_PASSWORD_CALLBACK   = 2;
+  ENGINE_CTRL_HUP                             = 3; // Close and reinitialise any  handles/connections etc.
   ENGINE_CTRL_SET_USER_INTERFACE      = 4; { Alternative to callback }
   ENGINE_CTRL_SET_CALLBACK_DATA       = 5; { User-specific data, used   when calling the password
-						                                 callback and the user
-						                                 interface }
+                                                         callback and the user
+                                                         interface }
   ENGINE_CTRL_LOAD_CONFIGURATION      = 6; { Load a configuration, given
-						                                 a string that represents a
-						                                 file name or so }
-  ENGINE_CTRL_LOAD_SECTION		        = 7; { Load data from a given
-						                                 section in the already loaded
+                                                         a string that represents a
+                                                         file name or so }
+  ENGINE_CTRL_LOAD_SECTION              = 7; { Load data from a given
+                                                         section in the already loaded
                                              configuration }
-  ENGINE_CTRL_HAS_CTRL_FUNCTION		    = 10;
+  ENGINE_CTRL_HAS_CTRL_FUNCTION         = 10;
 { Returns a positive command number for the first command supported by the
  * engine. Returns zero if no ctrl commands are supported. }
-  ENGINE_CTRL_GET_FIRST_CMD_TYPE		  = 11;
+  ENGINE_CTRL_GET_FIRST_CMD_TYPE          = 11;
 { The 'long' argument specifies a command implemented by the engine, and the
  * return value is the next command supported, or zero if there are no more. }
-  ENGINE_CTRL_GET_NEXT_CMD_TYPE		    = 12;
+  ENGINE_CTRL_GET_NEXT_CMD_TYPE         = 12;
 { The 'void*' argument is a command name (cast from 'const char *'), and the
  * return value is the command that corresponds to it. }
-  ENGINE_CTRL_GET_CMD_FROM_NAME		    = 13;
+  ENGINE_CTRL_GET_CMD_FROM_NAME         = 13;
 { The next two allow a command to be converted into its corresponding string
  * form. In each case, the 'long' argument supplies the command. In the NAME_LEN
  * case, the return value is the length of the command name (not counting a
  * trailing EOL). In the NAME case, the 'void*' argument must be a string buffer
  * large enough, and it will be populated with the name of the command (WITH a
  * trailing EOL). }
-  ENGINE_CTRL_GET_NAME_LEN_FROM_CMD	  = 14;
-  ENGINE_CTRL_GET_NAME_FROM_CMD		    = 15;
+  ENGINE_CTRL_GET_NAME_LEN_FROM_CMD   = 14;
+  ENGINE_CTRL_GET_NAME_FROM_CMD         = 15;
 { The next two are similar but give a "short description" of a command. }
-  ENGINE_CTRL_GET_DESC_LEN_FROM_CMD	  = 16;
-  ENGINE_CTRL_GET_DESC_FROM_CMD		     = 17;
+  ENGINE_CTRL_GET_DESC_LEN_FROM_CMD   = 16;
+  ENGINE_CTRL_GET_DESC_FROM_CMD          = 17;
 { With this command, the return value is the OR'd combination of
  * ENGINE_CMD_FLAG_*** values that indicate what kind of input a given
  * engine-specific ctrl command expects. }
-  ENGINE_CTRL_GET_CMD_FLAGS		        = 18;
+  ENGINE_CTRL_GET_CMD_FLAGS             = 18;
 
 { ENGINE implementations should start the numbering of their own control
  * commands from this value. (ie. ENGINE_CMD_BASE, ENGINE_CMD_BASE + 1, etc). }
-  ENGINE_CMD_BASE				              = 200;
+  ENGINE_CMD_BASE                             = 200;
 { NB: These 2 nCipher "chil" control commands are deprecated, and their
  * functionality is now available through ENGINE-specific control commands
  * (exposed through the above-mentioned 'CMD'-handling). Code using these 2
  * commands should be migrated to the more general command handling before these
  * are removed. }
 { Flags specific to the nCipher "chil" engine }
-  ENGINE_CTRL_CHIL_SET_FORKCHECK		  = 100;
-	{ Depending on the value of the (long)i argument, this sets or
-	 * unsets the SimpleForkCheck flag in the CHIL API to enable or
-	 * disable checking and workarounds for applications that fork().
-	 }
-  ENGINE_CTRL_CHIL_NO_LOCKING		      = 101;
+  ENGINE_CTRL_CHIL_SET_FORKCHECK          = 100;
+    { Depending on the value of the (long)i argument, this sets or
+     * unsets the SimpleForkCheck flag in the CHIL API to enable or
+     * disable checking and workarounds for applications that fork().
+     }
+  ENGINE_CTRL_CHIL_NO_LOCKING             = 101;
 
-  ENGINE_METHOD_RSA		          = $0001;
-  ENGINE_METHOD_DSA		          = $0002;
-  ENGINE_METHOD_DH		          = $0004;
-  ENGINE_METHOD_RAND		        = $0008;
-  ENGINE_METHOD_ECDH		        = $0010;
-  ENGINE_METHOD_ECDSA		        = $0020;
-  ENGINE_METHOD_CIPHERS		      = $0040;
-  ENGINE_METHOD_DIGESTS		      = $0080;
-  ENGINE_METHOD_STORE		        = $0100;
-  ENGINE_METHOD_PKEY_METHS	    = $0200;
-  ENGINE_METHOD_PKEY_ASN1_METHS	= $0400;
-  ENGINE_METHOD_ALL	        	  = $FFFF;
-  ENGINE_METHOD_NONE		        = $0000;
+  ENGINE_METHOD_RSA               = $0001;
+  ENGINE_METHOD_DSA               = $0002;
+  ENGINE_METHOD_DH                = $0004;
+  ENGINE_METHOD_RAND                = $0008;
+  ENGINE_METHOD_ECDH                = $0010;
+  ENGINE_METHOD_ECDSA               = $0020;
+  ENGINE_METHOD_CIPHERS           = $0040;
+  ENGINE_METHOD_DIGESTS           = $0080;
+  ENGINE_METHOD_STORE               = $0100;
+  ENGINE_METHOD_PKEY_METHS      = $0200;
+  ENGINE_METHOD_PKEY_ASN1_METHS = $0400;
+  ENGINE_METHOD_ALL               = $FFFF;
+  ENGINE_METHOD_NONE                = $0000;
 
 
 {$ENDREGION}
 {$REGION 'RAND'}
 const
- RAND_F_RAND_GET_RAND_METHOD             = 101;
- RAND_F_RAND_INIT_FIPS                   = 102;
- RAND_F_SSLEAY_RAND_BYTES                = 100;
+ RAND_F_RAND_GET_RAND_METHOD                 = 101;
+ RAND_F_RAND_INIT_FIPS                       = 102;
+ RAND_F_SSLEAY_RAND_BYTES                    = 100;
  RAND_R_ERROR_INITIALISING_DRBG              = 102;
  RAND_R_ERROR_INSTANTIATING_DRBG             = 103;
  RAND_R_NO_FIPS_RANDOM_METHOD_SET            = 101;
@@ -3456,30 +3456,61 @@ const
 {$ENDREGION}
 {$REGION 'CAMELLIA'}
 const
- CAMELLIA_BLOCK_SIZE     = 16;
- CAMELLIA_TABLE_BYTE_LEN = 272;
- CAMELLIA_TABLE_WORD_LEN = (CAMELLIA_TABLE_BYTE_LEN div 4);
+ CAMELLIA_BLOCK_SIZE                         = 16;
+ CAMELLIA_TABLE_BYTE_LEN                     = 272;
+ CAMELLIA_TABLE_WORD_LEN                     = (CAMELLIA_TABLE_BYTE_LEN div 4);
 {$ENDREGION}
 {$REGION 'DES'}
 {$ENDREGION}
 {$REGION 'EVP'}
 const
-  EVP_PKEY_NONE = NID_undef;
-  EVP_PKEY_RSA = NID_rsaEncryption;
-  EVP_PKEY_RSA2 = NID_rsa;
-  EVP_PKEY_DSA = NID_dsa;
-  EVP_PKEY_DSA1 = NID_dsa_2;
-  EVP_PKEY_DSA2 = NID_dsaWithSHA;
-  EVP_PKEY_DSA3 = NID_dsaWithSHA1;
-  EVP_PKEY_DSA4 = NID_dsaWithSHA1_2;
-  EVP_PKEY_DH = NID_dhKeyAgreement;
-  EVP_PKEY_EC = NID_X9_62_id_ecPublicKey;
-  EVP_PKEY_HMAC = NID_hmac;
-  EVP_PKEY_CMAC = NID_cmac;
-  EVP_PKEY_MO_SIGN = $1;
-  EVP_PKEY_MO_VERIFY = $2;
-  EVP_PKEY_MO_ENCRYPT = $4;
-  EVP_PKEY_MO_DECRYPT = $8;
+  EVP_PKEY_NONE                              = NID_undef;
+  EVP_PKEY_RSA                               = NID_rsaEncryption;
+  EVP_PKEY_RSA2                              = NID_rsa;
+  EVP_PKEY_DSA                               = NID_dsa;
+  EVP_PKEY_DSA1                              = NID_dsa_2;
+  EVP_PKEY_DSA2                              = NID_dsaWithSHA;
+  EVP_PKEY_DSA3                              = NID_dsaWithSHA1;
+  EVP_PKEY_DSA4                              = NID_dsaWithSHA1_2;
+  EVP_PKEY_DH                                = NID_dhKeyAgreement;
+  EVP_PKEY_EC                                = NID_X9_62_id_ecPublicKey;
+  EVP_PKEY_HMAC                              = NID_hmac;
+  EVP_PKEY_CMAC                              = NID_cmac;
+  EVP_PKEY_MO_SIGN                           = $1;
+  EVP_PKEY_MO_VERIFY                         = $2;
+  EVP_PKEY_MO_ENCRYPT                        = $4;
+  EVP_PKEY_MO_DECRYPT                        = $8;
+  EVP_PKEY_OP_UNDEFINED                      = 0;
+  EVP_PKEY_OP_PARAMGEN                       = 1 shl 1;
+  EVP_PKEY_OP_KEYGEN                         = 1 shl 2;
+  EVP_PKEY_OP_SIGN                           = 1 shl 3;
+  EVP_PKEY_OP_VERIFY                         = 1 shl 4;
+  EVP_PKEY_OP_VERIFYRECOVER                  = 1 shl 5;
+  EVP_PKEY_OP_SIGNCTX                        = 1 shl 6;
+  EVP_PKEY_OP_VERIFYCTX                      = 1 shl 7;
+  EVP_PKEY_OP_ENCRYPT                        = 1 shl 8;
+  EVP_PKEY_OP_DECRYPT                        = 1 shl 9;
+  EVP_PKEY_OP_DERIVE                         = 1 shl 10;
+
+  EVP_PKEY_CTRL_MD              = 1;
+  EVP_PKEY_CTRL_PEER_KEY        = 2;
+  EVP_PKEY_CTRL_PKCS7_ENCRYPT   = 3;
+  EVP_PKEY_CTRL_PKCS7_DECRYPT   = 4;
+  EVP_PKEY_CTRL_PKCS7_SIGN      = 5;
+  EVP_PKEY_CTRL_SET_MAC_KEY     = 6;
+  EVP_PKEY_CTRL_DIGESTINIT      = 7;
+  EVP_PKEY_CTRL_SET_IV          = 8;
+  EVP_PKEY_CTRL_CMS_ENCRYPT     = 9;
+  EVP_PKEY_CTRL_CMS_DECRYPT     = 10;
+  EVP_PKEY_CTRL_CMS_SIGN        = 11;
+  EVP_PKEY_CTRL_CIPHER          = 12;
+  EVP_PKEY_ALG_CTRL             = $1000;
+  EVP_PKEY_FLAG_AUTOARGLEN      = 2;
+  EVP_PKEY_FLAG_SIGCTX_CUSTOM   = 4;
+
+
+  EVP_PKEY_CTRL_EC_PARAMGEN_CURVE_NID        = (EVP_PKEY_ALG_CTRL + 1);
+
 {$ENDREGION}
 {$REGION 'ERR'}
 const
@@ -3776,73 +3807,73 @@ const
  X509_PURPOSE_DYNAMIC       = $1;
  X509_PURPOSE_DYNAMIC_NAME  = $2;
 
- X509_PURPOSE_SSL_CLIENT		= 1;
- X509_PURPOSE_SSL_SERVER		= 2;
- X509_PURPOSE_NS_SSL_SERVER	    = 3;
- X509_PURPOSE_SMIME_SIGN		= 4;
- X509_PURPOSE_SMIME_ENCRYPT	    = 5;
- X509_PURPOSE_CRL_SIGN		    = 6;
- X509_PURPOSE_ANY		        = 7;
- X509_PURPOSE_OCSP_HELPER	    = 8;
- X509_PURPOSE_TIMESTAMP_SIGN	= 9;
+ X509_PURPOSE_SSL_CLIENT        = 1;
+ X509_PURPOSE_SSL_SERVER        = 2;
+ X509_PURPOSE_NS_SSL_SERVER     = 3;
+ X509_PURPOSE_SMIME_SIGN        = 4;
+ X509_PURPOSE_SMIME_ENCRYPT     = 5;
+ X509_PURPOSE_CRL_SIGN          = 6;
+ X509_PURPOSE_ANY               = 7;
+ X509_PURPOSE_OCSP_HELPER       = 8;
+ X509_PURPOSE_TIMESTAMP_SIGN    = 9;
 
- X509_PURPOSE_MIN		= 1;
- X509_PURPOSE_MAX		= 9;
+ X509_PURPOSE_MIN       = 1;
+ X509_PURPOSE_MAX       = 9;
 
- X509V3_EXT_UNKNOWN_MASK		= ($f shl 16);
- X509V3_EXT_DEFAULT		        = 0;
- X509V3_EXT_ERROR_UNKNOWN	    = (1 shl 16);
- X509V3_EXT_PARSE_UNKNOWN	    = (2 shl 16);
- X509V3_EXT_DUMP_UNKNOWN		= (3 shl 16);
+ X509V3_EXT_UNKNOWN_MASK        = ($f shl 16);
+ X509V3_EXT_DEFAULT             = 0;
+ X509V3_EXT_ERROR_UNKNOWN       = (1 shl 16);
+ X509V3_EXT_PARSE_UNKNOWN       = (2 shl 16);
+ X509V3_EXT_DUMP_UNKNOWN        = (3 shl 16);
 
- X509V3_ADD_OP_MASK		        = $f;
- X509V3_ADD_DEFAULT		        = 0;
- X509V3_ADD_APPEND		        = 1;
- X509V3_ADD_REPLACE		        = 2;
- X509V3_ADD_REPLACE_EXISTING	= 3;
- X509V3_ADD_KEEP_EXISTING	    = 4;
- X509V3_ADD_DELETE		        = 5;
- X509V3_ADD_SILENT		        = $10;
+ X509V3_ADD_OP_MASK             = $f;
+ X509V3_ADD_DEFAULT             = 0;
+ X509V3_ADD_APPEND              = 1;
+ X509V3_ADD_REPLACE             = 2;
+ X509V3_ADD_REPLACE_EXISTING    = 3;
+ X509V3_ADD_KEEP_EXISTING       = 4;
+ X509V3_ADD_DELETE              = 5;
+ X509V3_ADD_SILENT              = $10;
  
 {$ENDREGION}
 
 {$REGION 'PKCS7}
 
- PKCS7_TEXT				= $1;
- PKCS7_NOCERTS			= $2;
- PKCS7_NOSIGS			= $4;
- PKCS7_NOCHAIN			= $8;
- PKCS7_NOINTERN			= $10;
- PKCS7_NOVERIFY			= $20;
- PKCS7_DETACHED			= $40;
- PKCS7_BINARY			= $80;
- PKCS7_NOATTR			= $100;
- PKCS7_NOSMIMECAP		= $200;
- PKCS7_NOOLDMIMETYPE	= $400;
- PKCS7_CRLFEOL			= $800;
- PKCS7_STREAM			= $1000;
- PKCS7_NOCRL			= $2000;
- PKCS7_PARTIAL			= $4000;
- PKCS7_REUSE_DIGEST		= $8000;
+ PKCS7_TEXT             = $1;
+ PKCS7_NOCERTS          = $2;
+ PKCS7_NOSIGS           = $4;
+ PKCS7_NOCHAIN          = $8;
+ PKCS7_NOINTERN         = $10;
+ PKCS7_NOVERIFY         = $20;
+ PKCS7_DETACHED         = $40;
+ PKCS7_BINARY           = $80;
+ PKCS7_NOATTR           = $100;
+ PKCS7_NOSMIMECAP       = $200;
+ PKCS7_NOOLDMIMETYPE    = $400;
+ PKCS7_CRLFEOL          = $800;
+ PKCS7_STREAM           = $1000;
+ PKCS7_NOCRL            = $2000;
+ PKCS7_PARTIAL          = $4000;
+ PKCS7_REUSE_DIGEST     = $8000;
 
- SMIME_TEXT		= PKCS7_TEXT;
- SMIME_NOCERTS	= PKCS7_NOCERTS;
- SMIME_NOSIGS	= PKCS7_NOSIGS;
- SMIME_NOCHAIN	= PKCS7_NOCHAIN;
- SMIME_NOINTERN	= PKCS7_NOINTERN;
- SMIME_NOVERIFY	= PKCS7_NOVERIFY;
- SMIME_DETACHED	= PKCS7_DETACHED;
- SMIME_BINARY	= PKCS7_BINARY;
- SMIME_NOATTR	= PKCS7_NOATTR;
+ SMIME_TEXT     = PKCS7_TEXT;
+ SMIME_NOCERTS  = PKCS7_NOCERTS;
+ SMIME_NOSIGS   = PKCS7_NOSIGS;
+ SMIME_NOCHAIN  = PKCS7_NOCHAIN;
+ SMIME_NOINTERN = PKCS7_NOINTERN;
+ SMIME_NOVERIFY = PKCS7_NOVERIFY;
+ SMIME_DETACHED = PKCS7_DETACHED;
+ SMIME_BINARY   = PKCS7_BINARY;
+ SMIME_NOATTR   = PKCS7_NOATTR;
 
 
 {$ENDREGION}
 
 const
-  CRYPTO_LOCK		= 1;
-  CRYPTO_UNLOCK		= 2;
-  CRYPTO_READ		= 4;
-  CRYPTO_WRITE	 = 	8;
+  CRYPTO_LOCK       = 1;
+  CRYPTO_UNLOCK     = 2;
+  CRYPTO_READ       = 4;
+  CRYPTO_WRITE   =  8;
 
 
 implementation

@@ -26,6 +26,10 @@ var
   PEM_write_bio_PUBKEY: function (bp: PBIO; x: PEVP_PKEY): TC_INT; cdecl = nil;
   PEM_write_PUBKEY: function(var fp: FILE; x: PEVP_PKEY): TC_INT; cdecl = nil;
 
+  PEM_read_bio_Parameters: function(bp: PBIO;  x: PPEVP_PKEY): PEVP_PKEY; cdecl = nil;
+  PEM_write_bio_Parameters: function(bp: PBIO; x: PEVP_PKEY): TC_INT; cdecl = nil;
+
+
 {$REGION 'RSA'}
   PEM_read_bio_RSAPrivateKey: function(bp: PBIO; x: PPRSA; cb: pem_password_cb; u: pointer): PRSA; cdecl = nil;
   PEM_read_RSAPrivateKey: function(var fp: FILE; x: PPRSA; cb: pem_password_cb; u: pointer): PRSA; cdecl = nil;
@@ -213,9 +217,12 @@ begin
 {$ENDREGION}
 
 
-  @PEM_write_ECPrivateKey := LoadFunctionCLib('PEM_write_ECPrivateKey');
-  @PEM_write_bio_ECPrivateKey := LoadFunctionCLib('PEM_write_bio_ECPrivateKey');
-  @i2d_PKCS8PrivateKey_bio := LoadFunctionCLib('i2d_PKCS8PrivateKey_bio');
+   @PEM_write_ECPrivateKey := LoadFunctionCLib('PEM_write_ECPrivateKey');
+   @PEM_write_bio_ECPrivateKey := LoadFunctionCLib('PEM_write_bio_ECPrivateKey');
+   @i2d_PKCS8PrivateKey_bio := LoadFunctionCLib('i2d_PKCS8PrivateKey_bio');
+   @PEM_read_bio_Parameters:= LoadFunctionCLib('PEM_read_bio_Parameters');
+   @PEM_write_bio_Parameters:= LoadFunctionCLib('PEM_write_bio_Parameters');
+
   end;
 end;
 
