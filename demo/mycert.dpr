@@ -141,7 +141,7 @@ begin
     finally
       BIO_free(FBio);
     end;
-    Writeln('Write public key (public.pem');
+    Writeln('Write public key (public.pem)');
     FBio := BIO_new_file(PAnsiChar(FPubKeyFile), 'w');
     try
       PEM_write_bio_PUBKEY(FBio, FKey);
