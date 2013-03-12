@@ -3878,5 +3878,14 @@ const
 const
   HMAC_MAX_MD_CBLOCK	 = 128;
 
+	MD4_CBLOCK		= 64;
+	MD4_LBLOCK		= (MD4_CBLOCK div 4);
+	MD4_DIGEST_LENGTH  = 16;
+
+	MD5_CBLOCK		= 64;
+	MD5_LBLOCK		= (MD5_CBLOCK div 4);
+	MD5_DIGEST_LENGTH  = 16;
+
+
 implementation
 end.

@@ -9,7 +9,8 @@ implementation
 uses
   ssl_ec, ssl_util, ssl_types, ssl_lib, ssl_evp, ssl_const, ssl_rsa, ssl_dsa, ssl_x509, ssl_bio, ssl_pem, ssl_asn,
   ssl_aes, ssl_bf, ssl_bn, ssl_buffer, ssl_cast, ssl_cmac, ssl_engine, ssl_rand, ssl_camellia, ssl_comp, ssl_des,
-  ssl_dh, ssl_err, ssl_objects, ssl_sk, ssl_pkcs12, ssl_pkcs7, ssl_cms, ssl_ecdh, ssl_ecdsa, ssl_hmac;
+  ssl_dh, ssl_err, ssl_objects, ssl_sk, ssl_pkcs12, ssl_pkcs7, ssl_cms, ssl_ecdh, ssl_ecdsa, ssl_hmac, ssl_idea,
+  ssl_lhash, ssl_md4, ssl_md5;
 
 
 procedure SSL_InitLib;
@@ -44,6 +45,10 @@ begin
   ssl_ecdh.SSL_InitSSLDH;
   ssl_ecdsa.SSL_InitECDSA;
   ssl_hmac.SSL_InitHMAC;
+  ssl_idea.SSL_InitIDEA;
+  ssl_lhash.SSL_InitLHASH;
+  ssl_md4.SSL_InitMD4;
+  ssl_md5.SSL_InitMD5;
 end;
 
 end.
