@@ -30,6 +30,9 @@ type
   PDES_LONG = ^DES_LONG;
   point_conversion_form_t = byte;
 	TC_OSSL_SSIZE_T = TC_LONG;
+	IDEA_INT = TC_UINT;
+	MD4_LONG = TC_ULONG;
+	MD5_LONG = TC_ULONG;
 
 type
 
@@ -888,6 +891,9 @@ type
 
   LHASH_COMP_FN_TYPE = function (const p1;p2 : Pointer) : TC_INT; cdecl;
   LHASH_HASH_FN_TYPE = function(const p1 : Pointer) : TC_ULONG; cdecl;
+	LHASH_DOALL_FN_TYPE = procedure(_p: pointer); cdecl;
+	LHASH_DOALL_ARG_FN_TYPE = procedure(_p1, _p2: Pointer); cdecl;
+
   LHASH = record
     b : PPLHASH_NODE;
     comp : LHASH_COMP_FN_TYPE;
@@ -896,8 +902,8 @@ type
     num_alloc_nodes : TC_UINT;
     p : TC_UINT;
     pmax : TC_UINT;
-    up_load : TC_ULONG; // load times 256
-    down_load : TC_ULONG; // load times 256
+    up_load : TC_ULONG; 
+    down_load : TC_ULONG; 
     num_items : TC_ULONG;
     num_expands : TC_ULONG;
     num_expand_reallocs : TC_ULONG;
@@ -913,9 +919,10 @@ type
     num_retrieve_miss : TC_ULONG;
     num_hash_comps : TC_ULONG;
     error : TC_INT;
-  end;
-  {$EXTERNALSYM PLHASH}
+  end;  
   PLHASH = ^LHASH;
+	_LHASH = LHASH;
+	P_LHASH = ^_LHASH;
 {$ENDREGION}
 
 {$REGION 'CONF'}
@@ -2838,6 +2845,43 @@ type
 	
 {$ENDREGION}
 
+
+{$REGION 'IDEA'}
+
+  PIDEA_KEY_SCHEDULE = ^IDEA_KEY_SCHEDULE;
+	PPIDEA_KEY_SCHEDULE = ^PIDEA_KEY_SCHEDULE;
+	IDEA_KEY_SCHEDULE = record	
+	 _data: array[0..8,0..5] of IDEA_INT;
+	end;
+
+{$ENDREGION}
+
+{$REGION 'MD4'}
+
+	PMD4_CTX = ^MD4_CTX;
+	PPMD4_CTX = ^PMD4_CTX;
+	MD4_CTX = record
+		A,B,C,D: MD4_LONG;
+		Nl,Nh: MD4_LONG;
+		data: array[0..MD4_LBLOCK - 1] of MD4_LONG;
+		_num: TC_UINT;
+	end; { record }
+
+{$ENDREGION}
+
+{$REGION 'MD5}
+
+	PMD5_CTX = ^MD5_CTX;
+	PPMD5_CTX = ^PMD5_CTX;
+	MD5_CTX = record
+		A,B,C,D: MD5_LONG;
+		Nl,Nh: MD5_LONG;
+		data: array[0..MD5_LBLOCK-1] of MD5_LONG;
+		_num: TC_UINT;
+	end; { record }
+
+
+{$ENDREGION}
 implementation
 
 end.
