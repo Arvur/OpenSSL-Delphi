@@ -2880,8 +2880,161 @@ type
 		_num: TC_UINT;
 	end; { record }
 
+{$ENDREGION}
+
+{$REGION 'OCSP}
+
+	POCSP_CERTID = ^OCSP_CERTID;
+	PPOCSP_CERTID = ^POCSP_CERTID;
+	OCSP_CERTID = record
+		_hashAlgorithm: PX509_ALGOR;
+		_issuerNameHash: PASN1_OCTET_STRING;
+		_issuerKeyHash: PASN1_OCTET_STRING;
+		_serialNumber: PASN1_INTEGER;
+	end; { record }
+	PSTACK_OF_OCSP_CERT_ID = PSTACK_OF;
+
+	POCSP_ONEREQ = ^OCSP_ONEREQ;
+	PPOCSP_ONEREQ = ^POCSP_ONEREQ;
+	OCSP_ONEREQ = record
+		_reqCert: POCSP_CERTID;
+		_singleRequestExtensions: PSTACK_OF_X509_EXTENSION;
+	end; { record }
+	PSTACK_OF_OCSP_ONEREQ = PSTACK_OF;
+
+	POCSP_REQINFO = ^OCSP_REQINFO;
+	PPOCSP_REQINFO = ^POCSP_REQINFO;
+	OCSP_REQINFO = record
+		_version: PASN1_INTEGER;
+		_requestorName: PGENERAL_NAME;
+		_requestList: PSTACK_OF_OCSP_ONEREQ;
+		_requestExtensions: PSTACK_OF_X509_EXTENSION;
+	end; { record }
+
+	POCSP_SIGNATURE = ^OCSP_SIGNATURE;
+	PPOCSP_SIGNATURE = ^POCSP_SIGNATURE;
+	OCSP_SIGNATURE = record
+		_signatureAlgorithm: PX509_ALGOR;
+		_signature: PASN1_BIT_STRING;
+		_certs: PSTACK_OF_X509;
+	end; { record }
+
+	POCSP_REQUEST = ^OCSP_REQUEST;
+	PPOCSP_REQUEST = ^POCSP_REQUEST;
+	OCSP_REQUEST = record
+		_tbsRequest: POCSP_REQINFO;
+		_optionalSignature: POCSP_SIGNATURE; 
+	end; { record }
+
+	POCSP_RESPBYTES = ^OCSP_RESPBYTES;
+	PPOCSP_RESPBYTES = ^POCSP_RESPBYTES;
+	OCSP_RESPBYTES = record
+		_responseType: PASN1_OBJECT;
+		_response: PASN1_OCTET_STRING;
+	end; { record }
+
+	POCSP_RESPONSE = ^OCSP_RESPONSE;
+	PPOCSP_RESPONSE = ^POCSP_RESPONSE;
+	OCSP_RESPONSE = record
+		_responseStatus: PASN1_ENUMERATED;
+		_responseBytes: POCSP_RESPBYTES ;
+	end; { record }
+
+	OCSP_RESPONDER_ID_union = record
+	case byte of
+		0: (_byName: PX509_NAME);
+		1: (_byKey: PASN1_OCTET_STRING);
+	end; { record }
+
+	POCSP_RESPID = ^OCSP_RESPID;
+	PPOCSP_RESPID = ^POCSP_RESPID;
+	OCSP_RESPID = record
+		_type: TC_INT;
+		_value: OCSP_RESPONDER_ID_union; 
+	end; { record }
+
+	PSTACK_OF_OCSP_RESPID = PSTACK_OF;
+
+	POCSP_REVOKEDINFO = ^OCSP_REVOKEDINFO;
+	PPOCSP_REVOKEDINFO = ^POCSP_REVOKEDINFO;
+	OCSP_REVOKEDINFO = record
+		_revocationTime: PASN1_GENERALIZEDTIME;
+		_revocationReason: PASN1_ENUMERATED;
+	end; { record }
+
+	OCSP_CERTSTATUS_union = record
+	case byte of	
+		0: (_good: PASN1_NULL);
+		1: (_revoked: POCSP_REVOKEDINFO);
+		2: (_unknown: PASN1_NULL);
+	end; { record }
+
+	POCSP_CERTSTATUS = ^OCSP_CERTSTATUS;
+	PPOCSP_CERTSTATUS = ^POCSP_CERTSTATUS;
+	OCSP_CERTSTATUS = record
+		_type: TC_INT;
+		_value :OCSP_CERTSTATUS_union;
+	end;
+	
+	POCSP_SINGLERESP = ^OCSP_SINGLERESP;
+	PPOCSP_SINGLERESP = ^POCSP_SINGLERESP;
+	OCSP_SINGLERESP = record
+		_certId: POCSP_CERTID;
+		_certStatus: POCSP_CERTSTATUS;
+		_thisUpdate: PASN1_GENERALIZEDTIME;
+		_nextUpdate: PASN1_GENERALIZEDTIME;
+		_singleExtensions: PSTACK_OF_X509_EXTENSION;
+	end; { record }
+	PSTACK_OF_OCSP_SINGLERESP = PSTACK_OF;
+
+	POCSP_RESPDATA = ^OCSP_RESPDATA;
+	PPOCSP_RESPDATA = ^POCSP_RESPDATA;
+	OCSP_RESPDATA = record
+		_version: PASN1_INTEGER;
+		_responderId: POCSP_RESPID ;
+		_producedAt: PASN1_GENERALIZEDTIME;
+		_responses: PSTACK_OF_OCSP_SINGLERESP;
+		_responseExtensions: PSTACK_OF_X509_EXTENSION;
+	end; { record }
+
+	POCSP_BASICRESP = ^OCSP_BASICRESP;
+	PPOCSP_BASICRESP = ^POCSP_BASICRESP;
+	OCSP_BASICRESP = record
+		_tbsResponseData: POCSP_RESPDATA;
+		_signatureAlgorithm: PX509_ALGOR;
+		_signature: PASN1_BIT_STRING;
+		_certs: PSTACK_OF_X509;
+	end; { record }
+
+	POCSP_CRLID = ^OCSP_CRLID;
+	PPOCSP_CRLID = ^POCSP_CRLID;
+	OCSP_CRLID = record
+		_crlUrl: PASN1_IA5STRING;
+		_crlNum: PASN1_INTEGER;
+		_crlTime: PASN1_GENERALIZEDTIME;
+	end; { record }
+  
+	POCSP_SERVICELOC = ^OCSP_SERVICELOC;
+	PPOCSP_SERVICELOC = ^POCSP_SERVICELOC;      
+	OCSP_SERVICELOC = record
+		_issuer: PX509_NAME;
+		_locator: PSTACK_OF_ACCESS_DESCRIPTION;
+	end; { record }
+
+	POCSP_REQ_CTX  = ^OCSP_REQ_CTX ;
+	PPOCSP_REQ_CTX  = ^POCSP_REQ_CTX ;
+	OCSP_REQ_CTX = record
+	  _state: TC_INT;		
+	  _iobuf: PAnsiChar;	
+	  _iobuflen: TC_INT;		
+	  _io: PBIO;		
+	  _mem: PBIO;		
+	  _asn1_len: TC_ULONG;
+	end;
+
 
 {$ENDREGION}
+
 implementation
 
 end.
