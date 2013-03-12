@@ -2595,8 +2595,8 @@ type
 {$ENDREGION}
 
 
-  PECDH_METHOD = Pointer;
-  PECDSA_METHOD = Pointer;
+  PECDH_METHOD = ^ECDH_METHOD;
+  PECDSA_METHOD = ^ECDSA_METHOD;
   PSTORE_METHOD = Pointer;
 
 {$REGION 'CAMELLIA'}
@@ -2783,6 +2783,59 @@ type
 	PPPKCS7_ATTR_SIGN = ^PPKCS7_ATTR_SIGN;
 	PPKCS7_ATTR_VERIFY = Pointer;
 	PPPKCS7_ATTR_VERIFY = ^PPKCS7_ATTR_VERIFY;
+{$ENDREGION}
+
+{$REGION 'ECDH'}
+
+	ecdh_kdf = function(const _in: Pointer; _inlen: TC_SIZE_T; _out: Pointer; var _outlen: TC_SIZE_T): pointer; cdecl;
+
+	PPECDH_METHOD = ^PECDH_METHOD;
+	ECDH_METHOD = record
+		_name: PAnsiChar;
+	  _compute_key: function(_key: Pointer; _outlen: TC_SIZE_T; const _pub_key: PEC_POINT; _ecdh: PEC_KEY; kdf: ecdh_kdf): TC_INT; cdecl;
+	  _init: function(_eckey: PEC_KEY): TC_INT; cdecl;
+	  _finish: function(_eckey: PEC_KEY): TC_INT; cdecl;
+	  _flags: TC_INT;
+	  _app_data: PAnsiChar;
+	end; { record }
+
+{$ENDREGION}
+
+{$REGION 'ECDSA'}
+
+	PECDSA_SIG = ^ECDSA_SIG;
+	PPECDSA_SIG = ^PECDSA_SIG;
+	ECDSA_SIG = record
+		_r: PBIGNUM;
+		_s: PBIGNUM;
+	end; { record }
+
+	PPECDSA_METHOD = ^PECDSA_METHOD;
+	ECDSA_METHOD = record
+		_name: PAnsiChar;
+		ecdsa_do_sign: function(const _dgst: PAnsiChar; _dgst_len: TC_INT; const _inv: PBIGNUM; const _rp: PBIGNUM; _eckey: PEC_KEY): PECDSA_SIG; cdecl;
+		ecdsa_sign_setup: function(_eckey: PEC_KEY; _ctx: PBN_CTX; _kinv: PPBIGNUM ; _r: PPBIGNUM ): TC_INT; cdecl;
+		ecdsa_do_verify: function(const _dgst: PAnsiChar; _dgst_len: TC_INT; const _sig: PPECDSA_SIG; _eckey: PPEC_KEY): TC_INT; cdecl;
+		init: function(_eckey: PEC_KEY): TC_INT; cdecl;
+		finish: function(_eckey: PEC_KEY): TC_INT; cdecl;
+		_flags: TC_INT;
+		_app_data: PAnsiChar;
+	end; { record }
+
+{$ENDREGION}
+
+{$REGION 'HMAC'}
+	PHMAC_CTX = ^HMAC_CTX;
+	PPHMAC_CTX = ^PHMAC_CTX;
+	HMAC_CTX = record
+		_md: PEVP_MD;
+		_md_ctx: EVP_MD_CTX;
+		_i_ctx: EVP_MD_CTX;
+		_o_ctx: EVP_MD_CTX;
+		_key_length: TC_UINT;
+		key: array[0..HMAC_MAX_MD_CBLOCK - 1] of ansichar;
+	end; { record }
+	
 {$ENDREGION}
 
 implementation

@@ -3875,6 +3875,8 @@ const
   CRYPTO_READ       = 4;
   CRYPTO_WRITE   =  8;
 
+const
+  HMAC_MAX_MD_CBLOCK	 = 128;
 
 implementation
 end.
