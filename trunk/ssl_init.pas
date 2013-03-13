@@ -10,7 +10,7 @@ uses
   ssl_ec, ssl_util, ssl_types, ssl_lib, ssl_evp, ssl_const, ssl_rsa, ssl_dsa, ssl_x509, ssl_bio, ssl_pem, ssl_asn,
   ssl_aes, ssl_bf, ssl_bn, ssl_buffer, ssl_cast, ssl_cmac, ssl_engine, ssl_rand, ssl_camellia, ssl_comp, ssl_des,
   ssl_dh, ssl_err, ssl_objects, ssl_sk, ssl_pkcs12, ssl_pkcs7, ssl_cms, ssl_ecdh, ssl_ecdsa, ssl_hmac, ssl_idea,
-  ssl_lhash, ssl_md4, ssl_md5, ssl_ocsp;
+  ssl_lhash, ssl_md4, ssl_md5, ssl_ocsp, ssl_mdc2, ssl_rc2, ssl_rc4, ssl_rc5, ssl_ripemd;
 
 
 procedure SSL_InitLib;
@@ -50,6 +50,12 @@ begin
   ssl_md4.SSL_InitMD4;
   ssl_md5.SSL_InitMD5;
   ssl_ocsp.SSL_InitOCSP;
+  ssl_mdc2.ssl_initmdc2;
+  ssl_rc2.SSL_Initrc2;
+  ssl_rc4.SSL_Initrc4;
+  ssl_rc5.SSL_Initrc5;
+  ssl_ripemd.SSL_Initripemd;
 end;
+
 
 end.

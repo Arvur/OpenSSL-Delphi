@@ -3492,6 +3492,58 @@ const
   EVP_PKEY_OP_DECRYPT                        = 1 shl 9;
   EVP_PKEY_OP_DERIVE                         = 1 shl 10;
 
+    EVP_CIPH_STREAM_CIPHER          = $0;
+    EVP_CIPH_ECB_MODE               = $1;
+    EVP_CIPH_CBC_MODE               = $2;
+    EVP_CIPH_CFB_MODE               = $3;
+    EVP_CIPH_OFB_MODE               = $4;
+    EVP_CIPH_CTR_MODE               = $5;
+    EVP_CIPH_GCM_MODE               = $6;
+    EVP_CIPH_CCM_MODE               = $7;
+    EVP_CIPH_XTS_MODE               = $10001;
+    EVP_CIPH_MODE                   = $F0007;
+    EVP_CIPH_VARIABLE_LENGTH        = $8;
+    EVP_CIPH_CUSTOM_IV              = $10;
+    EVP_CIPH_ALWAYS_CALL_INIT       = $20;
+    EVP_CIPH_CTRL_INIT              = $40;
+    EVP_CIPH_CUSTOM_KEY_LENGTH      = $80;
+    EVP_CIPH_NO_PADDING             = $100;
+    EVP_CIPH_RAND_KEY               = $200;
+    EVP_CIPH_CUSTOM_COPY            = $400;
+    EVP_CIPH_FLAG_DEFAULT_ASN1      = $1000;
+    EVP_CIPH_FLAG_LENGTH_BITS       = $2000;
+    EVP_CIPH_FLAG_FIPS              = $4000;
+    EVP_CIPH_FLAG_NON_FIPS_ALLOW    = $8000;
+    EVP_CIPH_FLAG_CUSTOM_CIPHER     = $100000;
+    EVP_CIPH_FLAG_AEAD_CIPHER       = $200000;
+
+    EVP_CTRL_INIT                       = $0;
+    EVP_CTRL_SET_KEY_LENGTH             = $1;
+    EVP_CTRL_GET_RC2_KEY_BITS           = $2;
+    EVP_CTRL_SET_RC2_KEY_BITS           = $3;
+    EVP_CTRL_GET_RC5_ROUNDS             = $4;
+    EVP_CTRL_SET_RC5_ROUNDS             = $5;
+    EVP_CTRL_RAND_KEY                   = $6;
+    EVP_CTRL_PBE_PRF_NID                = $7;
+    EVP_CTRL_COPY                       = $8;
+    EVP_CTRL_GCM_SET_IVLEN              = $9;
+    EVP_CTRL_GCM_GET_TAG                = $10;
+    EVP_CTRL_GCM_SET_TAG                = $11;
+    EVP_CTRL_GCM_SET_IV_FIXED           = $12;
+    EVP_CTRL_GCM_IV_GEN                 = $13;
+    EVP_CTRL_CCM_SET_IVLEN              = EVP_CTRL_GCM_SET_IVLEN;
+    EVP_CTRL_CCM_GET_TAG                = EVP_CTRL_GCM_GET_TAG;
+    EVP_CTRL_CCM_SET_TAG                = EVP_CTRL_GCM_SET_TAG;
+    EVP_CTRL_CCM_SET_L                  = $14;
+    EVP_CTRL_CCM_SET_MSGLEN             = $15;
+    EVP_CTRL_AEAD_TLS1_AAD              = $16;
+    EVP_CTRL_AEAD_SET_MAC_KEY           = $17;
+    EVP_CTRL_GCM_SET_IV_INV             = $18;
+    EVP_GCM_TLS_FIXED_IV_LEN            = 4;
+    EVP_GCM_TLS_EXPLICIT_IV_LEN         = 8;
+    EVP_GCM_TLS_TAG_LEN                 = 16;
+
+
   EVP_PKEY_CTRL_MD              = 1;
   EVP_PKEY_CTRL_PEER_KEY        = 2;
   EVP_PKEY_CTRL_PKCS7_ENCRYPT   = 3;
@@ -3508,8 +3560,26 @@ const
   EVP_PKEY_FLAG_AUTOARGLEN      = 2;
   EVP_PKEY_FLAG_SIGCTX_CUSTOM   = 4;
 
+  EVP_PKEY_CTRL_RSA_PADDING     = (EVP_PKEY_ALG_CTRL + 1);
+  EVP_PKEY_CTRL_RSA_PSS_SALTLEN  = (EVP_PKEY_ALG_CTRL + 2);
+
+  EVP_PKEY_CTRL_RSA_KEYGEN_BITS  = (EVP_PKEY_ALG_CTRL + 3);
+  EVP_PKEY_CTRL_RSA_KEYGEN_PUBEXP    = (EVP_PKEY_ALG_CTRL + 4);
+  EVP_PKEY_CTRL_RSA_MGF1_MD  = (EVP_PKEY_ALG_CTRL + 5);
+
+  EVP_PKEY_CTRL_GET_RSA_PADDING      = (EVP_PKEY_ALG_CTRL + 6);
+  EVP_PKEY_CTRL_GET_RSA_PSS_SALTLEN  = (EVP_PKEY_ALG_CTRL + 7);
+  EVP_PKEY_CTRL_GET_RSA_MGF1_MD      = (EVP_PKEY_ALG_CTRL + 8);
+
 
   EVP_PKEY_CTRL_EC_PARAMGEN_CURVE_NID        = (EVP_PKEY_ALG_CTRL + 1);
+
+  EVP_PKEY_OP_TYPE_SIG   = (EVP_PKEY_OP_SIGN  or  EVP_PKEY_OP_VERIFY  or  EVP_PKEY_OP_VERIFYRECOVER  or  EVP_PKEY_OP_SIGNCTX  or  EVP_PKEY_OP_VERIFYCTX);
+  EVP_PKEY_OP_TYPE_CRYPT =  (EVP_PKEY_OP_ENCRYPT  or  EVP_PKEY_OP_DECRYPT);
+//  EVP_PKEY_OP_TYPE_NOGEN =  (EVP_PKEY_OP_SIG  or  EVP_PKEY_OP_CRYPT  or  EVP_PKEY_OP_DERIVE);
+  EVP_PKEY_OP_TYPE_GEN  = (EVP_PKEY_OP_PARAMGEN  or  EVP_PKEY_OP_KEYGEN);
+
+
 
 {$ENDREGION}
 {$REGION 'ERR'}
@@ -3876,15 +3946,29 @@ const
   CRYPTO_WRITE   =  8;
 
 const
-  HMAC_MAX_MD_CBLOCK	 = 128;
+  HMAC_MAX_MD_CBLOCK     = 128;
 
-	MD4_CBLOCK		= 64;
-	MD4_LBLOCK		= (MD4_CBLOCK div 4);
-	MD4_DIGEST_LENGTH  = 16;
+    MD4_CBLOCK      = 64;
+    MD4_LBLOCK      = (MD4_CBLOCK div 4);
+    MD4_DIGEST_LENGTH  = 16;
 
-	MD5_CBLOCK		= 64;
-	MD5_LBLOCK		= (MD5_CBLOCK div 4);
-	MD5_DIGEST_LENGTH  = 16;
+    MD5_CBLOCK      = 64;
+    MD5_LBLOCK      = (MD5_CBLOCK div 4);
+    MD5_DIGEST_LENGTH  = 16;
+
+    MDC2_BLOCK              = 8;
+    MDC2_DIGEST_LENGTH      = 16;
+
+    RC5_32_BLOCK        = 8;
+    RC5_32_KEY_LENGTH   = 16;
+
+    RC5_8_ROUNDS        = 8;
+    RC5_12_ROUNDS       = 12;
+    RC5_16_ROUNDS       = 16;
+
+    RIPEMD160_CBLOCK    = 64;
+    RIPEMD160_LBLOCK    = (RIPEMD160_CBLOCK div 4);
+    RIPEMD160_DIGEST_LENGTH     = 20;
 
 
 implementation

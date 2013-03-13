@@ -408,78 +408,121 @@ var
   EVP_PKEY_CTX_get_keygen_info: function(ctx: PEVP_PKEY_CTX; idx:TC_INT): TC_INT; cdecl = nil;
   ERR_load_EVP_strings: procedure; cdecl = nil;
 
-(*
-void EVP_PKEY_meth_set_init(pmeth: PEVP_PKEY_METHOD;
-    int (*init)(ctx: PEVP_PKEY_CTX));
 
-void EVP_PKEY_meth_set_copy(pmeth: PEVP_PKEY_METHOD;
-    int (*copy)(EVP_PKEY_CTX *dst; EVP_PKEY_CTX *src));
-
-void EVP_PKEY_meth_set_cleanup(pmeth: PEVP_PKEY_METHOD;
-    void (*cleanup)(ctx: PEVP_PKEY_CTX));
-
-void EVP_PKEY_meth_set_paramgen(pmeth: PEVP_PKEY_METHOD;
-    int (*paramgen_init)(ctx: PEVP_PKEY_CTX);
-    int (*paramgen)(ctx: PEVP_PKEY_CTX; pkey: PEVP_PKEY));
-
-void EVP_PKEY_meth_set_keygen(pmeth: PEVP_PKEY_METHOD;
-    int (*keygen_init)(ctx: PEVP_PKEY_CTX);
-    int (*keygen)(ctx: PEVP_PKEY_CTX; pkey: PEVP_PKEY));
-
-void EVP_PKEY_meth_set_sign(pmeth: PEVP_PKEY_METHOD;
-    int (*sign_init)(ctx: PEVP_PKEY_CTX);
-    int (*sign)(ctx: PEVP_PKEY_CTX; sig: PAnsiChar; var siglen: TC_SIZE_T;
-                    tbs: PAnsiChar; tbslen: TC_SIZE_T));
-
-void EVP_PKEY_meth_set_verify(pmeth: PEVP_PKEY_METHOD;
-    int (*verify_init)(ctx: PEVP_PKEY_CTX);
-    int (*verify)(ctx: PEVP_PKEY_CTX; const sig: PAnsiChar; siglen: TC_SIZE_T;
-                    tbs: PAnsiChar; tbslen: TC_SIZE_T));
-
-void EVP_PKEY_meth_set_verify_recover(pmeth: PEVP_PKEY_METHOD;
-    int (*verify_recover_init)(ctx: PEVP_PKEY_CTX);
-    int (*verify_recover)(ctx: PEVP_PKEY_CTX;
-                    sig: PAnsiChar; var siglen: TC_SIZE_T;
-                    tbs: PAnsiChar; tbslen: TC_SIZE_T));
-
-void EVP_PKEY_meth_set_signctx(pmeth: PEVP_PKEY_METHOD;
-    int (*signctx_init)(ctx: PEVP_PKEY_CTX; EVP_MD_CTX *mctx);
-    int (*signctx)(ctx: PEVP_PKEY_CTX; sig: PAnsiChar; var siglen: TC_SIZE_T;
-                    EVP_MD_CTX *mctx));
-
-void EVP_PKEY_meth_set_verifyctx(pmeth: PEVP_PKEY_METHOD;
-    int (*verifyctx_init)(ctx: PEVP_PKEY_CTX; EVP_MD_CTX *mctx);
-    int (*verifyctx)(ctx: PEVP_PKEY_CTX; const sig: PAnsiChar;int siglen;
-                    EVP_MD_CTX *mctx));
-
-void EVP_PKEY_meth_set_encrypt(pmeth: PEVP_PKEY_METHOD;
-    int (*encrypt_init)(ctx: PEVP_PKEY_CTX);
-    int (*encryptfn)(ctx: PEVP_PKEY_CTX; _out: PAnsiChar; var outlen: TC_SIZE_T;
-                    const _in: PAnsiChar; inlen: TC_SIZE_T));
-
-void EVP_PKEY_meth_set_decrypt(pmeth: PEVP_PKEY_METHOD;
-    int (*decrypt_init)(ctx: PEVP_PKEY_CTX);
-    int (*decrypt)(ctx: PEVP_PKEY_CTX; _out: PAnsiChar; var outlen: TC_SIZE_T;
-                    const _in: PAnsiChar; inlen: TC_SIZE_T));
-
-void EVP_PKEY_meth_set_derive(pmeth: PEVP_PKEY_METHOD;
-    int (*derive_init)(ctx: PEVP_PKEY_CTX);
-    int (*derive)(ctx: PEVP_PKEY_CTX; key: PAnsiChar; size_t *keylen));
-
-void EVP_PKEY_meth_set_ctrl(pmeth: PEVP_PKEY_METHOD;
-    int (*ctrl)(ctx: PEVP_PKEY_CTX; _type: TC_INT; p1: TC_INT; p2: Pointer);
-    int (*ctrl_str)(ctx: PEVP_PKEY_CTX;
-                    _type: PAnsiChar; value: PAnsiChar));
-
-*)
-
-
+function EVP_get_digestbynid(a: TC_INT): PEVP_MD; inline;
+function EVP_get_digestbyobj(a: PASN1_OBJECT): PEVP_MD; inline;
+function EVP_get_cipherbynid(a: TC_INT): PEVP_CIPHER; inline;
+function EVP_get_cipherbyobj(a: PASN1_OBJECT): PEVP_MD; inline;
+function EVP_MD_nid(e: PEVP_MD): TC_INT; inline;
+function EVP_MD_name(e: PEVP_MD): AnsiString; inline;
+function EVP_MD_CTX_size(e: PEVP_MD_CTX): TC_INT; inline;
+function EVP_MD_CTX_block_size(e: PEVP_MD_CTX): TC_INT; inline;
+function EVP_MD_CTX_type(e: PEVP_MD_CTX): TC_INT; inline;
+function EVP_CIPHER_name(e: PEVP_CIPHER): AnsiString; inline;
+function EVP_CIPHER_mode(e: PEVP_CIPHER): TC_ULONG; inline;
+function EVP_CIPHER_CTX_type(e: PEVP_CIPHER_CTX): TC_INT; inline;
+function EVP_CIPHER_CTX_mode(e: PEVP_CIPHER_CTX): TC_ULONG; inline;
+function EVP_ENCODE_LENGTH(l: TC_INT): TC_INT; inline;
+function EVP_DECODE_LENGTH(l: TC_INT): TC_INT; inline;
 
 procedure SSL_InitEVP;
 
 implementation
 
-uses ssl_lib;
+uses ssl_lib, ssl_objects;
+
+function EVP_get_digestbynid(a: TC_INT): PEVP_MD; inline;
+begin
+  if Assigned(EVP_get_digestbyname) then
+    Result := EVP_get_digestbyname(OBJ_nid2sn(a))
+  else
+    Result := nil;
+end;
+
+function EVP_get_digestbyobj(a: PASN1_OBJECT): PEVP_MD; inline;
+begin
+  result := EVP_get_digestbynid(OBJ_obj2nid(a))
+end;
+
+function EVP_get_cipherbynid(a: TC_INT): PEVP_CIPHER; inline;
+begin
+  if Assigned(EVP_get_cipherbyname) then
+   Result := EVP_get_cipherbyname(OBJ_nid2sn(a))
+  else
+   Result := nil;
+end;
+
+function EVP_get_cipherbyobj(a: PASN1_OBJECT): PEVP_MD; inline;
+begin
+  Result := EVP_get_digestbynid(OBJ_obj2nid(a));
+end;
+
+function EVP_MD_nid(e: PEVP_MD): TC_INT; inline;
+begin
+  if Assigned(EVP_MD_type) then
+   Result := EVP_MD_type(e)
+  else
+   Result := NID_undef;
+end;
+
+function EVP_MD_name(e: PEVP_MD): AnsiString; inline;
+begin
+  Result := OBJ_nid2sn(EVP_MD_nid(e));
+end;
+
+function EVP_MD_CTX_size(e: PEVP_MD_CTX): TC_INT; inline;
+begin
+  if Assigned(EVP_MD_size) then
+   Result := EVP_MD_size(EVP_MD_CTX_md(e))
+  else
+   Result := 0;
+end;
+
+function EVP_MD_CTX_block_size(e: PEVP_MD_CTX): TC_INT; inline;
+begin
+ if Assigned(EVP_MD_block_size) then
+  Result := EVP_MD_block_size(EVP_MD_CTX_md(e))
+ else
+  Result := 0;
+end;
+
+function EVP_MD_CTX_type(e: PEVP_MD_CTX): TC_INT; inline;
+begin
+ if Assigned(EVP_MD_type) then
+   Result := EVP_MD_type(EVP_MD_CTX_md(e))
+ else
+  Result := 0;
+end;
+
+function EVP_CIPHER_name(e: PEVP_CIPHER): AnsiString; inline;
+begin
+  Result := OBJ_nid2sn(EVP_CIPHER_nid(e));
+end;
+
+function EVP_CIPHER_mode(e: PEVP_CIPHER): TC_ULONG; inline
+begin
+  Result := EVP_CIPHER_flags(e) and EVP_CIPH_MODE;
+end;
+
+function EVP_CIPHER_CTX_type(e: PEVP_CIPHER_CTX): TC_INT; inline;
+begin
+  Result := EVP_CIPHER_type(EVP_CIPHER_CTX_cipher(e));
+end;
+
+function EVP_CIPHER_CTX_mode(e: PEVP_CIPHER_CTX): TC_ULONG; inline;
+begin
+  Result := EVP_CIPHER_CTX_flags(e) and EVP_CIPH_MODE;
+end;
+
+function EVP_ENCODE_LENGTH(l: TC_INT): TC_INT; inline;
+begin
+  Result := (((l+2) div 3*4)+(l div 48+1)*2+80);
+end;
+
+function EVP_DECODE_LENGTH(l: TC_INT): TC_INT; inline;
+begin
+  Result := ((l+3) div 4*3+80);
+end;
 
 procedure SSL_InitEVP;
 begin
@@ -816,6 +859,8 @@ begin
      @EVP_PKEY_CTX_get_cb:= LoadFunctionCLib('EVP_PKEY_CTX_get_cb');
      @EVP_PKEY_CTX_get_keygen_info:= LoadFunctionCLib('EVP_PKEY_CTX_get_keygen_info');
      @ERR_load_EVP_strings:= LoadFunctionCLib('ERR_load_EVP_strings');
+
+     SSL_InitOBJ;
   end;
 end;
 
