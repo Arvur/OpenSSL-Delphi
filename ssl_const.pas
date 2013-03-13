@@ -3969,7 +3969,6 @@ const
     RIPEMD160_CBLOCK    = 64;
     RIPEMD160_LBLOCK    = (RIPEMD160_CBLOCK div 4);
     RIPEMD160_DIGEST_LENGTH     = 20;
-
-
+    
 implementation
 end.
