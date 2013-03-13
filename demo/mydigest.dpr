@@ -9,9 +9,11 @@ uses
   Classes,
   ssl_md5,
   ssl_mdc2,
+  ssl_hmac,
   ssl_sha,
   ssl_types,
   ssl_err,
+  ssl_evp,
   ssl_const,
   ssl_util;
 
@@ -25,6 +27,10 @@ var F: TFileStream;
     _sha: SHA_CTX;
     _sha256: SHA256_CTX;
     _sha512: SHA512_CTX;
+    _hmac: HMAC_CTX;
+    _hmac_key: PAnsiChar;
+    _hmac_key_len: Integer;
+    _hmac_dgst_len: TC_UINT;
 
 const
   BufSize = 2048;
@@ -51,6 +57,9 @@ begin
     SSL_InitMD5;
     SSL_Initsha;
     SSL_InitUtil;
+    SSL_InitEVP;
+    SSL_InitHMAC;
+
     Fname := ParamStr(1);
     Writeln(FName, ' readed');
     F := TFileStream.Create(FName, fmOpenRead);
@@ -97,6 +106,7 @@ begin
          Writeln;
 
         end;
+
 
        F.Position := 0;
        if SHA_Init(@_sha) = 1 then
@@ -165,6 +175,26 @@ begin
 
         end;
 
+        F.Position := 0;
+
+        _hmac_key_len := 10;
+        _hmac_key := OpenSSL_malloc(_hmac_key_len);
+        _hmac_key := '1234567890';
+
+        HMAC_CTX_init(@_hmac);
+        HMAC_Init(@_hmac, _hmac_key, _hmac_key_len, EVP_sha1());
+           while F.Position < F.Size do
+           begin
+             Len := F.Read(Buf^, BufSize);
+             HMAC_Update(@_hmac, Buf, Len);
+             Write('Read:', F.Position:10, ' bytes', #13);
+           end;
+        Dgst := OpenSSL_malloc(1024);
+        Write('HMAC with SHA1 digest: ');
+        HMAC_Final(@_hmac, Dgst, _hmac_dgst_len);
+        WriteDigest(Dgst, _hmac_dgst_len);
+        Writeln;
+        OpenSSL_free(Dgst);
 
       finally
         OpenSSL_free(Buf);
