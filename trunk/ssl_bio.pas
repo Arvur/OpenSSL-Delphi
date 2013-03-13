@@ -116,6 +116,7 @@ var
 
 function BIO_get_mem_data (bp: PBIO; buf: Pointer): TC_ULONG;
 function BIO_reset(bp: PBIO): TC_INT;
+function BIO_ReadAnsiString(bp: PBIO): AnsiString;
 
 {
  BIO *BIO_new_CMS(BIO *out, CMS_ContentInfo *cms);
@@ -254,6 +255,20 @@ end;
 function BIO_get_mem_data (bp: PBIO; buf: Pointer): TC_ULONG;
 begin
   BIO_ctrl(bp, BIO_CTRL_INFO, 0, buf);
+end;
+
+function BIO_ReadAnsiString(bp: PBIO): AnsiString;
+var Buf: AnsiString;
+    a: TC_INT;
+begin
+  Result := '';
+    SetLength(Buf, 1024);
+    repeat
+     a := BIO_read(bp, @Buf[1], Length(Buf));
+     if a > 0 then
+      Result := Result + Copy(Buf, 1, a);
+    until a = -1;
+  SetLength(Buf, 0);
 end;
 
 end.

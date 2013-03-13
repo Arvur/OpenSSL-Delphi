@@ -67,7 +67,7 @@ var
    BN_mod_exp_simple: function(r: PBIGNUM; a: PBIGNUM; p: PBIGNUM;	m :PBIGNUM; ctx: PBN_CTX): TC_INT; cdecl = nil;
    BN_mask_bits: function(a: PBIGNUM; n: TC_INT): TC_INT; cdecl = nil;
    BN_print_fp: function(var fp: FILE; a: PBIGNUM): TC_INT; cdecl = nil;
-   BN_print: function(fp: PPBIO; a: PBIGNUM): TC_INT; cdecl = nil;
+   BN_print: function(fp: PBIO; a: PBIGNUM): TC_INT; cdecl = nil;
    BN_reciprocal: function(r: PBIGNUM; const m: PBIGNUM; len: TC_INT; ctx: PBN_CTX): TC_INT; cdecl = nil;
    BN_rshift: function(r: PBIGNUM; const a: PBIGNUM; n: TC_INT): TC_INT; cdecl = nil;
    BN_rshift1: function(r: PBIGNUM; const a: PBIGNUM): TC_INT; cdecl = nil;
