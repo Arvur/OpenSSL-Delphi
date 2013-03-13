@@ -30,7 +30,9 @@ begin
   try
 
     if ParamCount > 0 then
-       Num := StrToIntDef(ParamStr(1), 256);
+       Num := StrToIntDef(ParamStr(1), 256)
+    else
+      Num := 256;
     writeln('Generate a strong prime ', Num, ' bits');
     SSL_InitBN;
     SSL_InitBIO;
