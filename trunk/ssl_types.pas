@@ -37,6 +37,8 @@ type
 	RC4_INT = TC_UINT;
 	RC5_32_INT = TC_ULONG;
 	RIPEMD160_LONG = TC_ULONG;
+  SHA_LONG = TC_ULONG;
+  SHA_LONG64 = UInt64;
 
 type
 
@@ -3094,6 +3096,40 @@ type
 	  _data: array [0..RIPEMD160_LBLOCK-1] of RIPEMD160_LONG;
 	  _num: TC_UINT;
 	end; { record }
+
+	PSHA_CTX = ^SHA_CTX;
+	PPSHA_CTX = ^PSHA_CTX;
+	SHA_CTX = record
+	  _h0,_h1,_h2,_h3,_h4: SHA_LONG;
+	  _Nl,_Nh: SHA_LONG;
+	  _data: array[0..SHA_LBLOCK-1] of SHA_LONG;
+	  _num: TC_UINT;
+	end; { record }
+
+	PSHA256_CTX = ^SHA256_CTX;
+	PPSHA256_CTX = ^PSHA256_CTX;
+	SHA256_CTX = record
+	  _h: array[0..7] of SHA_LONG;
+	  _Nl,_Nh: SHA_LONG;
+	  _data: array[0..SHA_LBLOCK-1] of SHA_LONG;
+	  _num,_md_len: TC_UINT;
+	end; { record }
+
+	SHA512_CTX_union = record
+	case Byte of
+	  0: (_d: array [0..SHA_LBLOCK - 1] of SHA_LONG64);
+	  1: (_p: array [0..SHA512_CBLOCK - 1] of AnsiChar);
+	end; { record }
+
+	PSHA512_CTX = ^SHA512_CTX;
+	PPSHA512_CTX = ^PSHA512_CTX;
+	SHA512_CTX = record
+	  _h: array[0..7] of SHA_LONG64;
+	  _Nl, _Nh: SHA_LONG64;
+	  _u: SHA512_CTX_union;
+	  _num,_md_len: TC_UINT;
+	end; { record }
+
 
 implementation
 
