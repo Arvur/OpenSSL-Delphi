@@ -33,6 +33,10 @@ type
 	IDEA_INT = TC_UINT;
 	MD4_LONG = TC_ULONG;
 	MD5_LONG = TC_ULONG;
+	RC2_INT = TC_UINT;
+	RC4_INT = TC_UINT;
+	RC5_32_INT = TC_ULONG;
+	RIPEMD160_LONG = TC_ULONG;
 
 type
 
@@ -1062,7 +1066,17 @@ type
 	  tbuf: PAnsiChar;
   end;
 
+  PRSA_PSS_PARAMS = ^RSA_PSS_PARAMS;
+  PPRSA_PSS_PARAMS = ^PRSA_PSS_PARAMS;
 
+  RSA_PSS_PARAMS = record
+	_hashAlgorithm: PX509_ALGOR;
+	_maskGenAlgorithm: PX509_ALGOR;
+	_saltLength: PASN1_INTEGER;
+	_trailerField: PASN1_INTEGER;
+  end; { record }
+
+  RSA_NET_CALLBACK_FUNC = function (_buf: PAnsiChar; _len: TC_INT; const _prompt: PAnsiChar; _verify: TC_INT): TC_INT; cdecl;
 {$ENDREGION}
 
 
@@ -2869,7 +2883,7 @@ type
 
 {$ENDREGION}
 
-{$REGION 'MD5}
+{$REGION 'MD5'}
 
 	PMD5_CTX = ^MD5_CTX;
 	PPMD5_CTX = ^PMD5_CTX;
@@ -2878,6 +2892,19 @@ type
 		Nl,Nh: MD5_LONG;
 		data: array[0..MD5_LBLOCK-1] of MD5_LONG;
 		_num: TC_UINT;
+	end; { record }
+
+{$ENDREGION}
+
+{$REGION 'MDC2'}
+
+	PMDC2_CTX = ^MDC2_CTX;
+	PPMDC2_CTX = ^PMDC2_CTX;
+	MDC2_CTX = record
+		_num: TC_UINT;
+		_data: array[0..MDC2_BLOCK-1] of AnsiChar;
+		_h, _hh: DES_cblock;
+		_pad_type: TC_INT;
 	end; { record }
 
 {$ENDREGION}
@@ -3034,6 +3061,39 @@ type
 
 
 {$ENDREGION}
+
+	PRC2_KEY = ^RC2_KEY;
+	PPRC2_KEY = ^PRC2_KEY;
+	RC2_KEY = record
+		_data: array[0..63] of RC2_INT;
+	end; { record }
+
+	PRC4_KEY = ^RC4_KEY;
+	PPRC4_KEY = ^PRC4_KEY;
+	RC4_KEY = record
+		_x, _y: RC4_INT;
+		_data: array[0..255] of RC4_INT;
+	end; { record }
+
+	PRC5_KEY = ^RC5_KEY;
+	PPRC5_KEY = ^PRC5_KEY;
+	RC5_KEY = record
+		_rounds: TC_INT;
+		_data: array[0..(2*(RC5_16_ROUNDS+1))-1] of RC5_32_INT;
+	end; { record }
+
+	RC5_32_KEY = RC5_KEY;
+	PRC5_32_KEY = ^RC5_32_KEY;
+	PPRC5_32_KEY = ^PRC5_32_KEY;
+
+	PRIPEMD160_CTX = ^RIPEMD160_CTX;
+	PPRIPEMD160_CTX = ^PRIPEMD160_CTX;
+	RIPEMD160_CTX = record
+	  _A,_B,_C,_D,_E: RIPEMD160_LONG;
+	  _Nl,_Nh: RIPEMD160_LONG;
+	  _data: array [0..RIPEMD160_LBLOCK-1] of RIPEMD160_LONG;
+	  _num: TC_UINT;
+	end; { record }
 
 implementation
 
