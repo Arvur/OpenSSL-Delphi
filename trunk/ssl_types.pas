@@ -6,39 +6,37 @@ interface
 uses Winapi.Windows, ssl_const;
 
 type
-
-  qword = UInt64;
-  TC_INT   = LongInt;
-  PC_INT   = ^TC_INT;
-
-  TC_UINT  = LongWord;
-  PC_UINT  = ^TC_UINT;
-  TC_LONG  = LongInt;
-  PC_LONG = ^TC_LONG;
-  TC_ULONG = LongWord;
-  PC_ULONG = ^TC_ULONG;
-  TC_ULONGLONG = qword;
-  TC_time_t = TC_LONG;
-  TC_USHORT = Word;
-  PC_USHORT = ^TC_USHORT;
-  TC_SIZE_T = LongWord;
-  PC_SIZE_T = ^TC_SIZE_T;
-  BN_ULONG = TC_ULONGLONG;
-  PBN_ULONG = ^BN_ULONG;
-  TC_UCHAR = AnsiChar;
-  DES_LONG= TC_ULONG;
-  PDES_LONG = ^DES_LONG;
-  point_conversion_form_t = byte;
-	TC_OSSL_SSIZE_T = TC_LONG;
-	IDEA_INT = TC_UINT;
-	MD4_LONG = TC_ULONG;
-	MD5_LONG = TC_ULONG;
-	RC2_INT = TC_UINT;
-	RC4_INT = TC_UINT;
-	RC5_32_INT = TC_ULONG;
-	RIPEMD160_LONG = TC_ULONG;
-  SHA_LONG = TC_ULONG;
-  SHA_LONG64 = UInt64;
+    qword = UInt64;
+    TC_INT   = LongInt;
+    PC_INT   = ^TC_INT;
+    TC_UINT  = LongWord;
+    PC_UINT  = ^TC_UINT;
+    TC_LONG  = LongInt;
+    PC_LONG = ^TC_LONG;
+    TC_ULONG = LongWord;
+    PC_ULONG = ^TC_ULONG;
+    TC_ULONGLONG = qword;
+    TC_time_t = TC_LONG;
+    TC_USHORT = Word;
+    PC_USHORT = ^TC_USHORT;
+    TC_SIZE_T = LongWord;
+    PC_SIZE_T = ^TC_SIZE_T;
+    BN_ULONG = TC_ULONGLONG;
+    PBN_ULONG = ^BN_ULONG;
+    TC_UCHAR = AnsiChar;
+    DES_LONG= TC_ULONG;
+    PDES_LONG = ^DES_LONG;
+    point_conversion_form_t = byte;
+    TC_OSSL_SSIZE_T = TC_LONG;
+    IDEA_INT = TC_UINT;
+    MD4_LONG = TC_ULONG;
+    MD5_LONG = TC_ULONG;
+    RC2_INT = TC_UINT;
+    RC4_INT = TC_UINT;
+    RC5_32_INT = TC_ULONG;
+    RIPEMD160_LONG = TC_ULONG;
+    SHA_LONG = TC_ULONG;
+    SHA_LONG64 = UInt64;
 
 type
 
@@ -55,7 +53,7 @@ type
   PPENGINE = ^PENGINE;
   PRSA_METHOD = ^RSA_METHOD;
   PUI_METHOD = Pointer;
-  PSSL = Pointer;
+  PSSL = ^SSL;
   PEVP_PKEY = ^EVP_PKEY;
   PX509 = ^X509;
   PEVP_MD = ^EVP_MD;
@@ -149,10 +147,10 @@ type
 
   POBJ_NAME = ^OBJ_NAME;
   OBJ_NAME = record
-	  _type: TC_INT;
+      _type: TC_INT;
     _alias: TC_INT;
-	  _name: PAnsiChar;
-	  _data: PAnsiChar;
+      _name: PAnsiChar;
+      _data: PAnsiChar;
   end;
   OBJ_NAME_CALLBACK = procedure(_par1: POBJ_NAME; arg: Pointer); cdecl;
   OBJ_CMP_CALLBACK = function(_par1, _par2: Pointer): TC_INT; cdecl;
@@ -203,8 +201,8 @@ type
   PERR_STATE = ^ERR_STATE;
 
   ERR_STRING_DATA = record
-	  error: TC_LONG;
-	  _string: PAnsiChar;
+      error: TC_LONG;
+      _string: PAnsiChar;
   end;
   PERR_STRING_DATA = ^ERR_STRING_DATA;
 
@@ -447,8 +445,8 @@ type
   PEC_PKEY_CTX = ^EC_PKEY_CTX;
   PPEC_PKEY_CTX = ^PEC_PKEY_CTX;
   EC_PKEY_CTX = record
-	  gen_group: PEC_GROUP;
-	  md: PEVP_MD;
+      gen_group: PEC_GROUP;
+      md: PEVP_MD;
   end;
 
   EC_dup_func = function(par: Pointer): Pointer; cdecl;
@@ -897,8 +895,8 @@ type
 
   LHASH_COMP_FN_TYPE = function (const p1;p2 : Pointer) : TC_INT; cdecl;
   LHASH_HASH_FN_TYPE = function(const p1 : Pointer) : TC_ULONG; cdecl;
-	LHASH_DOALL_FN_TYPE = procedure(_p: pointer); cdecl;
-	LHASH_DOALL_ARG_FN_TYPE = procedure(_p1, _p2: Pointer); cdecl;
+    LHASH_DOALL_FN_TYPE = procedure(_p: pointer); cdecl;
+    LHASH_DOALL_ARG_FN_TYPE = procedure(_p1, _p2: Pointer); cdecl;
 
   LHASH = record
     b : PPLHASH_NODE;
@@ -927,8 +925,15 @@ type
     error : TC_INT;
   end;  
   PLHASH = ^LHASH;
-	_LHASH = LHASH;
-	P_LHASH = ^_LHASH;
+  _LHASH = LHASH;
+  P_LHASH = ^_LHASH;
+
+  PLHASH_OF = ^LHASH_OF;
+  PPLHASH_OF = ^PLHASH_OF;
+  LHASH_OF = record
+    dummy: TC_INT;
+  end; { record }
+
 {$ENDREGION}
 
 {$REGION 'CONF'}
@@ -1058,24 +1063,24 @@ type
 
   PRSA_PKEY_CTX = ^RSA_PKEY_CTX;
   RSA_PKEY_CTX = record
-	  nbits: TC_INT;
-	  pub_exp: PBIGNUM;
-	  gentmp: array[0..1] of TC_INT;
-	  pad_mode: TC_INT;
-	  md: PEVP_MD;
-	  mgf1md: PEVP_MD;
-	  saltlen: TC_INT;
-	  tbuf: PAnsiChar;
+      nbits: TC_INT;
+      pub_exp: PBIGNUM;
+      gentmp: array[0..1] of TC_INT;
+      pad_mode: TC_INT;
+      md: PEVP_MD;
+      mgf1md: PEVP_MD;
+      saltlen: TC_INT;
+      tbuf: PAnsiChar;
   end;
 
   PRSA_PSS_PARAMS = ^RSA_PSS_PARAMS;
   PPRSA_PSS_PARAMS = ^PRSA_PSS_PARAMS;
 
   RSA_PSS_PARAMS = record
-	_hashAlgorithm: PX509_ALGOR;
-	_maskGenAlgorithm: PX509_ALGOR;
-	_saltLength: PASN1_INTEGER;
-	_trailerField: PASN1_INTEGER;
+    _hashAlgorithm: PX509_ALGOR;
+    _maskGenAlgorithm: PX509_ALGOR;
+    _saltLength: PASN1_INTEGER;
+    _trailerField: PASN1_INTEGER;
   end; { record }
 
   RSA_NET_CALLBACK_FUNC = function (_buf: PAnsiChar; _len: TC_INT; const _prompt: PAnsiChar; _verify: TC_INT): TC_INT; cdecl;
@@ -1139,60 +1144,60 @@ type
   EVP_PKEY_gen_cb = function(ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
 
   EVP_PKEY_CTX = record
-	  pmeth: PEVP_PKEY_METHOD;
-	  engine: PENGINE;
-	  pkey: PEVP_PKEY;
-	  peerkey: PEVP_PKEY;
-	  operation: TC_INT;
+      pmeth: PEVP_PKEY_METHOD;
+      engine: PENGINE;
+      pkey: PEVP_PKEY;
+      peerkey: PEVP_PKEY;
+      operation: TC_INT;
     data: Pointer;
-	  app_data: Pointer;
-	  pkey_gencb: EVP_PKEY_gen_cb;
-	  keygen_info: PC_INT;
+      app_data: Pointer;
+      pkey_gencb: EVP_PKEY_gen_cb;
+      keygen_info: PC_INT;
     keygen_info_count: TC_INT;
-	end;
+    end;
 
-	EVP_PKEY_METHOD = record
-		_pkey_id: TC_INT;
-		_flags: TC_INT;
+    EVP_PKEY_METHOD = record
+        _pkey_id: TC_INT;
+        _flags: TC_INT;
 
-		init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
-		copy: function(_dst: PEVP_PKEY_CTX; _src: PEVP_PKEY_CTX): TC_INT; cdecl;
-		cleanup: procedure(_ctx: PEVP_PKEY_CTX); cdecl;
+        init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+        copy: function(_dst: PEVP_PKEY_CTX; _src: PEVP_PKEY_CTX): TC_INT; cdecl;
+        cleanup: procedure(_ctx: PEVP_PKEY_CTX); cdecl;
 
-		paramgen_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
-		paramgen: function(_ctx: PEVP_PKEY_CTX; _pkey: PEVP_PKEY): TC_INT; cdecl;
+        paramgen_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+        paramgen: function(_ctx: PEVP_PKEY_CTX; _pkey: PEVP_PKEY): TC_INT; cdecl;
 
-		keygen_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
-		keygen: function(_ctx: PEVP_PKEY_CTX; _pkey: PEVP_PKEY): TC_INT; cdecl;
+        keygen_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+        keygen: function(_ctx: PEVP_PKEY_CTX; _pkey: PEVP_PKEY): TC_INT; cdecl;
 
-		sign_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
-		sign: function(_ctx: PEVP_PKEY_CTX; _sig: PAnsiChar; var _siglen: TC_SIZE_T;const _tbs: PAnsiChar; _tbslen: TC_SIZE_T): TC_INT; cdecl;
+        sign_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+        sign: function(_ctx: PEVP_PKEY_CTX; _sig: PAnsiChar; var _siglen: TC_SIZE_T;const _tbs: PAnsiChar; _tbslen: TC_SIZE_T): TC_INT; cdecl;
 
-		verify_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
-		verify: function(_ctx: PEVP_PKEY_CTX;const _sig: PAnsiChar; _siglen: TC_SIZE_T; const _tbs: PAnsiChar; _tbslen: TC_SIZE_T): TC_INT; cdecl;
+        verify_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+        verify: function(_ctx: PEVP_PKEY_CTX;const _sig: PAnsiChar; _siglen: TC_SIZE_T; const _tbs: PAnsiChar; _tbslen: TC_SIZE_T): TC_INT; cdecl;
 
-		verify_recover_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
-		verify_recover: function(_ctx: PEVP_PKEY_CTX;_rout: PAnsiChar; var _routlen: TC_SIZE_T;const _sig: PAnsiChar; _siglen: TC_SIZE_T): TC_INT; cdecl;
+        verify_recover_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+        verify_recover: function(_ctx: PEVP_PKEY_CTX;_rout: PAnsiChar; var _routlen: TC_SIZE_T;const _sig: PAnsiChar; _siglen: TC_SIZE_T): TC_INT; cdecl;
 
-		signctx_init: function(_ctx: PEVP_PKEY_CTX; _mctx: PEVP_MD_CTX): TC_INT; cdecl;
-		signctx: function(_ctx: PEVP_PKEY_CTX; _sig: PAnsiChar; var siglen: TC_SIZE_T; _mctx: PEVP_MD_CTX): TC_INT; cdecl;
+        signctx_init: function(_ctx: PEVP_PKEY_CTX; _mctx: PEVP_MD_CTX): TC_INT; cdecl;
+        signctx: function(_ctx: PEVP_PKEY_CTX; _sig: PAnsiChar; var siglen: TC_SIZE_T; _mctx: PEVP_MD_CTX): TC_INT; cdecl;
 
-		verifyctx_init: function(_ctx: PEVP_PKEY_CTX; _mctx: PEVP_MD_CTX): TC_INT; cdecl;
-		verifyctx: function(_ctx: PEVP_PKEY_CTX; const _sig: PAnsiChar;_siglen: TC_INT;_mctx: PEVP_MD_CTX): TC_INT; cdecl;
+        verifyctx_init: function(_ctx: PEVP_PKEY_CTX; _mctx: PEVP_MD_CTX): TC_INT; cdecl;
+        verifyctx: function(_ctx: PEVP_PKEY_CTX; const _sig: PAnsiChar;_siglen: TC_INT;_mctx: PEVP_MD_CTX): TC_INT; cdecl;
 
-		encrypt_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
-		encrypt: function(_ctx: PEVP_PKEY_CTX; _out: PAnsiChar; var _outlen: TC_SIZE_T;const _in: PAnsiChar; _inlen: TC_SIZE_T): TC_INT; cdecl;
+        encrypt_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+        encrypt: function(_ctx: PEVP_PKEY_CTX; _out: PAnsiChar; var _outlen: TC_SIZE_T;const _in: PAnsiChar; _inlen: TC_SIZE_T): TC_INT; cdecl;
 
-		decrypt_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
-		decrypt: function(_ctx: PEVP_PKEY_CTX; _out: PAnsiChar; var _outlen: TC_SIZE_T;const _in: PAnsiChar; _inlen: TC_SIZE_T): TC_INT; cdecl;
+        decrypt_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+        decrypt: function(_ctx: PEVP_PKEY_CTX; _out: PAnsiChar; var _outlen: TC_SIZE_T;const _in: PAnsiChar; _inlen: TC_SIZE_T): TC_INT; cdecl;
 
-		derive_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
-		derive: function(_ctx: PEVP_PKEY_CTX; _key: PAnsiChar; var _keylen: TC_SIZE_T): TC_INT; cdecl;
+        derive_init: function(_ctx: PEVP_PKEY_CTX): TC_INT; cdecl;
+        derive: function(_ctx: PEVP_PKEY_CTX; _key: PAnsiChar; var _keylen: TC_SIZE_T): TC_INT; cdecl;
 
-		ctrl: function(_ctx: PEVP_PKEY_CTX; _type: TC_INT; _p1: TC_INT; _p2: Pointer): TC_INT; cdecl;
-		ctrl_str: function(_ctx: PEVP_PKEY_CTX; const _type: PAnsiChar; const _value: PAnsiChar): TC_INT; cdecl;
+        ctrl: function(_ctx: PEVP_PKEY_CTX; _type: TC_INT; _p1: TC_INT; _p2: Pointer): TC_INT; cdecl;
+        ctrl_str: function(_ctx: PEVP_PKEY_CTX; const _type: PAnsiChar; const _value: PAnsiChar): TC_INT; cdecl;
 
-	end; { record }
+    end; { record }
 
 
 
@@ -1223,43 +1228,43 @@ type
     attributes : PSTACK_OF_X509_ATTRIBUTE;
   end;
 
-	EVP_PKEY_ASN1_METHOD = record
-		_pkey_id: TC_INT;
-		_pkey_base_id: TC_INT;
-		_pkey_flags: TC_ULONG;
+    EVP_PKEY_ASN1_METHOD = record
+        _pkey_id: TC_INT;
+        _pkey_base_id: TC_INT;
+        _pkey_flags: TC_ULONG;
 
-		_pem_str: PAnsiChar;
-		_info: PAnsiChar;
+        _pem_str: PAnsiChar;
+        _info: PAnsiChar;
 
-		pub_decode: function(_pk: PEVP_PKEY; _pub: PX509_PUBKEY): TC_INT; cdecl;
-		pub_encode: function(_pub: PX509_PUBKEY; const _pk: PEVP_PKEY): TC_INT; cdecl;
-		pub_cmp: function(const _a: PEVP_PKEY; const _b: PEVP_PKEY): TC_INT; cdecl;
-		pub_print: function(_out: PBIO; const _pkey: PEVP_PKEY; _indent: TC_INT;_pctx: PASN1_PCTX): TC_INT; cdecl;
+        pub_decode: function(_pk: PEVP_PKEY; _pub: PX509_PUBKEY): TC_INT; cdecl;
+        pub_encode: function(_pub: PX509_PUBKEY; const _pk: PEVP_PKEY): TC_INT; cdecl;
+        pub_cmp: function(const _a: PEVP_PKEY; const _b: PEVP_PKEY): TC_INT; cdecl;
+        pub_print: function(_out: PBIO; const _pkey: PEVP_PKEY; _indent: TC_INT;_pctx: PASN1_PCTX): TC_INT; cdecl;
 
-		priv_decode: function(_pk: PEVP_PKEY; _p8inf: PPKCS8_PRIV_KEY_INFO): TC_INT; cdecl;
-		priv_encode: function(_p8: PPKCS8_PRIV_KEY_INFO; const _pk: PEVP_PKEY): TC_INT; cdecl;
-		priv_print: function(_out: PBIO; const _pkey: PEVP_PKEY; _indent: TC_INT;_pctx: PASN1_PCTX): TC_INT; cdecl;
+        priv_decode: function(_pk: PEVP_PKEY; _p8inf: PPKCS8_PRIV_KEY_INFO): TC_INT; cdecl;
+        priv_encode: function(_p8: PPKCS8_PRIV_KEY_INFO; const _pk: PEVP_PKEY): TC_INT; cdecl;
+        priv_print: function(_out: PBIO; const _pkey: PEVP_PKEY; _indent: TC_INT;_pctx: PASN1_PCTX): TC_INT; cdecl;
 
-		pkey_size: function(const _pk: PEVP_PKEY): TC_INT; cdecl;
-		pkey_bits: function(const _pk: PEVP_PKEY): TC_INT; cdecl;
+        pkey_size: function(const _pk: PEVP_PKEY): TC_INT; cdecl;
+        pkey_bits: function(const _pk: PEVP_PKEY): TC_INT; cdecl;
 
-		param_decode: function(_pkey: PEVP_PKEY;const _pder: PPAnsiChar; _derlen: TC_INT): TC_INT; cdecl;
-		param_encode: function(const _pkey: PEVP_PKEY; _pder: PPAnsiChar): TC_INT; cdecl;
-		param_missing: function(const _pk: PEVP_PKEY): TC_INT; cdecl;
-		param_copy: function(_to: PEVP_PKEY; const _from: PEVP_PKEY): TC_INT; cdecl;
-		param_cmp: function(const _a: PEVP_PKEY; const _b: PEVP_PKEY): TC_INT; cdecl;
-		param_print: function(_out: PBIO; const _pkey: PEVP_PKEY; _indent: TC_INT; _pctx: PASN1_PCTX): TC_INT; cdecl;
-		sig_print: function(_out: PBIO;const _sigalg: PX509_ALGOR; const _sig: PASN1_STRING;_indent: TC_INT; _pctx: PASN1_PCTX): TC_INT; cdecl;
+        param_decode: function(_pkey: PEVP_PKEY;const _pder: PPAnsiChar; _derlen: TC_INT): TC_INT; cdecl;
+        param_encode: function(const _pkey: PEVP_PKEY; _pder: PPAnsiChar): TC_INT; cdecl;
+        param_missing: function(const _pk: PEVP_PKEY): TC_INT; cdecl;
+        param_copy: function(_to: PEVP_PKEY; const _from: PEVP_PKEY): TC_INT; cdecl;
+        param_cmp: function(const _a: PEVP_PKEY; const _b: PEVP_PKEY): TC_INT; cdecl;
+        param_print: function(_out: PBIO; const _pkey: PEVP_PKEY; _indent: TC_INT; _pctx: PASN1_PCTX): TC_INT; cdecl;
+        sig_print: function(_out: PBIO;const _sigalg: PX509_ALGOR; const _sig: PASN1_STRING;_indent: TC_INT; _pctx: PASN1_PCTX): TC_INT; cdecl;
 
 
-		pkey_free: procedure(_pkey: PEVP_PKEY); cdecl;
-		pkey_ctrl: function(_pkey: PEVP_PKEY; _op: TC_INT; _arg1: TC_LONG; _arg2: Pointer): TC_INT; cdecl;
+        pkey_free: procedure(_pkey: PEVP_PKEY); cdecl;
+        pkey_ctrl: function(_pkey: PEVP_PKEY; _op: TC_INT; _arg1: TC_LONG; _arg2: Pointer): TC_INT; cdecl;
 
-		old_priv_decode: function(_pkey: Pointer;const _pder: PPAnsiChar; _derlen: TC_INT): TC_INT; cdecl;
-		old_priv_encode: function(const _pkey: PEVP_PKEY; _pder: PPAnsiChar): TC_INT; cdecl;
-		item_verify: function(_ctx: PEVP_MD_CTX; const _it: PASN1_ITEM; _asn: Pvoid; _a: PX509_ALGOR; _sig: PASN1_BIT_STRING; _pkey: PEVP_PKEY): TC_INT; cdecl;
-		item_sign: function(_ctx: PEVP_MD_CTX; const _it: PASN1_ITEM; _asn: Pointer; _alg1: PX509_ALGOR; _alg2: PX509_ALGOR; _sig: PASN1_BIT_STRING): TC_INT; cdecl;
-	end; { record }
+        old_priv_decode: function(_pkey: Pointer;const _pder: PPAnsiChar; _derlen: TC_INT): TC_INT; cdecl;
+        old_priv_encode: function(const _pkey: PEVP_PKEY; _pder: PPAnsiChar): TC_INT; cdecl;
+        item_verify: function(_ctx: PEVP_MD_CTX; const _it: PASN1_ITEM; _asn: Pvoid; _a: PX509_ALGOR; _sig: PASN1_BIT_STRING; _pkey: PEVP_PKEY): TC_INT; cdecl;
+        item_sign: function(_ctx: PEVP_MD_CTX; const _it: PASN1_ITEM; _asn: Pointer; _alg1: PX509_ALGOR; _alg2: PX509_ALGOR; _sig: PASN1_BIT_STRING): TC_INT; cdecl;
+    end; { record }
 
   PEVP_CIPHER_CTX = ^EVP_CIPHER_CTX;
   EVP_CIPHER = record
@@ -1791,7 +1796,7 @@ type
   EVP_param_missing_t = function(const pk: PEVP_PKEY): TC_INT; cdecl;
   EVP_param_copy_t = function(_to: PEVP_PKEY; const _from: PEVP_PKEY): TC_INT; cdecl;
   EVP_param_cmp_t = function(const a: PEVP_PKEY; const b: PEVP_PKEY): TC_INT; cdecl;
-  EVP_param_print_t = function(_out: PBIO; const pkey: PEVP_PKEY; indent: TC_INT;	pctx: ASN1_PCTX): TC_INT; cdecl;
+  EVP_param_print_t = function(_out: PBIO; const pkey: PEVP_PKEY; indent: TC_INT;   pctx: ASN1_PCTX): TC_INT; cdecl;
   EVP_pkey_free_t = procedure(pkey: PEVP_PKEY); cdecl;
   EVP_pkey_ctrl_t = function(pkey: PEVP_PKEY; op:TC_INT;arg1: TC_LONG; arg2: Pointer): TC_INT; cdecl;
 {$ENDREGION}
@@ -1830,27 +1835,27 @@ type
   PEDIPARTYNAME = ^EDIPARTYNAME;
   PPEDIPARTYNAME = ^PEDIPARTYNAME;
   EDIPARTYNAME = record
-	  nameAssigner: PASN1_STRING;
-	  partyName: PASN1_STRING;
+      nameAssigner: PASN1_STRING;
+      partyName: PASN1_STRING;
   end;
 
   GENERAL_NAME_union = record
   case byte of
     0: (ptr: PAnsiChar);
     1: (otherName: POTHERNAME);
-	  2: (rfc822Name: PASN1_IA5STRING);
-	  3: (dNSName: PASN1_IA5STRING);
-	  4: (x400Address: PASN1_TYPE);
-	  5: (directoryName: PX509_NAME);
-	  6: (ediPartyName: PEDIPARTYNAME);
-	  7: (uniformResourceIdentifier: PASN1_IA5STRING);
-	  8: (iPAddress: PASN1_OCTET_STRING);
-	  9: (registeredID: PASN1_OBJECT);
-	  10: (ip: PASN1_OCTET_STRING);
-	  11: (dirn: PX509_NAME);
-	  12: (ia5: PASN1_IA5STRING);
+      2: (rfc822Name: PASN1_IA5STRING);
+      3: (dNSName: PASN1_IA5STRING);
+      4: (x400Address: PASN1_TYPE);
+      5: (directoryName: PX509_NAME);
+      6: (ediPartyName: PEDIPARTYNAME);
+      7: (uniformResourceIdentifier: PASN1_IA5STRING);
+      8: (iPAddress: PASN1_OCTET_STRING);
+      9: (registeredID: PASN1_OBJECT);
+      10: (ip: PASN1_OCTET_STRING);
+      11: (dirn: PX509_NAME);
+      12: (ia5: PASN1_IA5STRING);
     13: (rid: PASN1_OBJECT);
-	  14: (other: PASN1_TYPE);
+      14: (other: PASN1_TYPE);
   end;
 
   PGENERAL_NAME = ^GENERAL_NAME;
@@ -1911,8 +1916,8 @@ type
   PACCESS_DESCRIPTION = ^ACCESS_DESCRIPTION;
   PPACCESS_DESCRIPTION = ^PACCESS_DESCRIPTION;
   ACCESS_DESCRIPTION = record
-	  method: PASN1_OBJECT;
-	  location: PGENERAL_NAME;
+      method: PASN1_OBJECT;
+      location: PGENERAL_NAME;
   end;
   PSTACK_OF_ACCESS_DESCRIPTION = PSTACK_OF;
   PAUTHORITY_INFO_ACCESS = PSTACK_OF_ACCESS_DESCRIPTION;
@@ -1920,8 +1925,8 @@ type
 
   DIST_POINT_NAME_union = record
   case Byte of
-	  0: (fullname: PGENERAL_NAMES);
-	  1: (relativename: PSTACK_OF_X509_NAME_ENTRY);
+      0: (fullname: PGENERAL_NAMES);
+      1: (relativename: PSTACK_OF_X509_NAME_ENTRY);
   end;
 
   PDIST_POINT_NAME = ^DIST_POINT_NAME;
@@ -1947,42 +1952,42 @@ type
   PSXNETID = ^SXNETID;
   PPSXNETID = ^PSXNETID;
   SXNETID = record
-	  zone: PASN1_INTEGER;
-	  user: PASN1_OCTET_STRING;
+      zone: PASN1_INTEGER;
+      user: PASN1_OCTET_STRING;
   end;
   PSTACK_OF_SXNETID = PSTACK_OF;
 
   PSXNET = ^SXNET;
   PPSXNET = ^PSXNET;
   SXNET = record
-	  version: PASN1_INTEGER;
-	  ids: PSTACK_OF_SXNETID;
+      version: PASN1_INTEGER;
+      ids: PSTACK_OF_SXNETID;
   end;
 
   PNOTICEREF = ^NOTICEREF;
   PPNOTICEREF = ^PNOTICEREF;
   NOTICEREF = record
-	  organization: PASN1_STRING;
-	  noticenos: PSTACK_OF_ASN1_INTEGER;
+      organization: PASN1_STRING;
+      noticenos: PSTACK_OF_ASN1_INTEGER;
   end;
 
   PUSERNOTICE = ^USERNOTICE;
   PPUSERNOTICE = ^PUSERNOTICE;
   USERNOTICE = record
-	  noticeref: PNOTICEREF;
-	  exptext: PASN1_STRING;
+      noticeref: PNOTICEREF;
+      exptext: PASN1_STRING;
   end;
 
   POLICYQUALINFO_union = record
-		cpsuri: PASN1_IA5STRING;
-		usernotice: PUSERNOTICE;
-		other: PASN1_TYPE;
+        cpsuri: PASN1_IA5STRING;
+        usernotice: PUSERNOTICE;
+        other: PASN1_TYPE;
   end;
 
   PPOLICYQUALINFO = ^POLICYQUALINFO;
   PPPOLICYQUALINFO = ^PPOLICYQUALINFO;
   POLICYQUALINFO = record
-	  pqualid: PASN1_OBJECT;
+      pqualid: PASN1_OBJECT;
     d: POLICYQUALINFO_union
   end;
   PSTACK_OF_POLICYQUALINFO = PSTACK_OF;
@@ -1990,8 +1995,8 @@ type
   PPOLICYINFO = ^POLICYINFO;
   PPPOLICYINFO = ^PPOLICYINFO;
   POLICYINFO =  record
-	  policyid: PASN1_OBJECT;
-	  qualifiers: PSTACK_OF_POLICYQUALINFO;
+      policyid: PASN1_OBJECT;
+      qualifiers: PSTACK_OF_POLICYQUALINFO;
   end;
   PSTACK_OF_POLICYINFO = PSTACK_OF;
   PCERTIFICATEPOLICIES = PSTACK_OF_POLICYINFO;
@@ -1999,54 +2004,54 @@ type
 
   PPOLICY_MAPPING = ^POLICY_MAPPING;
   POLICY_MAPPING = record
-	  issuerDomainPolicy: PASN1_OBJECT;
-	  subjectDomainPolicy: PASN1_OBJECT;
+      issuerDomainPolicy: PASN1_OBJECT;
+      subjectDomainPolicy: PASN1_OBJECT;
   end;
   PSTACK_OF_POLICY_MAPPING = PSTACK_OF;
 
   PGENERAL_SUBTREE = ^GENERAL_SUBTREE;
   GENERAL_SUBTREE = record
-	  base: PGENERAL_NAME;
-	  minimum: PASN1_INTEGER;
-	  maximum: PASN1_INTEGER;
+      base: PGENERAL_NAME;
+      minimum: PASN1_INTEGER;
+      maximum: PASN1_INTEGER;
   end;
   PSTACK_OF_GENERAL_SUBTREE = PSTACK_OF;
 
   PNAME_CONSTRAINTS = ^NAME_CONSTRAINTS;
   NAME_CONSTRAINTS = record
-	  permittedSubtrees: PSTACK_OF_GENERAL_SUBTREE;
-	  excludedSubtrees: PSTACK_OF_GENERAL_SUBTREE;
+      permittedSubtrees: PSTACK_OF_GENERAL_SUBTREE;
+      excludedSubtrees: PSTACK_OF_GENERAL_SUBTREE;
   end;
 
   PPOLICY_CONSTRAINTS = ^POLICY_CONSTRAINTS;
   POLICY_CONSTRAINTS = record
-	  requireExplicitPolicy: PASN1_INTEGER;
-	  inhibitPolicyMapping: PASN1_INTEGER;
+      requireExplicitPolicy: PASN1_INTEGER;
+      inhibitPolicyMapping: PASN1_INTEGER;
   end;
 
   PPROXY_POLICY = ^PROXY_POLICY;
   PPPROXY_POLICY = ^PPROXY_POLICY;
   PROXY_POLICY = record
     policyLanguage: PASN1_OBJECT;
-	  policy: PASN1_OCTET_STRING;
+      policy: PASN1_OCTET_STRING;
   end;
 
   PPROXY_CERT_INFO_EXTENSION = ^PROXY_CERT_INFO_EXTENSION;
   PPPROXY_CERT_INFO_EXTENSION = ^PPROXY_CERT_INFO_EXTENSION;
   PROXY_CERT_INFO_EXTENSION = record
-	  pcPathLengthConstraint: PASN1_INTEGER;
-	  proxyPolicy: PPROXY_POLICY;
+      pcPathLengthConstraint: PASN1_INTEGER;
+      proxyPolicy: PPROXY_POLICY;
   end;
 
   PISSUING_DIST_POINT = ^ISSUING_DIST_POINT;
   PPISSUING_DIST_POINT = ^PISSUING_DIST_POINT;
   ISSUING_DIST_POINT = record
-	  distpoint: PDIST_POINT_NAME;
-	  onlyuser: TC_INT;
-	  onlyCA: TC_INT;
-	  onlysomereasons: PASN1_BIT_STRING;
-	  indirectCRL: TC_INT;
-	  onlyattr: TC_INT;
+      distpoint: PDIST_POINT_NAME;
+      onlyuser: TC_INT;
+      onlyCA: TC_INT;
+      onlysomereasons: PASN1_BIT_STRING;
+      indirectCRL: TC_INT;
+      onlyattr: TC_INT;
   end;
 
 
@@ -2055,13 +2060,13 @@ type
 
   X509_CHECK_PURPOSE_FUNC = function(p: PX509_PURPOSE; _x509: PX509; _i: TC_INT): TC_INT; cdecl;
   X509_PURPOSE = record
-	  purpose: TC_INT;
-	  trust: TC_INT;
-	  flags: TC_INT;
-	  check_purpose: X509_CHECK_PURPOSE_FUNC;
-	  name: PAnsiChar;
-	  sname: PAnsiChar;
-	  usr_data: Pointer;
+      purpose: TC_INT;
+      trust: TC_INT;
+      flags: TC_INT;
+      check_purpose: X509_CHECK_PURPOSE_FUNC;
+      name: PAnsiChar;
+      sname: PAnsiChar;
+      usr_data: Pointer;
   end;
   PSTACK_OF_X509_PURPOSE = PSTACK_OF;
 
@@ -2070,45 +2075,45 @@ type
 
   PX509_POLICY_DATA = ^X509_POLICY_DATA;
   X509_POLICY_DATA = record
-	  flags: TC_UINT;
-	  valid_policy: PASN1_OBJECT;
-	  qualifier_set: PSTACK_OF_POLICYQUALINFO;
-	  expected_policy_set: PSTACK_OF_ASN1_OBJECT;
+      flags: TC_UINT;
+      valid_policy: PASN1_OBJECT;
+      qualifier_set: PSTACK_OF_POLICYQUALINFO;
+      expected_policy_set: PSTACK_OF_ASN1_OBJECT;
   end;
   PSTACK_OF_X509_POLICY_DATA = PSTACK_OF;
 
   X509_POLICY_CACHE = record
-	  anyPolicy: PX509_POLICY_DATA;
-	  data: PSTACK_OF_X509_POLICY_DATA;
-	  any_skip: TC_LONG;
-	  explicit_skip: TC_LONG;
-	  map_skip: TC_LONG;
+      anyPolicy: PX509_POLICY_DATA;
+      data: PSTACK_OF_X509_POLICY_DATA;
+      any_skip: TC_LONG;
+      explicit_skip: TC_LONG;
+      map_skip: TC_LONG;
   end;
 
 
   PX509_POLICY_NODE = ^X509_POLICY_NODE;
   X509_POLICY_NODE = record
     data: PX509_POLICY_DATA;
-	  parent: PX509_POLICY_NODE;
-	  nchild: TC_INT;
+      parent: PX509_POLICY_NODE;
+      nchild: TC_INT;
   end;
 
   PX509_POLICY_LEVEL = ^X509_POLICY_LEVEL;
   X509_POLICY_LEVEL = record
-	  cert: PX509;
-	  nodes: PSTACK_OF_X509_POLICY_NODE;
-	  anyPolicy: pX509_POLICY_NODE;
-	  flags: TC_UINT;
+      cert: PX509;
+      nodes: PSTACK_OF_X509_POLICY_NODE;
+      anyPolicy: pX509_POLICY_NODE;
+      flags: TC_UINT;
   end;
 
   PX509_POLICY_TREE = ^X509_POLICY_TREE;
   X509_POLICY_TREE = record
-	  levels: PX509_POLICY_LEVEL;
-	  nlevel: TC_INT;
-	  extra_data: PSTACK_OF_X509_POLICY_DATA;
-	  auth_policies: PSTACK_OF_X509_POLICY_NODE;
-	  user_policies: PSTACK_OF_X509_POLICY_NODE;
-	  flags: TC_UINT;
+      levels: PX509_POLICY_LEVEL;
+      nlevel: TC_INT;
+      extra_data: PSTACK_OF_X509_POLICY_DATA;
+      auth_policies: PSTACK_OF_X509_POLICY_NODE;
+      user_policies: PSTACK_OF_X509_POLICY_NODE;
+      flags: TC_UINT;
   end;
 
 
@@ -2179,7 +2184,7 @@ type
     enc_data : PPKCS7_ENC_CONTENT;
   end;
   PPKCS7_ENCRYPT = ^PKCS7_ENCRYPT;
-	PPPKCS7_ENCRYPT = ^PPKCS7_ENCRYPT;
+    PPPKCS7_ENCRYPT = ^PPKCS7_ENCRYPT;
 
   PKCS7_union = record
     case Integer of
@@ -2354,7 +2359,7 @@ type
   end;
 
   PCMS_ContentInfo = ^CMS_ContentInfo;
-	PPCMS_ContentInfo = ^PCMS_ContentInfo;
+    PPCMS_ContentInfo = ^PCMS_ContentInfo;
   CMS_ContentInfo = record
      contentType: PASN1_OBJECT;
      d: CMS_ContentInfo_union;
@@ -2380,8 +2385,8 @@ type
    PCMS_RecipientIdentifier = ^CMS_RecipientIdentifier;
    CMS_RecipientIdentifier = CMS_SignerIdentifier;
 
-	 PCMS_SignerInfo = ^CMS_SignerInfo;
-	 PPCMS_SignerInfo = ^PCMS_SignerInfo;
+     PCMS_SignerInfo = ^CMS_SignerInfo;
+     PPCMS_SignerInfo = ^PCMS_SignerInfo;
    CMS_SignerInfo = record
      version: TC_LONG;
      sid: PCMS_SignerIdentifier;
@@ -2553,26 +2558,26 @@ type
     d:CMS_CertificateChoices_union;
   end;
 
-	CMS_RECEIPTSFROM_union = record
-	case byte of
-		0: (_allOrFirstTier: TC_LONG);
-		1: (_receiptList: PSTACK_OF_GENERAL_NAMES);
-	end; { record }
+    CMS_RECEIPTSFROM_union = record
+    case byte of
+        0: (_allOrFirstTier: TC_LONG);
+        1: (_receiptList: PSTACK_OF_GENERAL_NAMES);
+    end; { record }
 
-	PCMS_RECEIPTSFROM = ^CMS_RECEIPTSFROM;
-	PPCMS_RECEIPTSFROM = ^PCMS_RECEIPTSFROM;
-	CMS_RECEIPTSFROM = record
-		_type: TC_INT;
-		d: CMS_RECEIPTSFROM_union;
-	end; { record }
+    PCMS_RECEIPTSFROM = ^CMS_RECEIPTSFROM;
+    PPCMS_RECEIPTSFROM = ^PCMS_RECEIPTSFROM;
+    CMS_RECEIPTSFROM = record
+        _type: TC_INT;
+        d: CMS_RECEIPTSFROM_union;
+    end; { record }
 
-	PCMS_RECEIPTREQUEST = ^CMS_RECEIPTREQUEST;
-	PPCMS_RECEIPTREQUEST = ^PCMS_RECEIPTREQUEST;
-	CMS_RECEIPTREQUEST = record
-		_signedContentIdentifier: PASN1_OCTET_STRING;
-		_receiptsFrom: PCMS_ReceiptsFrom;
-		 _receiptsTo: PSTACK_OF_GENERAL_NAMES;
-	end; { record }
+    PCMS_RECEIPTREQUEST = ^CMS_RECEIPTREQUEST;
+    PPCMS_RECEIPTREQUEST = ^PCMS_RECEIPTREQUEST;
+    CMS_RECEIPTREQUEST = record
+        _signedContentIdentifier: PASN1_OCTET_STRING;
+        _receiptsFrom: PCMS_ReceiptsFrom;
+         _receiptsTo: PSTACK_OF_GENERAL_NAMES;
+    end; { record }
 
 {$ENDREGION}
 
@@ -2642,27 +2647,27 @@ type
   
 {$REGION 'COMP'}
 
-	PCOMP_CTX = ^COMP_CTX;
-	PCOMP_METHOD = ^COMP_METHOD;
-	COMP_METHOD = record
-		_type: TC_INT;
-		name: PAnsiChar;
-		init: function(ctx: PCOMP_CTX): TC_INT; cdecl;
-		finish: procedure(ctx: PCOMP_CTX); cdecl;
-		compress: function(ctx: PCOMP_CTX; _out: PAnsiChar; olen: TC_UINT; _in: PAnsiChar; ilen: TC_UINT): TC_INT; cdecl;
-		expand: function(ctx: PCOMP_CTX; _out: PAnsiChar; olen: TC_UINT; _in: PAnsiChar; ilen: TC_UINT): TC_INT; cdecl;
-		ctrl: function: TC_LONG; cdecl;
-		callback_ctrl: function: TC_LONG; cdecl;
-	end;
-	
-	COMP_CTX = record
-		meth: PCOMP_METHOD;
-		compress_in: TC_ULONG;
-		compress_out: TC_ULONG;
-		expand_in: TC_ULONG;
-		expand_out: TC_ULONG;
-		ex_data: CRYPTO_EX_DATA;
-	end;
+    PCOMP_CTX = ^COMP_CTX;
+    PCOMP_METHOD = ^COMP_METHOD;
+    COMP_METHOD = record
+        _type: TC_INT;
+        name: PAnsiChar;
+        init: function(ctx: PCOMP_CTX): TC_INT; cdecl;
+        finish: procedure(ctx: PCOMP_CTX); cdecl;
+        compress: function(ctx: PCOMP_CTX; _out: PAnsiChar; olen: TC_UINT; _in: PAnsiChar; ilen: TC_UINT): TC_INT; cdecl;
+        expand: function(ctx: PCOMP_CTX; _out: PAnsiChar; olen: TC_UINT; _in: PAnsiChar; ilen: TC_UINT): TC_INT; cdecl;
+        ctrl: function: TC_LONG; cdecl;
+        callback_ctrl: function: TC_LONG; cdecl;
+    end;
+    
+    COMP_CTX = record
+        meth: PCOMP_METHOD;
+        compress_in: TC_ULONG;
+        compress_out: TC_ULONG;
+        expand_in: TC_ULONG;
+        expand_out: TC_ULONG;
+        ex_data: CRYPTO_EX_DATA;
+    end;
 
 
 {$ENDREGION}  
@@ -2687,450 +2692,858 @@ type
 
 {$REGION 'PKCS12'}
 
-	PPKCS12_MAC_DATA = ^PKCS12_MAC_DATA;
-	PPPKCS12_MAC_DATA = ^PPKCS12_MAC_DATA;
-	PKCS12_MAC_DATA = record	
-		dinfo: PX509_SIG;
-		salt: PASN1_OCTET_STRING;
-		iter: PASN1_INTEGER;	
+    PPKCS12_MAC_DATA = ^PKCS12_MAC_DATA;
+    PPPKCS12_MAC_DATA = ^PPKCS12_MAC_DATA;
+    PKCS12_MAC_DATA = record    
+        dinfo: PX509_SIG;
+        salt: PASN1_OCTET_STRING;
+        iter: PASN1_INTEGER;    
     end;
 
-	PPKCS12 = ^PKCS12;
-	PPPKCS12 = ^PPKCS12;
-	PKCS12 = record
-		version: PASN1_INTEGER;
-		mac: PPKCS12_MAC_DATA;
-		authsafes: PPKCS7;
-	end;
+    PPKCS12 = ^PKCS12;
+    PPPKCS12 = ^PPKCS12;
+    PKCS12 = record
+        version: PASN1_INTEGER;
+        mac: PPKCS12_MAC_DATA;
+        authsafes: PPKCS7;
+    end;
 
-	PKCS12_BAGS_union = record
-	case byte of
-	 0: (x509cert: PASN1_OCTET_STRING);
-	 1: (x509crl: PASN1_OCTET_STRING);
-	 2: (octet: PASN1_OCTET_STRING);
-	 3: (sdsicert: PASN1_IA5STRING);
-	 4: (other: PASN1_TYPE);
-	end; { record }
+    PKCS12_BAGS_union = record
+    case byte of
+     0: (x509cert: PASN1_OCTET_STRING);
+     1: (x509crl: PASN1_OCTET_STRING);
+     2: (octet: PASN1_OCTET_STRING);
+     3: (sdsicert: PASN1_IA5STRING);
+     4: (other: PASN1_TYPE);
+    end; { record }
 
-	PPKCS12_BAGS = ^PKCS12_BAGS;
-	PPPKCS12_BAGS = ^PPKCS12_BAGS;
-	PKCS12_BAGS = record
-		_type: PASN1_OBJECT;
-		value: PKCS12_BAGS_union;
-	end; { record }
+    PPKCS12_BAGS = ^PKCS12_BAGS;
+    PPPKCS12_BAGS = ^PPKCS12_BAGS;
+    PKCS12_BAGS = record
+        _type: PASN1_OBJECT;
+        value: PKCS12_BAGS_union;
+    end; { record }
 
-	PSTACK_OF_PKCS12_SAFEBAG = PSTACK_OF;
-	PPSTACK_OF_PKCS12_SAFEBAG = ^PSTACK_OF_PKCS12_SAFEBAG;
-	PPKCS12_SAFEBAG = ^PKCS12_SAFEBAG;
-	PPPKCS12_SAFEBAG = ^PPKCS12_SAFEBAG;
-	PKCS12_SAFEBAG_union = record
-		bag: PPKCS12_BAGS;
-		keybag: PPKCS8_PRIV_KEY_INFO;
-		shkeybag: PX509_SIG;
-		safes: PSTACK_OF_PKCS12_SAFEBAG;
-		other: PASN1_TYPE;
-	end; { record }
+    PSTACK_OF_PKCS12_SAFEBAG = PSTACK_OF;
+    PPSTACK_OF_PKCS12_SAFEBAG = ^PSTACK_OF_PKCS12_SAFEBAG;
+    PPKCS12_SAFEBAG = ^PKCS12_SAFEBAG;
+    PPPKCS12_SAFEBAG = ^PPKCS12_SAFEBAG;
+    PKCS12_SAFEBAG_union = record
+        bag: PPKCS12_BAGS;
+        keybag: PPKCS8_PRIV_KEY_INFO;
+        shkeybag: PX509_SIG;
+        safes: PSTACK_OF_PKCS12_SAFEBAG;
+        other: PASN1_TYPE;
+    end; { record }
 
-	PKCS12_SAFEBAG = record
-		_type: PASN1_OBJECT;
-		value: PKCS12_SAFEBAG_union;
-		attrib: PSTACK_OF_X509_ATTRIBUTE;
-	end; { record }
-	PSTACK_OF_PKCS7 = PSTACK_OF;
-	PPSTACK_OF_PKCS7 = ^PSTACK_OF_PKCS7;
+    PKCS12_SAFEBAG = record
+        _type: PASN1_OBJECT;
+        value: PKCS12_SAFEBAG_union;
+        attrib: PSTACK_OF_X509_ATTRIBUTE;
+    end; { record }
+    PSTACK_OF_PKCS7 = PSTACK_OF;
+    PPSTACK_OF_PKCS7 = ^PSTACK_OF_PKCS7;
 
-	PPKCS7_ISSUER_AND_SERIAL = ^PKCS7_ISSUER_AND_SERIAL;
-	PPPKCS7_ISSUER_AND_SERIAL = ^PPKCS7_ISSUER_AND_SERIAL;
-	PKCS7_ISSUER_AND_SERIAL = record
-		issuer: PX509_NAME;
-		serial: PASN1_INTEGER;
-	end; { record }
+    PPKCS7_ISSUER_AND_SERIAL = ^PKCS7_ISSUER_AND_SERIAL;
+    PPPKCS7_ISSUER_AND_SERIAL = ^PPKCS7_ISSUER_AND_SERIAL;
+    PKCS7_ISSUER_AND_SERIAL = record
+        issuer: PX509_NAME;
+        serial: PASN1_INTEGER;
+    end; { record }
 
-	PPKCS7_SIGNER_INFO = ^PKCS7_SIGNER_INFO;
-	PPPKCS7_SIGNER_INFO = ^PPKCS7_SIGNER_INFO;
-	PKCS7_SIGNER_INFO = record
-		version: PASN1_INTEGER;
-		issuer_and_serial: PPKCS7_ISSUER_AND_SERIAL;
-		digest_alg: PX509_ALGOR;
-		auth_attr: PSTACK_OF_X509_ATTRIBUTE;
-		digest_enc_alg: PX509_ALGOR;
-		enc_digest: PASN1_OCTET_STRING;
-		unauth_attr: PSTACK_OF_X509_ATTRIBUTE;
-		pkey: PEVP_PKEY;
-	end; { record }
+    PPKCS7_SIGNER_INFO = ^PKCS7_SIGNER_INFO;
+    PPPKCS7_SIGNER_INFO = ^PPKCS7_SIGNER_INFO;
+    PKCS7_SIGNER_INFO = record
+        version: PASN1_INTEGER;
+        issuer_and_serial: PPKCS7_ISSUER_AND_SERIAL;
+        digest_alg: PX509_ALGOR;
+        auth_attr: PSTACK_OF_X509_ATTRIBUTE;
+        digest_enc_alg: PX509_ALGOR;
+        enc_digest: PASN1_OCTET_STRING;
+        unauth_attr: PSTACK_OF_X509_ATTRIBUTE;
+        pkey: PEVP_PKEY;
+    end; { record }
 
 
-	PPKCS7_RECIP_INFO = ^PKCS7_RECIP_INFO;
-	PPPKCS7_RECIP_INFO = ^PPKCS7_RECIP_INFO;
-	PKCS7_RECIP_INFO = record
-		_version: PASN1_INTEGER;
-		_issuer_and_serial: PPKCS7_ISSUER_AND_SERIAL;
-		_key_enc_algor: PX509_ALGOR;
-		_enc_key: PASN1_OCTET_STRING;
-		_cert: PX509;
-	end; { record }
+    PPKCS7_RECIP_INFO = ^PKCS7_RECIP_INFO;
+    PPPKCS7_RECIP_INFO = ^PPKCS7_RECIP_INFO;
+    PKCS7_RECIP_INFO = record
+        _version: PASN1_INTEGER;
+        _issuer_and_serial: PPKCS7_ISSUER_AND_SERIAL;
+        _key_enc_algor: PX509_ALGOR;
+        _enc_key: PASN1_OCTET_STRING;
+        _cert: PX509;
+    end; { record }
 
-	PPPKCS7_SIGNED = ^PPKCS7_SIGNED;
-	PSTACK_OF_PKCS7_SIGNED = PSTACK_OF;
+    PPPKCS7_SIGNED = ^PPKCS7_SIGNED;
+    PSTACK_OF_PKCS7_SIGNED = PSTACK_OF;
 
-	PPPKCS7_ENC_CONTENT = ^PPKCS7_ENC_CONTENT;
+    PPPKCS7_ENC_CONTENT = ^PPKCS7_ENC_CONTENT;
 
-	PPKCS7_ENVELOPED = ^PKCS7_ENVELOPED;
-	PPPKCS7_ENVELOPED = ^PPKCS7_ENVELOPED;
-	PKCS7_ENVELOPED = record
-		_version: PASN1_INTEGER;
-		recipientinfo: PSTACK_OF_PKCS7_RECIP_INFO;
-		_enc_data: PPKCS7_ENC_CONTENT;
-	end; { record }
+    PPKCS7_ENVELOPED = ^PKCS7_ENVELOPED;
+    PPPKCS7_ENVELOPED = ^PPKCS7_ENVELOPED;
+    PKCS7_ENVELOPED = record
+        _version: PASN1_INTEGER;
+        recipientinfo: PSTACK_OF_PKCS7_RECIP_INFO;
+        _enc_data: PPKCS7_ENC_CONTENT;
+    end; { record }
 
-	PKCS7_SIGNEDANDENVELOPED = record
-		_version: PASN1_INTEGER;
-		_md_algs: PSTACK_OF_X509_ALGOR;
-		_cert: PSTACK_OF_X509;
-		_crl: PSTACK_OF_X509_CRL;
-		_signer_info: PSTACK_OF_PKCS7_SIGNER_INFO;
-		_enc_data: PPKCS7_ENC_CONTENT	;
-		_recipientinfo: PSTACK_OF_PKCS7_RECIP_INFO;
-	end; { record }
+    PKCS7_SIGNEDANDENVELOPED = record
+        _version: PASN1_INTEGER;
+        _md_algs: PSTACK_OF_X509_ALGOR;
+        _cert: PSTACK_OF_X509;
+        _crl: PSTACK_OF_X509_CRL;
+        _signer_info: PSTACK_OF_PKCS7_SIGNER_INFO;
+        _enc_data: PPKCS7_ENC_CONTENT   ;
+        _recipientinfo: PSTACK_OF_PKCS7_RECIP_INFO;
+    end; { record }
 
-	PPPKCS7_DIGEST = ^PPKCS7_DIGEST;
+    PPPKCS7_DIGEST = ^PPKCS7_DIGEST;
 
-	PPKCS7_ENCRYPTED = ^PKCS7_ENCRYPTED;
-	PPPKCS7_ENCRYPTED = ^PPKCS7_ENCRYPTED;
-	PKCS7_ENCRYPTED = record
-		_version: PASN1_INTEGER;
-		_enc_data: PPKCS7_ENC_CONTENT;
-	end; { record }
+    PPKCS7_ENCRYPTED = ^PKCS7_ENCRYPTED;
+    PPPKCS7_ENCRYPTED = ^PPKCS7_ENCRYPTED;
+    PKCS7_ENCRYPTED = record
+        _version: PASN1_INTEGER;
+        _enc_data: PPKCS7_ENC_CONTENT;
+    end; { record }
 
   PPKCS7_ATTR_SIGN = Pointer;
-	PPPKCS7_ATTR_SIGN = ^PPKCS7_ATTR_SIGN;
-	PPKCS7_ATTR_VERIFY = Pointer;
-	PPPKCS7_ATTR_VERIFY = ^PPKCS7_ATTR_VERIFY;
+    PPPKCS7_ATTR_SIGN = ^PPKCS7_ATTR_SIGN;
+    PPKCS7_ATTR_VERIFY = Pointer;
+    PPPKCS7_ATTR_VERIFY = ^PPKCS7_ATTR_VERIFY;
 {$ENDREGION}
 
 {$REGION 'ECDH'}
 
-	ecdh_kdf = function(const _in: Pointer; _inlen: TC_SIZE_T; _out: Pointer; var _outlen: TC_SIZE_T): pointer; cdecl;
+    ecdh_kdf = function(const _in: Pointer; _inlen: TC_SIZE_T; _out: Pointer; var _outlen: TC_SIZE_T): pointer; cdecl;
 
-	PPECDH_METHOD = ^PECDH_METHOD;
-	ECDH_METHOD = record
-		_name: PAnsiChar;
-	  _compute_key: function(_key: Pointer; _outlen: TC_SIZE_T; const _pub_key: PEC_POINT; _ecdh: PEC_KEY; kdf: ecdh_kdf): TC_INT; cdecl;
-	  _init: function(_eckey: PEC_KEY): TC_INT; cdecl;
-	  _finish: function(_eckey: PEC_KEY): TC_INT; cdecl;
-	  _flags: TC_INT;
-	  _app_data: PAnsiChar;
-	end; { record }
+    PPECDH_METHOD = ^PECDH_METHOD;
+    ECDH_METHOD = record
+        _name: PAnsiChar;
+      _compute_key: function(_key: Pointer; _outlen: TC_SIZE_T; const _pub_key: PEC_POINT; _ecdh: PEC_KEY; kdf: ecdh_kdf): TC_INT; cdecl;
+      _init: function(_eckey: PEC_KEY): TC_INT; cdecl;
+      _finish: function(_eckey: PEC_KEY): TC_INT; cdecl;
+      _flags: TC_INT;
+      _app_data: PAnsiChar;
+    end; { record }
 
 {$ENDREGION}
 
 {$REGION 'ECDSA'}
 
-	PECDSA_SIG = ^ECDSA_SIG;
-	PPECDSA_SIG = ^PECDSA_SIG;
-	ECDSA_SIG = record
-		_r: PBIGNUM;
-		_s: PBIGNUM;
-	end; { record }
+    PECDSA_SIG = ^ECDSA_SIG;
+    PPECDSA_SIG = ^PECDSA_SIG;
+    ECDSA_SIG = record
+        _r: PBIGNUM;
+        _s: PBIGNUM;
+    end; { record }
 
-	PPECDSA_METHOD = ^PECDSA_METHOD;
-	ECDSA_METHOD = record
-		_name: PAnsiChar;
-		ecdsa_do_sign: function(const _dgst: PAnsiChar; _dgst_len: TC_INT; const _inv: PBIGNUM; const _rp: PBIGNUM; _eckey: PEC_KEY): PECDSA_SIG; cdecl;
-		ecdsa_sign_setup: function(_eckey: PEC_KEY; _ctx: PBN_CTX; _kinv: PPBIGNUM ; _r: PPBIGNUM ): TC_INT; cdecl;
-		ecdsa_do_verify: function(const _dgst: PAnsiChar; _dgst_len: TC_INT; const _sig: PPECDSA_SIG; _eckey: PPEC_KEY): TC_INT; cdecl;
-		init: function(_eckey: PEC_KEY): TC_INT; cdecl;
-		finish: function(_eckey: PEC_KEY): TC_INT; cdecl;
-		_flags: TC_INT;
-		_app_data: PAnsiChar;
-	end; { record }
+    PPECDSA_METHOD = ^PECDSA_METHOD;
+    ECDSA_METHOD = record
+        _name: PAnsiChar;
+        ecdsa_do_sign: function(const _dgst: PAnsiChar; _dgst_len: TC_INT; const _inv: PBIGNUM; const _rp: PBIGNUM; _eckey: PEC_KEY): PECDSA_SIG; cdecl;
+        ecdsa_sign_setup: function(_eckey: PEC_KEY; _ctx: PBN_CTX; _kinv: PPBIGNUM ; _r: PPBIGNUM ): TC_INT; cdecl;
+        ecdsa_do_verify: function(const _dgst: PAnsiChar; _dgst_len: TC_INT; const _sig: PPECDSA_SIG; _eckey: PPEC_KEY): TC_INT; cdecl;
+        init: function(_eckey: PEC_KEY): TC_INT; cdecl;
+        finish: function(_eckey: PEC_KEY): TC_INT; cdecl;
+        _flags: TC_INT;
+        _app_data: PAnsiChar;
+    end; { record }
 
 {$ENDREGION}
 
 {$REGION 'HMAC'}
-	PHMAC_CTX = ^HMAC_CTX;
-	PPHMAC_CTX = ^PHMAC_CTX;
-	HMAC_CTX = record
-		_md: PEVP_MD;
-		_md_ctx: EVP_MD_CTX;
-		_i_ctx: EVP_MD_CTX;
-		_o_ctx: EVP_MD_CTX;
-		_key_length: TC_UINT;
-		key: array[0..HMAC_MAX_MD_CBLOCK - 1] of ansichar;
-	end; { record }
-	
+    PHMAC_CTX = ^HMAC_CTX;
+    PPHMAC_CTX = ^PHMAC_CTX;
+    HMAC_CTX = record
+        _md: PEVP_MD;
+        _md_ctx: EVP_MD_CTX;
+        _i_ctx: EVP_MD_CTX;
+        _o_ctx: EVP_MD_CTX;
+        _key_length: TC_UINT;
+        key: array[0..HMAC_MAX_MD_CBLOCK - 1] of ansichar;
+    end; { record }
+    
 {$ENDREGION}
 
 
 {$REGION 'IDEA'}
 
   PIDEA_KEY_SCHEDULE = ^IDEA_KEY_SCHEDULE;
-	PPIDEA_KEY_SCHEDULE = ^PIDEA_KEY_SCHEDULE;
-	IDEA_KEY_SCHEDULE = record	
-	 _data: array[0..8,0..5] of IDEA_INT;
-	end;
+    PPIDEA_KEY_SCHEDULE = ^PIDEA_KEY_SCHEDULE;
+    IDEA_KEY_SCHEDULE = record  
+     _data: array[0..8,0..5] of IDEA_INT;
+    end;
 
 {$ENDREGION}
 
 {$REGION 'MD4'}
 
-	PMD4_CTX = ^MD4_CTX;
-	PPMD4_CTX = ^PMD4_CTX;
-	MD4_CTX = record
-		A,B,C,D: MD4_LONG;
-		Nl,Nh: MD4_LONG;
-		data: array[0..MD4_LBLOCK - 1] of MD4_LONG;
-		_num: TC_UINT;
-	end; { record }
+    PMD4_CTX = ^MD4_CTX;
+    PPMD4_CTX = ^PMD4_CTX;
+    MD4_CTX = record
+        A,B,C,D: MD4_LONG;
+        Nl,Nh: MD4_LONG;
+        data: array[0..MD4_LBLOCK - 1] of MD4_LONG;
+        _num: TC_UINT;
+    end; { record }
 
 {$ENDREGION}
 
 {$REGION 'MD5'}
 
-	PMD5_CTX = ^MD5_CTX;
-	PPMD5_CTX = ^PMD5_CTX;
-	MD5_CTX = record
-		A,B,C,D: MD5_LONG;
-		Nl,Nh: MD5_LONG;
-		data: array[0..MD5_LBLOCK-1] of MD5_LONG;
-		_num: TC_UINT;
-	end; { record }
+    PMD5_CTX = ^MD5_CTX;
+    PPMD5_CTX = ^PMD5_CTX;
+    MD5_CTX = record
+        A,B,C,D: MD5_LONG;
+        Nl,Nh: MD5_LONG;
+        data: array[0..MD5_LBLOCK-1] of MD5_LONG;
+        _num: TC_UINT;
+    end; { record }
 
 {$ENDREGION}
 
 {$REGION 'MDC2'}
 
-	PMDC2_CTX = ^MDC2_CTX;
-	PPMDC2_CTX = ^PMDC2_CTX;
-	MDC2_CTX = record
-		_num: TC_UINT;
-		_data: array[0..MDC2_BLOCK-1] of AnsiChar;
-		_h, _hh: DES_cblock;
-		_pad_type: TC_INT;
-	end; { record }
+    PMDC2_CTX = ^MDC2_CTX;
+    PPMDC2_CTX = ^PMDC2_CTX;
+    MDC2_CTX = record
+        _num: TC_UINT;
+        _data: array[0..MDC2_BLOCK-1] of AnsiChar;
+        _h, _hh: DES_cblock;
+        _pad_type: TC_INT;
+    end; { record }
 
 {$ENDREGION}
 
 {$REGION 'OCSP}
 
-	POCSP_CERTID = ^OCSP_CERTID;
-	PPOCSP_CERTID = ^POCSP_CERTID;
-	OCSP_CERTID = record
-		_hashAlgorithm: PX509_ALGOR;
-		_issuerNameHash: PASN1_OCTET_STRING;
-		_issuerKeyHash: PASN1_OCTET_STRING;
-		_serialNumber: PASN1_INTEGER;
-	end; { record }
-	PSTACK_OF_OCSP_CERT_ID = PSTACK_OF;
+    POCSP_CERTID = ^OCSP_CERTID;
+    PPOCSP_CERTID = ^POCSP_CERTID;
+    OCSP_CERTID = record
+        _hashAlgorithm: PX509_ALGOR;
+        _issuerNameHash: PASN1_OCTET_STRING;
+        _issuerKeyHash: PASN1_OCTET_STRING;
+        _serialNumber: PASN1_INTEGER;
+    end; { record }
+    PSTACK_OF_OCSP_CERT_ID = PSTACK_OF;
 
-	POCSP_ONEREQ = ^OCSP_ONEREQ;
-	PPOCSP_ONEREQ = ^POCSP_ONEREQ;
-	OCSP_ONEREQ = record
-		_reqCert: POCSP_CERTID;
-		_singleRequestExtensions: PSTACK_OF_X509_EXTENSION;
-	end; { record }
-	PSTACK_OF_OCSP_ONEREQ = PSTACK_OF;
+    POCSP_ONEREQ = ^OCSP_ONEREQ;
+    PPOCSP_ONEREQ = ^POCSP_ONEREQ;
+    OCSP_ONEREQ = record
+        _reqCert: POCSP_CERTID;
+        _singleRequestExtensions: PSTACK_OF_X509_EXTENSION;
+    end; { record }
+    PSTACK_OF_OCSP_ONEREQ = PSTACK_OF;
 
-	POCSP_REQINFO = ^OCSP_REQINFO;
-	PPOCSP_REQINFO = ^POCSP_REQINFO;
-	OCSP_REQINFO = record
-		_version: PASN1_INTEGER;
-		_requestorName: PGENERAL_NAME;
-		_requestList: PSTACK_OF_OCSP_ONEREQ;
-		_requestExtensions: PSTACK_OF_X509_EXTENSION;
-	end; { record }
+    POCSP_REQINFO = ^OCSP_REQINFO;
+    PPOCSP_REQINFO = ^POCSP_REQINFO;
+    OCSP_REQINFO = record
+        _version: PASN1_INTEGER;
+        _requestorName: PGENERAL_NAME;
+        _requestList: PSTACK_OF_OCSP_ONEREQ;
+        _requestExtensions: PSTACK_OF_X509_EXTENSION;
+    end; { record }
 
-	POCSP_SIGNATURE = ^OCSP_SIGNATURE;
-	PPOCSP_SIGNATURE = ^POCSP_SIGNATURE;
-	OCSP_SIGNATURE = record
-		_signatureAlgorithm: PX509_ALGOR;
-		_signature: PASN1_BIT_STRING;
-		_certs: PSTACK_OF_X509;
-	end; { record }
+    POCSP_SIGNATURE = ^OCSP_SIGNATURE;
+    PPOCSP_SIGNATURE = ^POCSP_SIGNATURE;
+    OCSP_SIGNATURE = record
+        _signatureAlgorithm: PX509_ALGOR;
+        _signature: PASN1_BIT_STRING;
+        _certs: PSTACK_OF_X509;
+    end; { record }
 
-	POCSP_REQUEST = ^OCSP_REQUEST;
-	PPOCSP_REQUEST = ^POCSP_REQUEST;
-	OCSP_REQUEST = record
-		_tbsRequest: POCSP_REQINFO;
-		_optionalSignature: POCSP_SIGNATURE; 
-	end; { record }
+    POCSP_REQUEST = ^OCSP_REQUEST;
+    PPOCSP_REQUEST = ^POCSP_REQUEST;
+    OCSP_REQUEST = record
+        _tbsRequest: POCSP_REQINFO;
+        _optionalSignature: POCSP_SIGNATURE; 
+    end; { record }
 
-	POCSP_RESPBYTES = ^OCSP_RESPBYTES;
-	PPOCSP_RESPBYTES = ^POCSP_RESPBYTES;
-	OCSP_RESPBYTES = record
-		_responseType: PASN1_OBJECT;
-		_response: PASN1_OCTET_STRING;
-	end; { record }
+    POCSP_RESPBYTES = ^OCSP_RESPBYTES;
+    PPOCSP_RESPBYTES = ^POCSP_RESPBYTES;
+    OCSP_RESPBYTES = record
+        _responseType: PASN1_OBJECT;
+        _response: PASN1_OCTET_STRING;
+    end; { record }
 
-	POCSP_RESPONSE = ^OCSP_RESPONSE;
-	PPOCSP_RESPONSE = ^POCSP_RESPONSE;
-	OCSP_RESPONSE = record
-		_responseStatus: PASN1_ENUMERATED;
-		_responseBytes: POCSP_RESPBYTES ;
-	end; { record }
+    POCSP_RESPONSE = ^OCSP_RESPONSE;
+    PPOCSP_RESPONSE = ^POCSP_RESPONSE;
+    OCSP_RESPONSE = record
+        _responseStatus: PASN1_ENUMERATED;
+        _responseBytes: POCSP_RESPBYTES ;
+    end; { record }
 
-	OCSP_RESPONDER_ID_union = record
-	case byte of
-		0: (_byName: PX509_NAME);
-		1: (_byKey: PASN1_OCTET_STRING);
-	end; { record }
+    OCSP_RESPONDER_ID_union = record
+    case byte of
+        0: (_byName: PX509_NAME);
+        1: (_byKey: PASN1_OCTET_STRING);
+    end; { record }
 
-	POCSP_RESPID = ^OCSP_RESPID;
-	PPOCSP_RESPID = ^POCSP_RESPID;
-	OCSP_RESPID = record
-		_type: TC_INT;
-		_value: OCSP_RESPONDER_ID_union; 
-	end; { record }
+    POCSP_RESPID = ^OCSP_RESPID;
+    PPOCSP_RESPID = ^POCSP_RESPID;
+    OCSP_RESPID = record
+        _type: TC_INT;
+        _value: OCSP_RESPONDER_ID_union; 
+    end; { record }
 
-	PSTACK_OF_OCSP_RESPID = PSTACK_OF;
+    PSTACK_OF_OCSP_RESPID = PSTACK_OF;
 
-	POCSP_REVOKEDINFO = ^OCSP_REVOKEDINFO;
-	PPOCSP_REVOKEDINFO = ^POCSP_REVOKEDINFO;
-	OCSP_REVOKEDINFO = record
-		_revocationTime: PASN1_GENERALIZEDTIME;
-		_revocationReason: PASN1_ENUMERATED;
-	end; { record }
+    POCSP_REVOKEDINFO = ^OCSP_REVOKEDINFO;
+    PPOCSP_REVOKEDINFO = ^POCSP_REVOKEDINFO;
+    OCSP_REVOKEDINFO = record
+        _revocationTime: PASN1_GENERALIZEDTIME;
+        _revocationReason: PASN1_ENUMERATED;
+    end; { record }
 
-	OCSP_CERTSTATUS_union = record
-	case byte of	
-		0: (_good: PASN1_NULL);
-		1: (_revoked: POCSP_REVOKEDINFO);
-		2: (_unknown: PASN1_NULL);
-	end; { record }
+    OCSP_CERTSTATUS_union = record
+    case byte of    
+        0: (_good: PASN1_NULL);
+        1: (_revoked: POCSP_REVOKEDINFO);
+        2: (_unknown: PASN1_NULL);
+    end; { record }
 
-	POCSP_CERTSTATUS = ^OCSP_CERTSTATUS;
-	PPOCSP_CERTSTATUS = ^POCSP_CERTSTATUS;
-	OCSP_CERTSTATUS = record
-		_type: TC_INT;
-		_value :OCSP_CERTSTATUS_union;
-	end;
-	
-	POCSP_SINGLERESP = ^OCSP_SINGLERESP;
-	PPOCSP_SINGLERESP = ^POCSP_SINGLERESP;
-	OCSP_SINGLERESP = record
-		_certId: POCSP_CERTID;
-		_certStatus: POCSP_CERTSTATUS;
-		_thisUpdate: PASN1_GENERALIZEDTIME;
-		_nextUpdate: PASN1_GENERALIZEDTIME;
-		_singleExtensions: PSTACK_OF_X509_EXTENSION;
-	end; { record }
-	PSTACK_OF_OCSP_SINGLERESP = PSTACK_OF;
+    POCSP_CERTSTATUS = ^OCSP_CERTSTATUS;
+    PPOCSP_CERTSTATUS = ^POCSP_CERTSTATUS;
+    OCSP_CERTSTATUS = record
+        _type: TC_INT;
+        _value :OCSP_CERTSTATUS_union;
+    end;
+    
+    POCSP_SINGLERESP = ^OCSP_SINGLERESP;
+    PPOCSP_SINGLERESP = ^POCSP_SINGLERESP;
+    OCSP_SINGLERESP = record
+        _certId: POCSP_CERTID;
+        _certStatus: POCSP_CERTSTATUS;
+        _thisUpdate: PASN1_GENERALIZEDTIME;
+        _nextUpdate: PASN1_GENERALIZEDTIME;
+        _singleExtensions: PSTACK_OF_X509_EXTENSION;
+    end; { record }
+    PSTACK_OF_OCSP_SINGLERESP = PSTACK_OF;
 
-	POCSP_RESPDATA = ^OCSP_RESPDATA;
-	PPOCSP_RESPDATA = ^POCSP_RESPDATA;
-	OCSP_RESPDATA = record
-		_version: PASN1_INTEGER;
-		_responderId: POCSP_RESPID ;
-		_producedAt: PASN1_GENERALIZEDTIME;
-		_responses: PSTACK_OF_OCSP_SINGLERESP;
-		_responseExtensions: PSTACK_OF_X509_EXTENSION;
-	end; { record }
+    POCSP_RESPDATA = ^OCSP_RESPDATA;
+    PPOCSP_RESPDATA = ^POCSP_RESPDATA;
+    OCSP_RESPDATA = record
+        _version: PASN1_INTEGER;
+        _responderId: POCSP_RESPID ;
+        _producedAt: PASN1_GENERALIZEDTIME;
+        _responses: PSTACK_OF_OCSP_SINGLERESP;
+        _responseExtensions: PSTACK_OF_X509_EXTENSION;
+    end; { record }
 
-	POCSP_BASICRESP = ^OCSP_BASICRESP;
-	PPOCSP_BASICRESP = ^POCSP_BASICRESP;
-	OCSP_BASICRESP = record
-		_tbsResponseData: POCSP_RESPDATA;
-		_signatureAlgorithm: PX509_ALGOR;
-		_signature: PASN1_BIT_STRING;
-		_certs: PSTACK_OF_X509;
-	end; { record }
+    POCSP_BASICRESP = ^OCSP_BASICRESP;
+    PPOCSP_BASICRESP = ^POCSP_BASICRESP;
+    OCSP_BASICRESP = record
+        _tbsResponseData: POCSP_RESPDATA;
+        _signatureAlgorithm: PX509_ALGOR;
+        _signature: PASN1_BIT_STRING;
+        _certs: PSTACK_OF_X509;
+    end; { record }
 
-	POCSP_CRLID = ^OCSP_CRLID;
-	PPOCSP_CRLID = ^POCSP_CRLID;
-	OCSP_CRLID = record
-		_crlUrl: PASN1_IA5STRING;
-		_crlNum: PASN1_INTEGER;
-		_crlTime: PASN1_GENERALIZEDTIME;
-	end; { record }
+    POCSP_CRLID = ^OCSP_CRLID;
+    PPOCSP_CRLID = ^POCSP_CRLID;
+    OCSP_CRLID = record
+        _crlUrl: PASN1_IA5STRING;
+        _crlNum: PASN1_INTEGER;
+        _crlTime: PASN1_GENERALIZEDTIME;
+    end; { record }
   
-	POCSP_SERVICELOC = ^OCSP_SERVICELOC;
-	PPOCSP_SERVICELOC = ^POCSP_SERVICELOC;      
-	OCSP_SERVICELOC = record
-		_issuer: PX509_NAME;
-		_locator: PSTACK_OF_ACCESS_DESCRIPTION;
-	end; { record }
+    POCSP_SERVICELOC = ^OCSP_SERVICELOC;
+    PPOCSP_SERVICELOC = ^POCSP_SERVICELOC;      
+    OCSP_SERVICELOC = record
+        _issuer: PX509_NAME;
+        _locator: PSTACK_OF_ACCESS_DESCRIPTION;
+    end; { record }
 
-	POCSP_REQ_CTX  = ^OCSP_REQ_CTX ;
-	PPOCSP_REQ_CTX  = ^POCSP_REQ_CTX ;
-	OCSP_REQ_CTX = record
-	  _state: TC_INT;		
-	  _iobuf: PAnsiChar;	
-	  _iobuflen: TC_INT;		
-	  _io: PBIO;		
-	  _mem: PBIO;		
-	  _asn1_len: TC_ULONG;
-	end;
+    POCSP_REQ_CTX  = ^OCSP_REQ_CTX ;
+    PPOCSP_REQ_CTX  = ^POCSP_REQ_CTX ;
+    OCSP_REQ_CTX = record
+      _state: TC_INT;       
+      _iobuf: PAnsiChar;    
+      _iobuflen: TC_INT;        
+      _io: PBIO;        
+      _mem: PBIO;       
+      _asn1_len: TC_ULONG;
+    end;
 
 
 {$ENDREGION}
 
-	PRC2_KEY = ^RC2_KEY;
-	PPRC2_KEY = ^PRC2_KEY;
-	RC2_KEY = record
-		_data: array[0..63] of RC2_INT;
-	end; { record }
+    PRC2_KEY = ^RC2_KEY;
+    PPRC2_KEY = ^PRC2_KEY;
+    RC2_KEY = record
+        _data: array[0..63] of RC2_INT;
+    end; { record }
 
-	PRC4_KEY = ^RC4_KEY;
-	PPRC4_KEY = ^PRC4_KEY;
-	RC4_KEY = record
-		_x, _y: RC4_INT;
-		_data: array[0..255] of RC4_INT;
-	end; { record }
+    PRC4_KEY = ^RC4_KEY;
+    PPRC4_KEY = ^PRC4_KEY;
+    RC4_KEY = record
+        _x, _y: RC4_INT;
+        _data: array[0..255] of RC4_INT;
+    end; { record }
 
-	PRC5_KEY = ^RC5_KEY;
-	PPRC5_KEY = ^PRC5_KEY;
-	RC5_KEY = record
-		_rounds: TC_INT;
-		_data: array[0..(2*(RC5_16_ROUNDS+1))-1] of RC5_32_INT;
-	end; { record }
+    PRC5_KEY = ^RC5_KEY;
+    PPRC5_KEY = ^PRC5_KEY;
+    RC5_KEY = record
+        _rounds: TC_INT;
+        _data: array[0..(2*(RC5_16_ROUNDS+1))-1] of RC5_32_INT;
+    end; { record }
 
-	RC5_32_KEY = RC5_KEY;
-	PRC5_32_KEY = ^RC5_32_KEY;
-	PPRC5_32_KEY = ^PRC5_32_KEY;
+    RC5_32_KEY = RC5_KEY;
+    PRC5_32_KEY = ^RC5_32_KEY;
+    PPRC5_32_KEY = ^PRC5_32_KEY;
 
-	PRIPEMD160_CTX = ^RIPEMD160_CTX;
-	PPRIPEMD160_CTX = ^PRIPEMD160_CTX;
-	RIPEMD160_CTX = record
-	  _A,_B,_C,_D,_E: RIPEMD160_LONG;
-	  _Nl,_Nh: RIPEMD160_LONG;
-	  _data: array [0..RIPEMD160_LBLOCK-1] of RIPEMD160_LONG;
-	  _num: TC_UINT;
-	end; { record }
+    PRIPEMD160_CTX = ^RIPEMD160_CTX;
+    PPRIPEMD160_CTX = ^PRIPEMD160_CTX;
+    RIPEMD160_CTX = record
+      _A,_B,_C,_D,_E: RIPEMD160_LONG;
+      _Nl,_Nh: RIPEMD160_LONG;
+      _data: array [0..RIPEMD160_LBLOCK-1] of RIPEMD160_LONG;
+      _num: TC_UINT;
+    end; { record }
 
-	PSHA_CTX = ^SHA_CTX;
-	PPSHA_CTX = ^PSHA_CTX;
-	SHA_CTX = record
-	  _h0,_h1,_h2,_h3,_h4: SHA_LONG;
-	  _Nl,_Nh: SHA_LONG;
-	  _data: array[0..SHA_LBLOCK-1] of SHA_LONG;
-	  _num: TC_UINT;
-	end; { record }
+    PSHA_CTX = ^SHA_CTX;
+    PPSHA_CTX = ^PSHA_CTX;
+    SHA_CTX = record
+      _h0,_h1,_h2,_h3,_h4: SHA_LONG;
+      _Nl,_Nh: SHA_LONG;
+      _data: array[0..SHA_LBLOCK-1] of SHA_LONG;
+      _num: TC_UINT;
+    end; { record }
 
-	PSHA256_CTX = ^SHA256_CTX;
-	PPSHA256_CTX = ^PSHA256_CTX;
-	SHA256_CTX = record
-	  _h: array[0..7] of SHA_LONG;
-	  _Nl,_Nh: SHA_LONG;
-	  _data: array[0..SHA_LBLOCK-1] of SHA_LONG;
-	  _num,_md_len: TC_UINT;
-	end; { record }
+    PSHA256_CTX = ^SHA256_CTX;
+    PPSHA256_CTX = ^PSHA256_CTX;
+    SHA256_CTX = record
+      _h: array[0..7] of SHA_LONG;
+      _Nl,_Nh: SHA_LONG;
+      _data: array[0..SHA_LBLOCK-1] of SHA_LONG;
+      _num,_md_len: TC_UINT;
+    end; { record }
 
-	SHA512_CTX_union = record
-	case Byte of
-	  0: (_d: array [0..SHA_LBLOCK - 1] of SHA_LONG64);
-	  1: (_p: array [0..SHA512_CBLOCK - 1] of AnsiChar);
-	end; { record }
+    SHA512_CTX_union = record
+    case Byte of
+      0: (_d: array [0..SHA_LBLOCK - 1] of SHA_LONG64);
+      1: (_p: array [0..SHA512_CBLOCK - 1] of AnsiChar);
+    end; { record }
 
-	PSHA512_CTX = ^SHA512_CTX;
-	PPSHA512_CTX = ^PSHA512_CTX;
-	SHA512_CTX = record
-	  _h: array[0..7] of SHA_LONG64;
-	  _Nl, _Nh: SHA_LONG64;
-	  _u: SHA512_CTX_union;
-	  _num,_md_len: TC_UINT;
-	end; { record }
+    PSHA512_CTX = ^SHA512_CTX;
+    PPSHA512_CTX = ^PSHA512_CTX;
+    SHA512_CTX = record
+      _h: array[0..7] of SHA_LONG64;
+      _Nl, _Nh: SHA_LONG64;
+      _u: SHA512_CTX_union;
+      _num,_md_len: TC_UINT;
+    end; { record }
+
+{$REGION 'SSL'}
+ 
+  PPSSL = ^PSSL;
+  PSSL_CIPHER = ^SSL_CIPHER;
+  PPSSL_CIPHER = ^PSSL_CIPHER;
+  
+  PSSL3_ENC_METHOD = Pointer; //^SSL3_ENC_METHOD;
+  PPSSL3_ENC_METHOD = ^PSSL3_ENC_METHOD;
+  PSSL_SESSION = ^SSL_SESSION;
+  PPSSL_SESSION = ^PSSL_SESSION;
+  PSSL_METHOD = ^SSL_METHOD;
+  PPSSL_METHOD = ^PSSL_METHOD;
+  PSRP_CTX = ^SRP_CTX;
+  PPSRP_CTX = ^PSRP_CTX;
+  PSSL_COMP = ^SSL_COMP;
+  PPSSL_COMP = ^PSSL_COMP;
+  PSSL_CTX = ^SSL_CTX;
+  PPSSL_CTX = ^PSSL_CTX;
+  PCERT = pointer;
+  PSSL3_BUF_FREELIST = Pointer;
+  PSSL2_STATE = Pointer;
+  PSSL3_STATE = Pointer;
+  PDTLS1_STATE = Pointer;
+
+  SSL_METHOD_CALLBACK_FN = procedure; cdecl;
+
+  PSRTP_PROTECTION_PROFILE = ^SRTP_PROTECTION_PROFILE;
+  PPSRTP_PROTECTION_PROFILE = ^PSRTP_PROTECTION_PROFILE;
+  SRTP_PROTECTION_PROFILE = record
+    _name: PAnsiChar;
+    _id: TC_LONG;
+  end; { record }
+
+  PSTACK_OF_SSL_CIPHER = PSTACK_OF;
+  PSTACK_OF_SRTP_PROTECTION_PROFILE = PSTACK_OF;
+  PSTACK_OF_SSL_COMP = PSTACK_OF;
+  PLHASH_OF_SSL_SESSION = PLHASH_OF;
+
+  GEN_SESSION_CB = function(const _ssl: PSSL; _id: PAnsiChar; var _id_len: TC_UINT): TC_INT; cdecl;
+
+  TLS_SESSION_TICKET_EXT_CB_FN = function(_s: PSSL; const _data: PAnsiChar; _len: TC_INT; _arg: Pointer): TC_INT; cdecl;
+  TLS_SESSION_SECRET_CB_FN = function(_s: PSSL; _secret: Pointer; var _secret_len: TC_INT; _peer_ciphers: PSTACK_OF_SSL_CIPHER; _cipher: PPSSL_CIPHER; _arg: Pointer): TC_INT; cdecl;
+  
+  PTLS_SESSION_TICKET_EXT = ^TLS_SESSION_TICKET_EXT;
+  PPTLS_SESSION_TICKET_EXT = ^PTLS_SESSION_TICKET_EXT;   
+  TLS_SESSION_TICKET_EXT = record
+    _length: TC_USHORT;
+    _data: Pointer;
+  end; { record }
+  
+       
+  SSL_CIPHER = record
+    _valid: TC_INT;
+    _name: PAnsiChar;
+    _id: TC_ULONG;
+    _algorithm_mkey: TC_ULONG;
+    _algorithm_auth: TC_ULONG;
+    _algorithm_enc: TC_ULONG;
+    _algorithm_mac: TC_ULONG;
+    _algorithm_ssl: TC_ULONG;
+    _algo_strength: TC_ULONG;
+    _algorithm2: TC_ULONG;
+    _strength_bits: TC_INT;
+    _alg_bits: TC_INT;
+  end; { record }
+ 
+  SSL_METHOD = record
+    _version: TC_INT;
+    ssl_new: function(_s: PSSL): TC_INT; cdecl;
+    ssl_clear: procedure(_s: PSSL); cdecl;
+    ssl_free: procedure(_s: PSSL); cdecl;
+    ssl_accept: function(_s: PSSL): TC_INT; cdecl;
+    ssl_connect: function(_s: PSSL): TC_INT; cdecl;
+    ssl_read: function(_s: PSSL; _buf: Pointer;_len: TC_INT): TC_INT; cdecl;
+    ssl_peek: function(_s: PSSL; _buf: Pointer; _len: TC_INT): TC_INT; cdecl;
+    ssl_write: function(_s: PSSL; const _buf: Pointer; len: TC_INT): TC_INT; cdecl;
+    ssl_shutdown: function(_s: PSSL): TC_INT; cdecl;
+    ssl_renegotiate: function(_s: PSSL): TC_INT; cdecl;
+    ssl_renegotiate_check: function(_s: PSSL): TC_INT; cdecl;
+    ssl_get_message: function(_s: PSSL; _st1: TC_INT; _stn: TC_INT; _mt: TC_INT; _max: TC_LONG; var _ok: TC_INT): TC_INT; cdecl;
+    ssl_read_bytes: function(_s: PSSL; _type: TC_INT; _buf: PAnsiChar; len: TC_INT; _peek: TC_INT): TC_INT; cdecl;
+    ssl_write_bytes: function(_s: PSSL; _type: TC_INT; const _buf: Pointer; len: TC_INT): TC_INT; cdecl;
+    ssl_dispatch_alert: function(_s: PSSL): TC_INT; cdecl;
+    ssl_ctrl: function(_s: PSSL; _cmd: TC_INT; _larg: TC_LONG; _parg: Pointer): TC_LONG; cdecl;
+    ssl_ctx_ctrl: function(_ctx: PSSL_CTX; _cmd: TC_INT; _larg: TC_LONG; _parg: Pointer): TC_LONG; cdecl;
+    get_cipher_by_char: function(const _ptr: PAnsiChar): PSSL_CIPHER; cdecl;
+    put_cipher_by_char: function(const _cipher: PSSL_CIPHER; _ptr: PAnsiChar): TC_INT; cdecl;
+    ssl_pending: function(const _s: PSSL): TC_INT; cdecl;
+    num_ciphers: function: TC_INT; cdecl;
+    get_cipher: function(_ncipher: TC_INT): PSSL_CIPHER; cdecl;
+    get_ssl_method: function(_version: TC_INT): PSSL_METHOD; cdecl;
+    get_timeout: function: TC_LONG; cdecl;
+    ssl3_enc: function: PSSL3_ENC_METHOD;  cdecl;
+    ssl_version: function: TC_INT; cdecl;
+    ssl_callback_ctrl: function(_s: PSSL; _cb_id: TC_INT; fp: SSL_METHOD_CALLBACK_FN): TC_LONG; cdecl;
+    ssl_ctx_callback_ctrl: function(_s: PSSL_CTX; _cb_id: TC_INT; fp: SSL_METHOD_CALLBACK_FN): TC_LONG; cdecl;
+  end; { record }
 
 
+  SSL_SESSION = record
+    _ssl_version: TC_INT;  
+    _key_arg_length: TC_UINT;
+    _key_arg: array[0..SSL_MAX_KEY_ARG_LENGTH-1] of AnsiChar;
+    _master_key_length: TC_INT;
+    _master_key: array[0..SSL_MAX_MASTER_KEY_LENGTH - 1] of AnsiChar;
+    _session_id_length: TC_UINT;
+    _session_id: array[0..SSL_MAX_SSL_SESSION_ID_LENGTH - 1] of AnsiChar;
+    _sid_ctx_length: TC_UINT;
+    _sid_ctx: array[0..SSL_MAX_SID_CTX_LENGTH - 1] of AnsiChar;
+    _krb5_client_princ_len: TC_UINT;
+    _krb5_client_princ: array[0..SSL_MAX_KRB5_PRINCIPAL_LENGTH - 1] of AnsiChar;
+    _psk_identity_hint: PAnsiChar;
+    _psk_identity: PAnsiChar;
+    _not_resumable: TC_INT;
+    _peer: PX509;
+    _verify_result: TC_LONG; 
+    _references: TC_INT;
+    _timeout: TC_LONG;
+    _time: TC_LONG;
+    _compress_meth: TC_UINT;    
+    _cipher: PSSL_CIPHER;
+    _cipher_id: TC_ULONG;
+    _ciphers: PSTACK_OF_SSL_CIPHER;
+    _ex_data: PCRYPTO_EX_DATA; 
+    _prev, _next: PSSL_SESSION;
+    _tlsext_hostname: PAnsiChar;
+    _tlsext_ecpointformatlist_length: TC_SIZE_T;
+    _tlsext_ecpointformatlist: PAnsiChar;
+    _tlsext_ellipticcurvelist_length: TC_SIZE_T;
+    _tlsext_ellipticcurvelist: PAnsiChar;
+    _tlsext_tick: PAnsiChar;    
+    _tlsext_ticklen: TC_SIZE_T;     
+    _tlsext_tick_lifetime_hint: TC_LONG;
+    _srp_username: PAnsiChar;
+  end; { record }
+
+  SRP_CTX = record
+    _SRP_cb_arg: Pointer;  
+    TLS_ext_srp_username_callback: function(_s: PSSL; var _i: TC_INT; _p: Pointer): TC_INT; cdecl;
+    SRP_verify_param_callback: function(_s: PSSL; _p: Pointer): TC_INT; cdecl;
+    SRP_give_srp_client_pwd_callback: function(_s: PSSL; _p: Pointer): PAnsiChar; cdecl;
+    _login: PAnsiChar;
+    _N,_g,_s,_B,_A: PBIGNUM;
+    _aa,_bb,_v: PBIGNUM;
+    _info: PAnsiChar;
+    _strength: TC_INT;
+    _srp_Mask: TC_LONG;
+  end; { record }
+
+  SSL_COMP = record
+    _id: TC_INT;
+    _name: PAnsiChar;
+{$ifndef OPENSSL_NO_COMP}
+    _method: PCOMP_METHOD;
+{$else}
+    _method: PAnsiChar;
+{$endif}
+  end; { record }
+
+  SSL_CTX_STATS = record
+    _sess_connect: TC_INT;
+    _sess_connect_renegotiate: TC_INT;
+    _sess_connect_good: TC_INT;
+    _sess_accept: TC_INT;
+    _sess_accept_renegotiate: TC_INT;
+    _sess_accept_good: TC_INT;
+    _sess_miss: TC_INT;
+    _sess_timeout: TC_INT;
+    _sess_cache_full: TC_INT;
+    _sess_hit: TC_INT;
+    _sess_cb_hit: TC_INT;
+  end; { record }
+
+  SSL_CTX = record
+    _method: PSSL_METHOD;
+    _cipher_list: PSTACK_OF_SSL_CIPHER;
+    _cipher_list_by_id: PSTACK_OF_SSL_CIPHER;
+    _cert_store: PX509_STORE ;
+    _sessions: PLHASH_OF_SSL_SESSION;
+    _session_cache_size: TC_ULONG;
+    _session_cache_head: PSSL_SESSION;
+    _session_cache_tail: PSSL_SESSION;
+    _session_cache_mode: TC_INT;
+    _session_timeout: TC_LONG;
+    new_session_cb: function(_ssl: PSSL; _sess: PSSL_SESSION): TC_INT; cdecl;
+    remove_session_cb: procedure(_ctx: PSSL; _sess: PSSL_SESSION); cdecl;
+    get_session_cb: function(_ssl: PSSL; _data: PAnsiChar; _len: TC_INT; var _copy: TC_INT): PSSL_SESSION; cdecl;
+    _stats: SSL_CTX_STATS;
+    _references: TC_INT;
+    app_verify_callback: function(_ctx: PX509_STORE_CTX; _p: Pointer): TC_INT; cdecl;
+    app_verify_arg: function: Pointer; cdecl;
+    _default_passwd_callback: pem_password_cb;
+    _default_passwd_callback_userdata: Pointer;
+    client_cert_cb: function(_ssl: PSSL; _x509: PPX509; _pkey: PPEVP_PKEY): TC_INT; cdecl;
+    app_gen_cookie_cb: function(_ssl: PSSL; _cookie: PAnsiChar; var _cookie_len: TC_INT): TC_INT; cdecl;
+    app_verify_cookie_cb: function(_ssl: PSSL; _cookie: PAnsiChar; _cookie_len: TC_UINT): TC_INT; cdecl;
+    _ex_data: CRYPTO_EX_DATA;
+    _rsa_md5: PEVP_MD;
+    _md5: PEVP_MD;  
+    _sha1: PEVP_MD;   
+    _extra_certs: PSTACK_OF_X509;
+    _comp_methods: PSTACK_OF_SSL_COMP;
+    info_callback: procedure(const _ssl: PSSL; _type: TC_INT; _val: TC_INT);  cdecl;
+    _client_CA: PSTACK_OF_X509_NAME;
+    _options: TC_ULONG;
+    _mode: TC_ULONG;
+    _max_cert_list: TC_LONG;
+    _cert: PCERT;
+    _read_ahead: TC_INT;
+    msg_callback: procedure(_write_p: TC_INT; _version: TC_INT; _content_type: TC_INT; const _buf: Pointer; _len: TC_SIZE_T; _ssl: PSSL;  _arg: Pointer); cdecl;
+    _msg_callback_arg: Pointer;
+    _verify_mode: TC_INT;
+    _sid_ctx_length: TC_UINT;
+    _sid_ctx: array[0..SSL_MAX_SID_CTX_LENGTH - 1] of AnsiChar;
+    default_verify_callback: function(_ok: TC_INT; _ctx: PX509_STORE_CTX): TC_INT; cdecl;
+    _generate_session_id: GEN_SESSION_CB;
+    _param: PX509_VERIFY_PARAM;
+    _purpose: TC_INT;
+    _trust: TC_INT;
+    _quiet_shutdown: TC_INT;
+    _max_send_fragment: TC_UINT;
+    _client_cert_engine: PENGINE;
+    tlsext_servername_callback: function(_s: PSSL; _i: PC_INT; _p: Pointer): TC_INT; cdecl;
+    _tlsext_servername_arg: Pointer;
+    _tlsext_tick_key_name: array[0..15] of ansichar;
+    _tlsext_tick_hmac_key: array[0..15] of ansichar;
+    _tlsext_tick_aes_key: array[0..15] of ansichar;
+    tlsext_ticket_key_cb: function(_ssl: PSSL; _name: PAnsiChar; _iv: PAnsiChar; _ectx: PEVP_CIPHER_CTX; _hctx: PHMAC_CTX; _enc: TC_INT): TC_INT; cdecl;
+    tlsext_status_cb: function(_ssl: PSSL; _arg: Pointer): TC_INT; cdecl;
+    _tlsext_status_arg: Pointer;
+    tlsext_opaque_prf_input_callback: function(_s: PSSL; _peerinput: Pointer; _len: TC_SIZE_T; _arg: Pointer): TC_INT; cdecl;
+    _tlsext_opaque_prf_input_callback_arg: Pointer;
+
+    _psk_identity_hint: PAnsiChar;
+    psk_client_callback: function(_ssl: PSSL; const _hint: PAnsiChar; _identity: PAnsiChar; _max_identity_len: TC_UINT; _psk: PAnsiChar; _max_psk_len: TC_UINT): TC_UINT; cdecl;
+    psk_server_callback: function(_ssl: PSSL; const _identity: PAnsiChar; _psk: PAnsiChar; _max_psk_len: TC_UINT): TC_UINT; cdecl;
+
+    _freelist_max_len: TC_UINT;
+    _wbuf_freelist: PSSL3_BUF_FREELIST;
+    _rbuf_freelist: PSSL3_BUF_FREELIST;
+    _srp_ctx: SRP_CTX; 
+    next_protos_advertised_cb: function(_s: PSSL; const _buf: PPAnsiChar; _len: PC_UINT; _arg: PAnsiChar): TC_INT; cdecl;
+    _next_protos_advertised_cb_arg: Pointer;
+    next_proto_select_cb: function(_s: PSSL; _out: PPAnsiChar; _outlen: PAnsiChar; const _in: PAnsiChar; _inlen: TC_UINT; _arg: Pointer): TC_INT; cdecl;
+    _next_proto_select_cb_arg: Pointer;
+    _srtp_profiles: PSTACK_OF_SRTP_PROTECTION_PROFILE;  
+  end; { record }
+
+  PKSSL_CTX = Pointer;
+
+  SSL = record
+    _version: TC_INT;
+    _type: TC_INT; 
+    _method: PSSL_METHOD;
+{$IFNDEF NO_BIO}
+    _rbio: PBIO;
+    _wbio: PBIO;
+    _bbio: PBIO;
+{$else}
+    _rbio: PAnsiChar;
+    _wbio: PAnsiChar; 
+    _bbio: PAnsiChar;
+{$endif}
+    _rwstate: TC_INT;
+    _in_handshake: TC_INT;
+    handshake_func: function(_s: PSSL): TC_INT; cdecl;
+    _server: TC_INT;
+    _new_session: TC_INT;
+    _quiet_shutdown: TC_INT;
+    _shutdown: TC_INT;
+    _state: TC_INT;
+    _rstate: TC_INT;
+    _init_buf: PBUF_MEM;
+    _init_msg: Pointer;
+    _init_num: TC_INT;
+    _init_off: TC_INT;
+    _packet: PAnsiChar;
+    _packet_length: TC_UINT;
+
+    _s2: PSSL2_STATE;
+    _s3: PSSL3_STATE;
+    _d1: PDTLS1_STATE;
+    _read_ahead: TC_INT;
+
+    msg_callback: procedure(_write_p: TC_INT; _version: TC_INT; _content_type: TC_INT; const _buf: Pointer; _len: TC_SIZE_T; _ssl: PSSL; _arg: Pointer); cdecl;
+    _msg_callback_arg: Pointer;
+
+    _hit: TC_INT;
+
+    _param: PX509_VERIFY_PARAM;
+
+    _purpose: TC_INT;
+    _trust: TC_INT;
+
+    _cipher_list: PSTACK_OF_SSL_CIPHER;
+    _cipher_list_by_id: PSTACK_OF_SSL_CIPHER;
+
+    _mac_flags: TC_INT; 
+    _enc_read_ctx: PEVP_CIPHER_CTX;
+    _read_hash: PEVP_MD_CTX;
+{$ifndef OPENSSL_NO_COMP}
+    _expand: PCOMP_CTX;
+{$else}
+    _expand: PAnsiChar;
+{$endif}
+    _enc_write_ctx: PEVP_CIPHER_CTX;
+    _write_hash: PEVP_MD_CTX;
+{$ifndef OPENSSL_NO_COMP}
+    _compress: PCOMP_CTX;
+{$else}
+    _compress: PAnsiChar;   
+{$endif}
+
+    _cert: PCERT;
+
+    _sid_ctx_length: TC_INT;
+    _sid_ctx: array[0..SSL_MAX_SID_CTX_LENGTH - 1] of ansichar;
+
+    _session: PSSL_SESSION;
+    _generate_session_id: GEN_SESSION_CB;
+
+    _verify_mode: TC_INT;   
+    verify_callback: function(_ok: TC_INT; _ctx: PX509_STORE_CTX): TC_INT; cdecl;
+    info_callback: procedure(const _ssl: PSSL; _type: TC_INT; _val: TC_INT); cdecl;
+
+    _error: TC_INT;
+    _error_code: TC_INT;
+
+{$ifndef OPENSSL_NO_KRB5}
+    _kssl_ctx: PKSSL_CTX;    
+{$endif}
+
+{$ifndef OPENSSL_NO_PSK}
+    psk_client_callback: function(_ssl: PSSL; const _hint: PAnsiChar; _identity: PAnsiChar; _max_identity_len: TC_UINT; _psk: PAnsiChar; _max_psk_len: TC_UINT): TC_UINT; cdecl;
+    psk_server_callback: function(_ssl: PSSL; const _identity: PAnsiChar; _psk: PAnsiChar; _max_psk_len: TC_UINT): TC_INT; cdecl;
+{$endif}
+
+    _ctx: PSSL_CTX;
+    _debug: TC_INT; 
+
+    _verify_result: TC_LONG;
+    _ex_data: CRYPTO_EX_DATA;
+
+    _client_CA: PSTACK_OF_X509_NAME;
+
+    _references: TC_INT;
+    _options: TC_ULONG;
+    _mode: TC_ULONG;
+    _max_cert_list: TC_LONG;
+    _first_packet: TC_INT;
+    _client_version: TC_INT;
+    _max_send_fragment: TC_UINT;
+
+{$ifndef OPENSSL_NO_TLSEXT}
+    tlsext_debug_cb: procedure(_s: PSSL; _client_server: TC_INT; _type: TC_INT; _data: PAnsiChar; _len: TC_INT; _arg: Pointer); cdecl;
+    _tlsext_debug_arg: Pointer;
+    _tlsext_hostname: PAnsiChar;
+    _servername_done: TC_INT;
+    _tlsext_status_type: TC_INT;
+    _tlsext_status_expected: TC_INT;
+    _tlsext_ocsp_ids: PSTACK_OF_OCSP_RESPID;
+    _tlsext_ocsp_exts: PX509_EXTENSIONS;
+    _tlsext_ocsp_resp: PAnsiChar;
+    _tlsext_ocsp_resplen: TC_INT;
+    _tlsext_ticket_expected: TC_INT;
+{$ifndef OPENSSL_NO_EC}
+    _tlsext_ecpointformatlist_length: TC_SIZE_T;
+    _tlsext_ecpointformatlist: PAnsiChar; 
+    _tlsext_ellipticcurvelist_length: TC_SIZE_T;
+    _tlsext_ellipticcurvelist: PAnsiChar; 
+{$endif}
+
+    _tlsext_opaque_prf_input: Pointer;
+    _tlsext_opaque_prf_input_len: TC_SIZE_T;
+
+    _tlsext_session_ticket: PTLS_SESSION_TICKET_EXT;
+
+    _tls_session_ticket_ext_cb: TLS_SESSION_TICKET_EXT_CB_FN;
+    _tls_session_ticket_ext_cb_arg: Pointer;
+
+    _tls_session_secret_cb: TLS_SESSION_SECRET_CB_FN;
+    _tls_session_secret_cb_arg: Pointer;
+
+    _initial_ctx: PSSL_CTX;
+{$endif}
+
+{$ifndef OPENSSL_NO_NEXTPROTONEG}
+     _next_proto_negotiated: PAnsiChar;
+    _ext_proto_negotiated_len: PAnsiChar;
+{$endif}
+
+
+    _srtp_profiles: PSTACK_OF_SRTP_PROTECTION_PROFILE;
+    _srtp_profile: PSRTP_PROTECTION_PROFILE;
+
+    _tlsext_heartbeat: TC_UINT;  
+    _tlsext_hb_pending: TC_UINT;
+    _tlsext_hb_seq: TC_UINT;
+
+  _renegotiate: TC_INT;
+
+{$ifndef OPENSSL_NO_SRP}
+    _srp_ctx: SRP_CTX; 
+{$endif}
+  end; { record }
+
+
+
+{$ENDREGION}
 implementation
 
 end.
