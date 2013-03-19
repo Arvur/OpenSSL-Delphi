@@ -74,7 +74,7 @@ var
 
   EVP_DecryptInit: function(ctx: PEVP_CIPHER_CTX;const cipher: PEVP_CIPHER; const key: PAnsiChar; const iv: PAnsiChar): TC_INT; cdecl = nil;
   EVP_DecryptInit_ex: function(ctx: PEVP_CIPHER_CTX;const cipher: PEVP_CIPHER; impl: PENGINE; const key: PAnsiChar; const iv: PAnsiChar): TC_INT; cdecl = nil;
-  EVP_DecryptUpdate: function(ctx: PEVP_CIPHER_CTX; _out: PAnsiChar; var outl: TC_INT; const _in: PAnsiChar; var inl: TC_INT): TC_INT; cdecl = nil;
+  EVP_DecryptUpdate: function(ctx: PEVP_CIPHER_CTX; _out: PAnsiChar; var outl: TC_INT; const _in: PAnsiChar; inl: TC_INT): TC_INT; cdecl = nil;
   EVP_DecryptFinal: function(ctx: PEVP_CIPHER_CTX; outm: PAnsiChar; var outl: TC_INT): TC_INT; cdecl = nil;
   EVP_DecryptFinal_ex: function(ctx: PEVP_CIPHER_CTX; outm: PAnsiChar; var outl: TC_INT): TC_INT; cdecl = nil;
 
