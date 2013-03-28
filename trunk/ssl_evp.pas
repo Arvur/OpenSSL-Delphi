@@ -425,6 +425,18 @@ function EVP_CIPHER_CTX_mode(e: PEVP_CIPHER_CTX): TC_ULONG; inline;
 function EVP_ENCODE_LENGTH(l: TC_INT): TC_INT; inline;
 function EVP_DECODE_LENGTH(l: TC_INT): TC_INT; inline;
 
+function EVP_SignInit(ctx: PEVP_MD_CTX; const _type: PEVP_MD): TC_INT; inline;
+function EVP_SignInitEx(ctx: PEVP_MD_CTX; const _type: PEVP_MD; impl: PENGINE): TC_INT; inline;
+function EVP_SignUpdate(ctx: PEVP_MD_CTX;const d: Pointer; cnt: TC_SIZE_T): TC_INT; inline;
+
+function EVP_VerifyInit_ex(ctx: PEVP_MD_CTX; const _type: PEVP_MD; impl: PENGINE): TC_INT; inline;
+function EVP_VerifyInit(ctx: PEVP_MD_CTX; const _type: PEVP_MD): TC_INT; inline;
+function EVP_VerifyUpdate(ctx: PEVP_MD_CTX;const d: Pointer; cnt: TC_SIZE_T): TC_INT; inline;
+function EVP_OpenUpdate(ctx: PEVP_CIPHER_CTX; _out: PAnsiChar; var outl: TC_INT; const _in: PAnsiChar; inl: TC_INT): TC_INT; inline;
+function EVP_SealUpdate(ctx: PEVP_CIPHER_CTX; _out: PAnsiChar; var outl: TC_INT; const _in: PAnsiChar; inl: TC_INT): TC_INT; inline;
+function EVP_DigestSignUpdate(ctx: PEVP_MD_CTX;const d: Pointer; cnt: TC_SIZE_T): TC_INT; inline;
+function EVP_DigestVerifyUpdate(ctx: PEVP_MD_CTX;const d: Pointer; cnt: TC_SIZE_T): TC_INT; inline;
+
 procedure SSL_InitEVP;
 
 implementation
@@ -523,6 +535,57 @@ function EVP_DECODE_LENGTH(l: TC_INT): TC_INT; inline;
 begin
   Result := ((l+3) div 4*3+80);
 end;
+
+function EVP_SignInit(ctx: PEVP_MD_CTX; const _type: PEVP_MD): TC_INT; inline;
+begin
+  Result := EVP_DigestInit(ctx, _type);
+end;
+
+function EVP_SignInitEx(ctx: PEVP_MD_CTX; const _type: PEVP_MD; impl: PENGINE): TC_INT; inline;
+begin
+  Result := EVP_DigestInit_ex(ctx, _type, impl);
+end;
+
+function EVP_SignUpdate(ctx: PEVP_MD_CTX;const d: Pointer; cnt: TC_SIZE_T): TC_INT; inline;
+begin
+  Result := EVP_DigestUpdate(ctx, d, cnt);
+end;
+
+function EVP_VerifyInit_ex(ctx: PEVP_MD_CTX; const _type: PEVP_MD; impl: PENGINE): TC_INT; inline;
+begin
+  Result := EVP_DigestInit_ex(ctx, _type, impl);
+end;
+
+function EVP_VerifyInit(ctx: PEVP_MD_CTX; const _type: PEVP_MD): TC_INT; inline;
+begin
+  Result := EVP_DigestInit(ctx, _type);
+end;
+
+function EVP_VerifyUpdate(ctx: PEVP_MD_CTX;const d: Pointer; cnt: TC_SIZE_T): TC_INT; inline;
+begin
+  Result :=EVP_DigestUpdate(ctx, d, cnt);
+end;
+
+function EVP_OpenUpdate(ctx: PEVP_CIPHER_CTX; _out: PAnsiChar; var outl: TC_INT; const _in: PAnsiChar; inl: TC_INT): TC_INT; inline;
+begin
+  Result := EVP_DecryptUpdate(ctx, _out, outl, _in, inl);
+end;
+
+function EVP_SealUpdate(ctx: PEVP_CIPHER_CTX; _out: PAnsiChar; var outl: TC_INT; const _in: PAnsiChar; inl: TC_INT): TC_INT; inline;
+begin
+  Result := EVP_EncryptUpdate(ctx, _out, outl, _in, inl);
+end;
+
+function EVP_DigestSignUpdate(ctx: PEVP_MD_CTX;const d: Pointer; cnt: TC_SIZE_T): TC_INT; inline;
+begin
+  Result := EVP_DigestUpdate(ctx, d, cnt);
+end;
+
+function EVP_DigestVerifyUpdate(ctx: PEVP_MD_CTX;const d: Pointer; cnt: TC_SIZE_T): TC_INT; inline;
+begin
+  Result := EVP_DigestUpdate(ctx, d, cnt);
+end;
+
 
 procedure SSL_InitEVP;
 begin
