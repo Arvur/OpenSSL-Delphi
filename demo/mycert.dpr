@@ -128,7 +128,7 @@ begin
     SSL_InitASN1;
     SSL_InitPEM;
 
-    mkcert(FX509, FKey, 4096, 1, 365);
+    mkcert(FX509, FKey, 2048, 1, 365);
 
     FFilePath := ExtractFilePath(ParamStr(0));
     FPrivKeyFile := FFilePath + 'private.pem';
