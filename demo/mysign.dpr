@@ -21,7 +21,7 @@ var
   signFile: AnsiString;
   Path: AnsiString;
   pkey: PEVP_PKEY;
-  bp: PBIO;
+  bp, mbp: PBIO;
   md_ctx: EVP_MD_CTX;
   Buf: AnsiString;
   Len: Integer;
@@ -104,12 +104,12 @@ begin
     bp := BIO_new_file(PAnsiChar(signFile), 'w');
 
     b64 := BIO_new(BIO_f_base64);
-    bp := BIO_push(b64, bp);
+    mbp := BIO_push(b64, bp);
 
-    BIO_write(bp, @SigBuf, SigLen);
-    BIO_flush(bp);
+    BIO_write(mbp, @SigBuf, SigLen);
+    BIO_flush(mbp);
     Writeln('Bytes written ', BIO_number_written(bp), ' file ', signFile);
-    BIO_free_all(bp);
+    BIO_free_all(mbp);
 { End sign }
 
 { Verify }
