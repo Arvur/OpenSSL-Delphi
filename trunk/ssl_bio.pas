@@ -67,7 +67,7 @@ var
   BIO_ctrl_get_write_guarantee: function(b: PBIO): TC_size_t; cdecl = nil;
   BIO_ctrl_get_read_request: function(b :PBIO): TC_SIZE_T; cdecl = nil;
   BIO_ctrl_reset_read_request: function(b: PBIO): TC_INT; cdecl = nil;
-  BIO_ctrl_pending: function(b: PBIO): TC_SIZE_T; cdecl = nil;
+  BIO_ctrl_pending_f: function(b: PBIO): TC_SIZE_T; cdecl = nil;
   BIO_ctrl_wpending: function(b: PBIO): TC_SIZE_T; cdecl = nil;
   BIO_debug_callback: function(bio: PBIO; cmd: TC_INT; argp: PAnsiChar; argi: TC_INT; argl: TC_LONG; ret: TC_LONG): TC_LONG; cdecl = nil;
   BIO_dgram_non_fatal_error: function(error: TC_INT): TC_INT; cdecl = nil;
@@ -118,6 +118,8 @@ function BIO_get_mem_data (bp: PBIO; buf: Pointer): TC_ULONG; inline;
 function BIO_reset(bp: PBIO): TC_INT; inline;
 function BIO_ReadAnsiString(bp: PBIO): AnsiString;
 function BIO_Flush(bp: PBIO): TC_INT; inline;
+function BIO_Pending(bp: PBIO): TC_INT; inline;
+function BIO_Eof(bp: PBIO): TC_INT; inline;
 
 
 {
@@ -202,7 +204,7 @@ begin
     @BIO_ctrl_get_write_guarantee:= LoadFunctionCLib('BIO_ctrl_get_write_guarantee');
     @BIO_ctrl_get_read_request:= LoadFunctionCLib('BIO_ctrl_get_read_request');
     @BIO_ctrl_reset_read_request:= LoadFunctionCLib('BIO_ctrl_reset_read_request');
-    @BIO_ctrl_pending:= LoadFunctionCLib('BIO_ctrl_pending');
+    @BIO_ctrl_pending_f:= LoadFunctionCLib('BIO_ctrl_pending');
     @BIO_ctrl_wpending:= LoadFunctionCLib('BIO_ctrl_wpending');
     @BIO_debug_callback:= LoadFunctionCLib('BIO_debug_callback');
     @BIO_dgram_non_fatal_error:= LoadFunctionCLib('BIO_dgram_non_fatal_error');
@@ -261,7 +263,17 @@ end;
 
 function BIO_Flush(bp: PBIO): TC_INT; inline;
 begin
-  BIO_ctrl(bp, BIO_CTRL_FLUSH, 0, nil);
+ Result := BIO_ctrl(bp, BIO_CTRL_FLUSH, 0, nil);
+end;
+
+function BIO_Pending(bp: PBIO): TC_INT; inline;
+begin
+ Result := BIO_ctrl(bp, BIO_CTRL_PENDING, 0, nil);
+end;
+
+function BIO_Eof(bp: PBIO): TC_INT; inline;
+begin
+  Result := BIO_ctrl(bp, BIO_CTRL_EOF, 0, nil);
 end;
 
 function BIO_ReadAnsiString(bp: PBIO): AnsiString;
