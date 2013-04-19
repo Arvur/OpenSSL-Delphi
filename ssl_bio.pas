@@ -193,10 +193,10 @@ begin
     @BIO_sock_init:= LoadFunctionCLib('BIO_sock_init');
     @BIO_sock_cleanup:= LoadFunctionCLib('BIO_sock_cleanup');
     @BIO_set_tcp_ndelay:= LoadFunctionCLib('BIO_set_tcp_ndelay');
-    @BIO_asn1_set_prefix:= LoadFunctionCLib('BIO_asn1_set_prefix');
-    @BIO_asn1_get_prefix:= LoadFunctionCLib('BIO_asn1_get_prefix');
-    @BIO_asn1_set_suffix:= LoadFunctionCLib('BIO_asn1_set_suffix');
-    @BIO_asn1_get_suffix:= LoadFunctionCLib('BIO_asn1_get_suffix');
+    @BIO_asn1_set_prefix:= LoadFunctionCLib('BIO_asn1_set_prefix', false);
+    @BIO_asn1_get_prefix:= LoadFunctionCLib('BIO_asn1_get_prefix', false);
+    @BIO_asn1_set_suffix:= LoadFunctionCLib('BIO_asn1_set_suffix', false);
+    @BIO_asn1_get_suffix:= LoadFunctionCLib('BIO_asn1_get_suffix', false);
     @BIO_set_flags:= LoadFunctionCLib('BIO_set_flags');
     @BIO_test_flags:= LoadFunctionCLib('BIO_test_flags');
     @BIO_clear_flags:= LoadFunctionCLib('BIO_clear_flags');
@@ -214,7 +214,7 @@ begin
     @BIO_dump_indent:= LoadFunctionCLib('BIO_dump_indent');
     @BIO_dump_indent_cb:= LoadFunctionCLib('BIO_dump_indent_cb');
     @BIO_dump_indent_fp:= LoadFunctionCLib('BIO_dump_indent_fp');
-    @BIO_f_asn1:= LoadFunctionCLib('BIO_f_asn1');
+    @BIO_f_asn1:= LoadFunctionCLib('BIO_f_asn1', false);
     @BIO_f_base64:= LoadFunctionCLib('BIO_f_base64');
     @BIO_f_cipher:= LoadFunctionCLib('BIO_f_cipher');
     @BIO_f_md:= LoadFunctionCLib('BIO_f_md');
@@ -228,8 +228,8 @@ begin
     @BIO_gethostbyname:= LoadFunctionCLib('BIO_gethostbyname');
     @BIO_method_name:= LoadFunctionCLib('BIO_method_name');
     @BIO_method_type:= LoadFunctionCLib('BIO_method_type');
-    @BIO_new_NDEF:= LoadFunctionCLib('BIO_new_NDEF');
-    @BIO_new_PKCS7:= LoadFunctionCLib('BIO_new_PKCS7');
+    @BIO_new_NDEF:= LoadFunctionCLib('BIO_new_NDEF', False);
+    @BIO_new_PKCS7:= LoadFunctionCLib('BIO_new_PKCS7', false);
     @BIO_new_accept:= LoadFunctionCLib('BIO_new_accept');
     @BIO_new_bio_pair:= LoadFunctionCLib('BIO_new_bio_pair');
     @BIO_new_connect:= LoadFunctionCLib('BIO_new_connect');

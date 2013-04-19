@@ -61,7 +61,7 @@ begin
     @fCRYPTO_lock := LoadFunctionCLib('CRYPTO_lock');
     CRYPTO_set_mem_functions(_CR_alloc, _CR_realloc, _CR_free);
 
-    @OPENSSL_gmtime := LoadFunctionCLib('OPENSSL_gmtime');
+    @OPENSSL_gmtime := LoadFunctionCLib('OPENSSL_gmtime', False);
   end;
 end;
 
