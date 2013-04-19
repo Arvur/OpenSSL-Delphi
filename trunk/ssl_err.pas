@@ -102,7 +102,7 @@ begin
        @ERR_load_ERR_strings:= LoadFunctionCLib('ERR_load_ERR_strings');
        @ERR_load_crypto_strings:= LoadFunctionCLib('ERR_load_crypto_strings');
        @ERR_free_strings:= LoadFunctionCLib('ERR_free_strings');
-       @ERR_remove_thread_state:= LoadFunctionCLib('ERR_remove_thread_state');
+       @ERR_remove_thread_state:= LoadFunctionCLib('ERR_remove_thread_state', false);
        @ERR_remove_state:= LoadFunctionCLib('ERR_remove_state');
        @ERR_get_state:= LoadFunctionCLib('ERR_get_state');
        @ERR_get_next_error_library:= LoadFunctionCLib('ERR_get_next_error_library');

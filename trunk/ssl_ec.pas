@@ -260,9 +260,9 @@ begin
     @EC_GROUP_get_basis_type:= LoadFunctionCLib('EC_GROUP_get_basis_type');
     @EC_GROUP_get_trinomial_basis:= LoadFunctionCLib('EC_GROUP_get_trinomial_basis');
     @EC_GROUP_get_pentanomial_basis:= LoadFunctionCLib('EC_GROUP_get_pentanomial_basis');
-    @EC_KEY_set_flags:= LoadFunctionCLib('EC_KEY_set_flags');
-    @EC_KEY_clear_flags:= LoadFunctionCLib('EC_KEY_clear_flags');
-    @EC_KEY_get_flags:= LoadFunctionCLib('EC_KEY_get_flags');
+    @EC_KEY_set_flags:= LoadFunctionCLib('EC_KEY_set_flags', false);
+    @EC_KEY_clear_flags:= LoadFunctionCLib('EC_KEY_clear_flags', false);
+    @EC_KEY_get_flags:= LoadFunctionCLib('EC_KEY_get_flags', false);
     @EC_KEY_new_by_curve_name:= LoadFunctionCLib('EC_KEY_new_by_curve_name');
     @EC_KEY_copy:= LoadFunctionCLib('EC_KEY_copy');
     @EC_KEY_dup:= LoadFunctionCLib('EC_KEY_dup');
@@ -280,7 +280,7 @@ begin
     @EC_KEY_get_key_method_data:= LoadFunctionCLib('EC_KEY_get_key_method_data');
     @EC_KEY_insert_key_method_data:= LoadFunctionCLib('EC_KEY_insert_key_method_data');
     @EC_KEY_precompute_mult:= LoadFunctionCLib('EC_KEY_precompute_mult');
-    @EC_KEY_set_public_key_affine_coordinates:= LoadFunctionCLib('EC_KEY_set_public_key_affine_coordinates');
+    @EC_KEY_set_public_key_affine_coordinates:= LoadFunctionCLib('EC_KEY_set_public_key_affine_coordinates', false);
     @d2i_ECPrivateKey:= LoadFunctionCLib('d2i_ECPrivateKey');
     @i2d_ECPrivateKey:= LoadFunctionCLib('i2d_ECPrivateKey');
     @d2i_ECParameters:= LoadFunctionCLib('d2i_ECParameters');

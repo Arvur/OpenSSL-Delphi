@@ -70,18 +70,18 @@ begin
     @OBJ_ln2nid:= LoadFunctionCLib('OBJ_ln2nid');
     @OBJ_sn2nid:= LoadFunctionCLib('OBJ_sn2nid');
     @OBJ_cmp:= LoadFunctionCLib('OBJ_cmp');
-    @OBJ_bsearch_:= LoadFunctionCLib('OBJ_bsearch_');
-    @OBJ_bsearch_ex_:= LoadFunctionCLib('OBJ_bsearch_ex_');
+    @OBJ_bsearch_:= LoadFunctionCLib('OBJ_bsearch_', false);
+    @OBJ_bsearch_ex_:= LoadFunctionCLib('OBJ_bsearch_ex_', false);
     @OBJ_new_nid:= LoadFunctionCLib('OBJ_new_nid');
     @OBJ_add_object:= LoadFunctionCLib('OBJ_add_object');
     @OBJ_create:= LoadFunctionCLib('OBJ_create');
     @OBJ_cleanup:= LoadFunctionCLib('OBJ_cleanup');
     @OBJ_create_objects:= LoadFunctionCLib('OBJ_create_objects');
-    @OBJ_find_sigid_algs:= LoadFunctionCLib('OBJ_find_sigid_algs');
-    @OBJ_find_sigid_by_algs:= LoadFunctionCLib('OBJ_find_sigid_by_algs');
-    @OBJ_add_sigid:= LoadFunctionCLib('OBJ_add_sigid');
-    @OBJ_sigid_free:= LoadFunctionCLib('OBJ_sigid_free');
-    @check_defer:= LoadFunctionCLib('check_defer');
+    @OBJ_find_sigid_algs:= LoadFunctionCLib('OBJ_find_sigid_algs', false);
+    @OBJ_find_sigid_by_algs:= LoadFunctionCLib('OBJ_find_sigid_by_algs', false);
+    @OBJ_add_sigid:= LoadFunctionCLib('OBJ_add_sigid', false);
+    @OBJ_sigid_free:= LoadFunctionCLib('OBJ_sigid_free', false);
+    @check_defer:= LoadFunctionCLib('check_defer', false);
     @ERR_load_OBJ_strings:= LoadFunctionCLib('ERR_load_OBJ_strings');
     
  end;
