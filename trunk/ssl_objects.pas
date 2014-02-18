@@ -1,3 +1,4 @@
+{$I ssl.inc}
 unit ssl_objects;
 
 interface
@@ -87,4 +88,4 @@ begin
  end;
 end;
 
-end.
+end.

@@ -3,10 +3,12 @@
 unit ssl_types;
 
 interface
-uses Winapi.Windows, ssl_const;
+uses {$IFDEF UNIX}BaseUnix {$ELSE} Winapi.Windows{$ENDIF}
+    , ssl_const;
 
 type
     qword = UInt64;
+    PVOID = Pointer;
     TC_INT   = LongInt;
     PC_INT   = ^TC_INT;
     TC_UINT  = LongWord;
@@ -3546,4 +3548,4 @@ type
 {$ENDREGION}
 implementation
 
-end.
+end.

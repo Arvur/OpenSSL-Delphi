@@ -1,3 +1,4 @@
+{$I ssl.inc}
 unit ssl_engine;
 
 interface
@@ -344,4 +345,4 @@ begin
   end;
 
 end;
-end.
+end.
