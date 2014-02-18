@@ -1,3 +1,4 @@
+{$i ssl.inc}
 unit ssl_x509;
 
 interface
@@ -1389,4 +1390,4 @@ begin
 
   end;
 end;
-end.
+end.

@@ -1,3 +1,4 @@
+{$i ssl.inc}
 unit ssl_pkcs7;
 interface
 uses ssl_types;
@@ -249,4 +250,4 @@ begin
 
 		end;
 end;
-end.
+end.

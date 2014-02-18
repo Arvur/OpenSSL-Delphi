@@ -1,3 +1,4 @@
+{$I ssl.inc}
 unit ssl_evp;
 
 interface
@@ -511,7 +512,7 @@ begin
   Result := OBJ_nid2sn(EVP_CIPHER_nid(e));
 end;
 
-function EVP_CIPHER_mode(e: PEVP_CIPHER): TC_ULONG; inline
+function EVP_CIPHER_mode(e: PEVP_CIPHER): TC_ULONG; inline;
 begin
   Result := EVP_CIPHER_flags(e) and EVP_CIPH_MODE;
 end;
@@ -896,7 +897,7 @@ begin
      @EVP_PKEY_CTX_ctrl:= LoadFunctionCLib('EVP_PKEY_CTX_ctrl', false);
      @EVP_PKEY_CTX_ctrl_str:= LoadFunctionCLib('EVP_PKEY_CTX_ctrl_str', false);
      @EVP_PKEY_CTX_get_operation:= LoadFunctionCLib('EVP_PKEY_CTX_get_operation', false);
-     @EVP_PKEY_new_mac_key:= LoadFunctionCLib('EVP_PKEY_new_mac_key, false');
+     @EVP_PKEY_new_mac_key:= LoadFunctionCLib('EVP_PKEY_new_mac_key', false);
      @EVP_PKEY_CTX_get_data:= LoadFunctionCLib('EVP_PKEY_CTX_get_data', false);
      @EVP_PKEY_CTX_get0_pkey:= LoadFunctionCLib('EVP_PKEY_CTX_get0_pkey', false);
      @EVP_PKEY_CTX_get0_peerkey:= LoadFunctionCLib('EVP_PKEY_CTX_get0_peerkey', false);
@@ -927,4 +928,4 @@ begin
   end;
 end;
 
-end.
+end.

@@ -2,14 +2,21 @@ unit ssl_lib;
 
 interface
 
+var
+{$IFDEF UNIX}
+  SSL_C_LIB : AnsiString = 'libeay32.so';
+{$ELSE}
+  SSL_C_LIB : AnsiString = 'libeay32.dll';
+{$ENDIF}
+
+
 function SSLCryptHandle: THandle;
 function LoadSSLCrypt: Boolean;
 function LoadFunctionCLib(const FceName: String; const ACritical : Boolean = True): Pointer;
 
 implementation
-uses windows, sysutils;
+uses {$IFDEF UNIX}dynlibs{$ELSE}windows{$ENDIF}, sysutils;
 
-const SSL_C_LIB = 'libeay32.dll';
 
 var hCrypt: THandle = 0;
 
@@ -29,12 +36,15 @@ function LoadFunctionCLib(const FceName: String; const ACritical : Boolean = Tru
 begin
  if SSLCryptHandle = 0 then
   LoadSSLCrypt;
-
+  {$IFDEF UNIX}
+   Result := GetProcAddress(SSLCryptHandle, PChar(FceName));
+  {$ELSE}
   Result := Windows.GetProcAddress(SSLCryptHandle, PChar(FceName));
+  {$ENDIF}
   if ACritical then
   begin
     if Result = nil then begin
-     //raise Exception.CreateFmt('Процедура %s не загружена.'#13#10'%s', [FceName, SysErrorMessage(GetLastError)]);
+     raise Exception.CreateFmt('Error loading library. Func %s'#13#10'%s', [FceName, SysErrorMessage(GetLastOSError)]);
     end;
   end;
 end;
@@ -46,4 +56,4 @@ finalization
  if hCrypt <> 0 then
   FreeLibrary(hCrypt);
 
-end.
+end.

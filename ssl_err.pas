@@ -1,3 +1,4 @@
+{$I ssl.inc}
 unit ssl_err;
 
 interface
@@ -131,4 +132,4 @@ begin
  Create(AErrorCode, sMsg);
 end;
 
-end.
+end.

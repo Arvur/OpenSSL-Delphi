@@ -1,7 +1,9 @@
+{$I ssl.inc}
 unit ssl_bio;
 
 interface
-uses winapi.winsock2, ssl_types;
+uses {$IFDEF UNIX}cNetDB{$ELSE}winapi.winsock2{$ENDIF}, ssl_types;
+
 
 var
   BIO_new: function(_type: PBIO_METHOD): PBIO; cdecl = nil;
@@ -114,13 +116,14 @@ var
   BIO_sock_non_fatal_error: function(error: TC_INT): TC_INT; cdecl = nil;
   BIO_sock_should_retry: function(i: TC_INT): TC_INT; cdecl = nil;
 
+
 function BIO_get_mem_data (bp: PBIO; buf: Pointer): TC_ULONG; inline;
 function BIO_reset(bp: PBIO): TC_INT; inline;
 function BIO_ReadAnsiString(bp: PBIO): AnsiString;
 function BIO_Flush(bp: PBIO): TC_INT; inline;
 function BIO_Pending(bp: PBIO): TC_INT; inline;
 function BIO_Eof(bp: PBIO): TC_INT; inline;
-
+function BIO_read_filename(b: PBIO; const name: PAnsiChar): TC_INT;
 
 {
  BIO *BIO_new_CMS(BIO *out, CMS_ContentInfo *cms);
@@ -290,4 +293,9 @@ begin
   SetLength(Buf, 0);
 end;
 
-end.
+function BIO_read_filename(b: PBIO; const name: PAnsiChar): TC_INT;
+begin
+  Result := BIO_ctrl(b, BIO_C_SET_FILENAME, BIO_CLOSE or BIO_FP_READ, Name);
+end;
+
+end.

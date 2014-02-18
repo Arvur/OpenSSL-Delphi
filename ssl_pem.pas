@@ -1,3 +1,4 @@
+{$i ssl.inc}
 unit ssl_pem;
 
 interface
@@ -226,4 +227,4 @@ begin
   end;
 end;
 
-end.
+end.
