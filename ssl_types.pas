@@ -948,6 +948,8 @@ type
   PLHASH_OF_CONF_VALUE = PLHASH;
 
   PCONF_METHOD = ^CONF_METHOD;
+  PCONF_IMODULE = ^CONF_IMODULE;
+  PCONF_MODULE = ^CONF_MODULE;
   PCONF = ^CONF;
 
   CONF_METHOD = record
@@ -968,6 +970,29 @@ type
     meth_data: Pointer;
     data: PLHASH;
   end;
+ 
+  t_list_cb = function(const  _elem: PAnsiChar; _len: TC_INT; usr: Pointer): TC_INT; cdecl;
+  t_conf_init_func: function(md: PCONF_IMODULE; const cnf: PCONF): TC_INT; cdecl;
+  t_conf_finish_func: procedure(md: PCONF_IMODULE); cdecl;
+
+  CONF_MODULE = record
+    dso: PDSO;
+     _name: PAnsiChar;
+    init: t_conf_init_func; 
+    finish: t_conf_finish_func;
+    _links: TC_INT;
+    usr_data: Pointer;
+  end;
+  
+  CONF_IMODULE = record
+	pmod: PCONF_MODULE;
+	 _name: PAnsiChar;
+	 _value: PAnsiChar;
+	s: TC_ULONG;
+	usr_data: Pointer;
+  end;  
+  
+  
 {$ENDREGION}
 
 {$REGION 'DH'}
