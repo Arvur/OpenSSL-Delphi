@@ -2,6 +2,54 @@ unit ssl_conf;
 
 interface
 uses ssl_types;
+const
+    CONF_MFLAGS_IGNORE_ERRORS	     = $1;
+    CONF_MFLAGS_IGNORE_RETURN_CODES	 = $2;
+    CONF_MFLAGS_SILENT		         = $4;
+    CONF_MFLAGS_NO_DSO		         = $8;
+    CONF_MFLAGS_IGNORE_MISSING_FILE	 = $10;
+    CONF_MFLAGS_DEFAULT_SECTION	     = $20;
+
+    CONF_F_CONF_DUMP_FP				     = 104;
+    CONF_F_CONF_LOAD				     = 100;
+    CONF_F_CONF_LOAD_BIO				 = 102;
+    CONF_F_CONF_LOAD_FP				     = 103;
+    CONF_F_CONF_MODULES_LOAD			 = 116;
+    CONF_F_CONF_PARSE_LIST				 = 119;
+    CONF_F_DEF_LOAD					     = 120;
+    CONF_F_DEF_LOAD_BIO				     = 121;
+    CONF_F_MODULE_INIT				     = 115;
+    CONF_F_MODULE_LOAD_DSO				 = 117;
+    CONF_F_MODULE_RUN				     = 118;
+    CONF_F_NCONF_DUMP_BIO				 = 105;
+    CONF_F_NCONF_DUMP_FP				 = 106;
+    CONF_F_NCONF_GET_NUMBER				 = 107;
+    CONF_F_NCONF_GET_NUMBER_E			 = 112;
+    CONF_F_NCONF_GET_SECTION			 = 108;
+    CONF_F_NCONF_GET_STRING				 = 109;
+    CONF_F_NCONF_LOAD				     = 113;
+    CONF_F_NCONF_LOAD_BIO				 = 110;
+    CONF_F_NCONF_LOAD_FP				 = 114;
+    CONF_F_NCONF_NEW				     = 111;
+    CONF_F_STR_COPY					     = 101;
+
+    CONF_R_ERROR_LOADING_DSO			         = 110;
+    CONF_R_LIST_CANNOT_BE_NULL			         = 115;
+    CONF_R_MISSING_CLOSE_SQUARE_BRACKET		     = 100;
+    CONF_R_MISSING_EQUAL_SIGN			         = 101;
+    CONF_R_MISSING_FINISH_FUNCTION			     = 111;
+    CONF_R_MISSING_INIT_FUNCTION			     = 112;
+    CONF_R_MODULE_INITIALIZATION_ERROR		     = 109;
+    CONF_R_NO_CLOSE_BRACE				         = 102;
+    CONF_R_NO_CONF					             = 105;
+    CONF_R_NO_CONF_OR_ENVIRONMENT_VARIABLE		 = 106;
+    CONF_R_NO_SECTION				             = 107;
+    CONF_R_NO_SUCH_FILE				             = 114;
+    CONF_R_NO_VALUE					             = 108;
+    CONF_R_UNABLE_TO_CREATE_NEW_SECTION		     = 103;
+    CONF_R_UNKNOWN_MODULE_NAME			         = 113;
+    CONF_R_VARIABLE_HAS_NO_VALUE			     = 104;
+
 
 var
     CONF_set_default_method: function(meth: PCONF_METHOD): TC_INT; cdecl;
