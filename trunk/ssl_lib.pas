@@ -27,7 +27,11 @@ end;
 
 function LoadSSLCrypt: Boolean;
 begin
+{$IFDEF UNIX}
   hCrypt := LoadLibrary(SSL_C_LIB);
+{$ELSE}
+  hCrypt := LoadLibraryA(PAnsiChar(SSL_C_LIB));
+{$ENDIF}
   Result := hCrypt <> 0;
 end;
 
@@ -44,7 +48,11 @@ begin
   if ACritical then
   begin
     if Result = nil then begin
+{$ifdef fpc}
      raise Exception.CreateFmt('Error loading library. Func %s'#13#10'%s', [FceName, SysErrorMessage(GetLastOSError)]);
+{$else}
+     raise Exception.CreateFmt('Error loading library. Func %s'#13#10'%s', [FceName, SysErrorMessage(GetLastError)]);
+{$endif}
     end;
   end;
 end;
