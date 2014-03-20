@@ -1,4 +1,7 @@
 unit ssl_conf;
+{$ifdef fpc}
+ {$mode delphi}
+{$endif}
 
 interface
 uses ssl_types;

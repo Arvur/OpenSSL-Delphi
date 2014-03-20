@@ -972,11 +972,11 @@ type
   end;
  
   t_list_cb = function(const  _elem: PAnsiChar; _len: TC_INT; usr: Pointer): TC_INT; cdecl;
-  t_conf_init_func: function(md: PCONF_IMODULE; const cnf: PCONF): TC_INT; cdecl;
-  t_conf_finish_func: procedure(md: PCONF_IMODULE); cdecl;
+  t_conf_init_func = function(md: PCONF_IMODULE; const cnf: PCONF): TC_INT; cdecl;
+  t_conf_finish_func = procedure(md: PCONF_IMODULE); cdecl;
 
   CONF_MODULE = record
-    dso: PDSO;
+    dso: Pointer;
      _name: PAnsiChar;
     init: t_conf_init_func; 
     finish: t_conf_finish_func;
