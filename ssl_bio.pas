@@ -261,7 +261,7 @@ end;
 
 function BIO_get_mem_data (bp: PBIO; buf: Pointer): TC_ULONG; inline;
 begin
-  BIO_ctrl(bp, BIO_CTRL_INFO, 0, buf);
+  Result := BIO_ctrl(bp, BIO_CTRL_INFO, 0, buf);
 end;
 
 function BIO_Flush(bp: PBIO): TC_INT; inline;

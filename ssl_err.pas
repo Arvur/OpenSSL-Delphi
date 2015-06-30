@@ -128,7 +128,7 @@ end;
 constructor ESSLError.Create(AErrorCode: TC_ULONG);
 var sMsg: String;
 begin
- sMsg := ERR_error_string(AErrorCode, nil);
+ sMsg := string(ERR_error_string(AErrorCode, nil));
  Create(AErrorCode, sMsg);
 end;
 
