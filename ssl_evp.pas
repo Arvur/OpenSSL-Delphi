@@ -46,7 +46,7 @@ var
   EVP_MD_CTX_test_flags: function(const ctx: PEVP_MD_CTX; flags: TC_INT): TC_INT; cdecl = nil;
   EVP_DigestInit_ex: function(ctx: PEVP_MD_CTX; const _type: PEVP_MD; impl: PENGINE): TC_INT; cdecl = nil;
   EVP_DigestUpdate: function(ctx: PEVP_MD_CTX;const d: Pointer; cnt: TC_SIZE_T): TC_INT; cdecl = nil;
-  EVP_DigestFinal_ex: function(ctx: PEVP_MD_CTX;md: PAnsiChar;var s: TC_INT): TC_INT; cdecl = nil;
+  EVP_DigestFinal_ex: function(ctx: PEVP_MD_CTX;md: PAnsiChar;var s: TC_UINT): TC_INT; cdecl = nil;
   EVP_Digest: function(const data: Pointer; count: TC_SIZE_T;   md: PAnsiChar; var size: TC_INT; const _type: PEVP_MD; impl: PENGINE): TC_INT; cdecl = nil;
 
   EVP_MD_CTX_copy: function(_out: EVP_MD_CTX;const _in: EVP_MD_CTX): TC_INT; cdecl = nil;
