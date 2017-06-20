@@ -2,7 +2,18 @@
 unit ssl_bio;
 
 interface
-uses {$IFDEF UNIX}cNetDB{$ELSE}winapi.winsock2{$ENDIF}, ssl_types;
+
+uses
+  {$IFDEF FPC}
+    {$IFDEF UNIX}cNetDB,{$ENDIF UNIX}
+  {$ELSE}
+    {$IFDEF MSWINDOWS}
+      winapi.winsock2,
+    {$ELSE}
+      Posix.NetDB,
+    {$ENDIF MSWINDOWS}
+  {$ENDIF FPC}
+  ssl_types;
 
 
 var
