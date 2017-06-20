@@ -32,7 +32,7 @@ function ASN1ToDateTime(a: PASN1_TIME): TDateTime;
 function DateTimeToASN1(ADateTime: TDateTime): PASN1_TIME;
 
 implementation
-uses ssl_lib, ssl_const, Winapi.WinSock, SysUtils, ssl_err, ssl_objects, Math;
+uses ssl_lib, ssl_const, SysUtils, ssl_err, ssl_objects, Math;
 
 function _CR_alloc(_size: TC_SIZE_T): Pointer; cdecl;
 begin
