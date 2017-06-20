@@ -3,8 +3,10 @@
 unit ssl_types;
 
 interface
-uses {$IFDEF UNIX}BaseUnix {$ELSE} Winapi.Windows{$ENDIF}
-    , ssl_const;
+
+uses
+  {$IFDEF UNIX}BaseUnix,{$ENDIF}
+  ssl_const;
 
 type
     qword = UInt64;
@@ -1301,7 +1303,7 @@ type
     iv_len : TC_Int;
     flags : TC_ULONG;
     init : function (ctx : PEVP_CIPHER_CTX; key : PAnsiChar; iv : PAnsiChar; enc : TC_Int): TC_Int; cdecl;
-    do_cipher : function (ctx : PEVP_CIPHER_CTX; _out : PAnsiChar; _in : PAnsiChar; inl : size_t) : TC_Int; cdecl;
+    do_cipher : function (ctx : PEVP_CIPHER_CTX; _out : PAnsiChar; _in : PAnsiChar; inl : TC_SIZE_T) : TC_Int; cdecl;
     cleanup : function (_para1 : PEVP_CIPHER_CTX): TC_Int; cdecl;
     ctx_size : TC_Int;
     set_asn1_parameters : function (_para1 : PEVP_CIPHER_CTX; _para2 : PASN1_TYPE) : TC_Int; cdecl;
@@ -1344,7 +1346,7 @@ type
     flags : TC_ULONG;
     md_data : Pointer;
     pctx : PEVP_PKEY_CTX;
-    update : function (ctx : PEVP_MD_CTX; const data : Pointer; count : size_t) : TC_INT cdecl;
+    update : function (ctx : PEVP_MD_CTX; const data : Pointer; count : TC_SIZE_T) : TC_INT cdecl;
   end;
 
 
@@ -1354,7 +1356,7 @@ type
     md_size : TC_Int;
     flags : TC_ULONG;
     init : function (ctx : PEVP_MD_CTX) : TC_Int; cdecl;
-    update : function (ctx : PEVP_MD_CTX; data : Pointer; count : size_t):TC_Int; cdecl;
+    update : function (ctx : PEVP_MD_CTX; data : Pointer; count : TC_SIZE_T):TC_Int; cdecl;
     _final : function (ctx : PEVP_MD_CTX; md : PAnsiChar) : TC_Int; cdecl;
     copy : function (_to : PEVP_MD_CTX; from : PEVP_MD_CTX ) : TC_Int; cdecl;
     cleanup : function(ctx : PEVP_MD_CTX) : TC_Int; cdecl;
