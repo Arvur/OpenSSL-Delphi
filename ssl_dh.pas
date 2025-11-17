@@ -37,7 +37,7 @@ var
   d2i_DHparams: function(a: PPDH; pp: PPAnsiChar; _length: TC_LONG): PDH;
   i2d_DHparams: function(const a: PDH; pp: PPAnsiChar): TC_INT; cdecl = nil;
   DHparams_print_fp: function(var fp: FILE; x: PDH): TC_INT; cdecl = nil;
-  DHparams_print: function(bp: BIO; x: PDH): TC_INT; cdecl = nil;
+  DHparams_print: function(bp: PBIO; x: PDH): TC_INT; cdecl = nil;
   ERR_load_DH_strings: procedure; cdecl = nil;
 
 procedure SSL_InitDH;
